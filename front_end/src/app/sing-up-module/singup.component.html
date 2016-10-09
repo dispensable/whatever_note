@@ -1,0 +1,24 @@
+<div class="container">
+    <h1>User Form</h1>
+    <form>
+      <div class="form-group">
+        <label for="username">Name</label>
+        <input type="text" class="form-control" id="username" name="username" #username required>
+      </div>
+      <div class="form-group" #useremail>
+        <label for="email">Email</label>
+        <input type="email" class="form-control" id="email" required name="email" #useremail >
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" required name="password" #userpassword >
+      </div>
+      <div class="form-group">
+        <label>Repeat Password</label>
+        <input type="password" class="form-control" id="password2" required name="password2" #userpassword2 >
+      </div>
+      <button type="submit" class="btn btn-default" (click)="addUser(username.value, useremail.value, userpassword.value);
+       userpassword.value='';">Submit</button>
+    </form>
+</div>
+
