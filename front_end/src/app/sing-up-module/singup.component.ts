@@ -3,32 +3,121 @@
  */
 import {Component, OnInit} from '@angular/core';
 import { User }    from '../shared/user';
+import { RegisterError } from '../shared/register_error'
 import { SingUpService } from './singup.service';
+import { Router } from '@angular/router';
+import {NameUniqueService} from "../shared/name_unique.service";
+import { Subject }           from 'rxjs/Subject';
+import { UserName } from '../shared/name_unique.service';
+import { Observable }        from 'rxjs/Observable';
+import '../shared/rxjs-operators'
 
 @Component({
   selector: 'singup',
   templateUrl: './singup.component.html',
   styleUrls: ['../shared/bootstrap.css', '../shared/form.css']
 })
-export class SingUpComponent implements OnInit{
-
-  user: User;
+export class SingUpComponent {
   errorMessage: string;
 
-  constructor(private usersevice: SingUpService) { }
+  user: User = new User('', '', '', '');
+  name: Observable<UserName[]>;
+  registerError: RegisterError = new RegisterError('Username required', 'Email required',
+    'Password required!', 'Repeat the password!');
+  submitted: boolean = true;
+  successed: boolean = false;
 
-  ngOnInit() { this.getUser(); }
+  // form verification css control
+  username_valid: boolean = false;
+  email_valid: boolean = false;
+  password_valid: boolean = false;
+  password2_valid: boolean = false;
 
-  getUser() {
-    this.usersevice.getUsers().subscribe(
-      user => { this.user = user; console.log("user is: "); console.log(user.name)},
-      error => this.errorMessage = <any>error);
+  constructor(private usersevice: SingUpService,
+              private is_name_exist: NameUniqueService,
+              private router: Router) { }
+
+  //创建username独特性检测流
+  private searchTerms = new Subject<string>();
+
+  // form verification logic
+  verification_unique() {
+    this.is_name_exist.search(this.user.username).subscribe(name => {
+      if (name.is_unique) {
+        this.username_valid = false;
+        this.registerError.username_error = 'The name has been used try another one. '
+      }
+    }, error => {}); //TODO: replace real error handler.
   }
 
-  addUser(name: string, email: string, password: string) {
-    if (!name || !email || !password ) { return; }
-    this.usersevice.addUser(name, email, password).subscribe(
-      newuser => this.user = newuser,
-      error => this.errorMessage = <any>error);
+  verification_username() {
+    let username = this.user.username;
+    if (username.length > 20) {
+      this.username_valid = false;
+      this.registerError.username_error = 'Name is too long, please keep the username less than 10 characters.';
+    } else if (username.search('^[A-Za-z][A-Za-z0-9_.]*$')) {
+      this.username_valid = false;
+      this.registerError.username_error = 'The username character must in A-z or 0 -9 or _ .';
+    } else {
+      this.username_valid = true;
+      this.registerError.username_error = 'Nice name!'
+    }
+  }
+
+  verification_email() {
+    let email = this.user.email;
+    if (email.search('^([\\w-_]+(?:\\.[\\w-_]+)*)@((?:[a-z0-9]+(?:-[a-zA-Z0-9]+)*)+\\.[a-z]{2,6})$')) {
+      this.email_valid = false;
+      this.registerError.email_error = 'Email address wrong, please recheck and modify.';
+    } else {
+      this.email_valid = true;
+      this.registerError.email_error = 'Email address input right.';
+    }
+  }
+
+  verification_password() {
+    let password = this.user.password;
+
+    // check password length
+    if (password.length < 8) {
+      this.password_valid = false;
+      this.registerError.password_error = 'password too short, at least 8 characters.';
+    } else if (password.length > 16) {
+      this.password_valid = false;
+      this.registerError.password_error = 'password too long, less than 16 characters.';
+    } else if (password.search('^(?![0-9]+$)(?![a-zA-Z]+$)')) {     // weak password not allowed
+      this.password_valid = false;
+      this.registerError.password_error = 'Pure number, alphebeta is not allowed.';
+    } else if (password.search('^(?![a-zA-z]+$)(?![0-9]+$)(?![!@#$%^&*]+$)[a-zA-Z[0-9]!@#$%^&*]+$')) { // not bad
+      this.password_valid = true;
+      this.registerError.password_error = 'Not bad, but you can do more.';
+    } else if (password.search('^(?![a-zA-z]+$)(?![0-9]+$)(?![!@#$%^&*]+$)(?![a-zA-z[0-9]]+$)(?![a-zA-z!@#$%^&*]+$)(?![[0-9]!@#$%^&*]+$)[a-zA-Z[0-9]!@#$%^&*]+$')) {
+      this.password_valid = true; // best
+      this.registerError.password_error = 'Very good password!'
+    }
+  }
+
+  verification_password2() {
+    // check repeat password
+    if (this.user.password === this.user.password2) {
+      this.password2_valid = true;
+      this.registerError.repeat_error = 'Same as password! Good job!'
+    } else {
+      this.password2_valid = false;
+      this.registerError.repeat_error = 'Not the same as you input first time.'
+    }
+  }
+
+  addUser(user) {
+    this.usersevice.addUser(user.username, user.email, user.password).subscribe(
+      newuser => { this.user = newuser;
+        console.log("response from remote server: ")
+        console.log(newuser);
+        this.submitted = false;
+        this.successed = true;
+        setTimeout(() => this.router.navigate(['/']), 5000);
+      },
+      error => { this.errorMessage = <any>error;
+      });
   }
 }

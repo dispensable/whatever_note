@@ -1,24 +1,54 @@
 <div class="container">
-    <h1>User Form</h1>
-    <form>
+    <h1>User Sing Up</h1>
+    <form *ngIf="submitted" (ngSubmit)="addUser(user)" #singupForm="ngForm">
       <div class="form-group">
         <label for="username">Name</label>
-        <input type="text" class="form-control" id="username" name="username" #username required>
+        <input type="text" class="form-control" id="username" name="username" [(ngModel)]="user.username" #username="ngModel"
+               (keyup)="verification_username()" (blur)="verification_unique()" required>
+        <div [ngClass]="{'alert alert-danger': !username_valid, 'alert alert-success': username_valid}">
+          {{registerError.username_error}}
+        </div>
       </div>
       <div class="form-group" #useremail>
         <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" required name="email" #useremail >
+        <input type="email" class="form-control" id="email" required name="email" [(ngModel)]="user.email" #email="ngModel"
+                (keyup)="verification_email()">
+        <div [ngClass]="{'alert alert-danger': !email_valid, 'alert alert-success': email_valid}">
+          {{registerError.email_error}}
+        </div>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password" required name="password" #userpassword >
+        <input type="password" class="form-control" id="password" required name="password" [(ngModel)]="user.password" #password="ngModel"
+                (keyup)="verification_password()">
+        <div [ngClass]="{'alert alert-danger': !password_valid, 'alert alert-success': password_valid}">
+          {{registerError.password_error}}
+        </div>
       </div>
       <div class="form-group">
-        <label>Repeat Password</label>
-        <input type="password" class="form-control" id="password2" required name="password2" #userpassword2 >
+        <label for="password2">Repeat Password</label>
+        <input type="password" class="form-control" id="password2" required name="password2" [(ngModel)]="user.password2" #password2="ngModel"
+                (keyup)="verification_password2()">
+        <div [ngClass]="{'alert alert-danger': !password2_valid, 'alert alert-success': password2_valid}">
+          {{registerError.repeat_error}}
+        </div>
       </div>
-      <button type="submit" class="btn btn-default" (click)="addUser(username.value, useremail.value, userpassword.value);
-       userpassword.value='';">Submit</button>
+      <button type="submit" class="btn btn-default" [disabled]="!singupForm.form.valid || !username_valid
+      || !email_valid || !password_valid || !password2_valid">Submit</button>
     </form>
+
+  <div *ngIf="successed">
+    <h2>You submitted the following:</h2>
+    <div class="row">
+      <div class="col-xs-3">Name</div>
+      <div class="col-xs-9  pull-left">{{ user.username }}</div>
+    </div>
+    <div class="row">
+      <div class="col-xs-3">Email</div>
+      <div class="col-xs-9 pull-left">{{ user.email }}</div>
+    </div>
+    <h2> Sing up successed! </h2>
+  </div>
+
 </div>
 

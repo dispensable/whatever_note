@@ -70,5 +70,9 @@ def verify_password(email, password):
         return check_password(password.encode(), hashed)
 
 
-def get_username(email):
+def get_username_by_email(email):
     return user.find_one({'email': email}, {'username': 1})['username']
+
+
+def is_name_exist(name):
+    return True if user.find_one({'username': name}) else False

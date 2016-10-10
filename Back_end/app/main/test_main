@@ -1,6 +1,6 @@
 import tornado.ioloop
 import tornado.web
-from Back_end.app.model.user_data import registe, generate_auth_token, verify_auth_token, verify_password, get_username
+from Back_end.app.model.user_data import registe, generate_auth_token, verify_auth_token, verify_password, get_username_by_email, is_name_exist
 import json
 import time
 
@@ -60,17 +60,26 @@ class ApiAuthHandler(BasicHandler):
         password = login_data['password']
 
         if verify_password(email, password):
-            token = generate_auth_token(SECRET_KEY, int(time.time()) + 3600, get_username(email))
+            token = generate_auth_token(SECRET_KEY, int(time.time()) + 3600, get_username_by_email(email))
             self.write({"expiration": 3600, "token": token.decode()})
         else:
             self.write_error(403)
+
+
+class NameUniqueHandler(BasicHandler):
+    """ 检查用户名唯一性 """
+    def get(self, *args, **kwargs):
+        name = self.get_argument('name')
+        print("Check name: {0}".format(name))
+        self.write({'is_unique': is_name_exist(name)})
 
 
 def make_app():
     return tornado.web.Application([
         (r'/', MainHandler),
         (r'/api/user_qualification', LoginHandler),
-        (r'/api/token', ApiAuthHandler)
+        (r'/api/token', ApiAuthHandler),
+        (r'/api/name', NameUniqueHandler)
     ])
 
 
