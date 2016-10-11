@@ -1,0 +1,17 @@
+<div class="container">
+    <h1>User Sing In</h1>
+    <form (ngSubmit)="login(email.value, password.value)" #singupForm="ngForm">
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="text" class="form-control" id="email" placeholder="Email" name="email" #email required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" placeholder="password" name="password" #password required>
+      </div>
+
+      <button type="submit" class="btn btn-default" [disabled]="!singupForm.form.valid">Login</button>
+    </form>
+</div>

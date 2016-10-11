@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HomeComponent } from './home.component';
 import { routing, homeRoutingProviders }  from './home.routing';
+import { JwtHelper } from 'angular2-jwt';
+import { AuthGuard } from '../shared/router-guards/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -16,6 +18,6 @@ import { routing, homeRoutingProviders }  from './home.routing';
     HttpModule,
     routing
   ],
-  providers: [ homeRoutingProviders ],
+  providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper}, AuthGuard],
 })
 export class HomeModule { }

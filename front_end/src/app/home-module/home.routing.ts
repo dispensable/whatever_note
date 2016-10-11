@@ -4,9 +4,10 @@
 import { ModuleWithProviders } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './home.component';
+import { AuthGuard } from '../shared/router-guards/auth-guard.service';
 
 const homeRoutes: Routes = [
-  { path: '',  component: HomeComponent },
+  { path: '',  component: HomeComponent,  canActivate: [AuthGuard]},
 ];
 
 export const homeRoutingProviders: any[] = [

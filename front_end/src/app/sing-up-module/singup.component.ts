@@ -37,9 +37,6 @@ export class SingUpComponent {
               private is_name_exist: NameUniqueService,
               private router: Router) { }
 
-  //创建username独特性检测流
-  private searchTerms = new Subject<string>();
-
   // form verification logic
   verification_unique() {
     this.is_name_exist.search(this.user.username).subscribe(name => {

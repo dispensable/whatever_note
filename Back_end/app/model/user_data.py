@@ -65,8 +65,9 @@ def verify_auth_token(secret_key, token):
 
 
 def verify_password(email, password):
-    hashed = user.find_one({'email': email})['password']
-    if password:
+    user_data = user.find_one({'email': email})
+    if user_data and password:
+        hashed = user_data['password']
         return check_password(password.encode(), hashed)
 
 

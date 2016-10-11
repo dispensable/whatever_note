@@ -10,8 +10,11 @@
   </div>
   <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-      <li><a routerLink="/singup" routerLinkActive="active">SingUp</a></li>
+      <li><a *ngIf="!isLogin()" routerLink="/singup" routerLinkActive="active">SingUp</a></li>
+      <li><a *nfIf="!isLogin()" routerLink="/singin" routerLinkActive="active">SingIn</a></li>
+      <li><a (click)="logOut()" >SingOut</a></li>
     </ul>
   </div>
 </div>
+<notification></notification>
 <router-outlet></router-outlet>

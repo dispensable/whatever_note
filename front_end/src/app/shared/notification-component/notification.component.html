@@ -1,0 +1,6 @@
+<div *ngIf="isNewExist" class="text-center">
+  <span [ngClass]="{'alert alert-success': successClass, 'alert alert-info': infoClass,
+  'alert alert-warning': warningClass, 'alert alert-danger': dangerClass}">{{notification.content}}
+    <button (click)="close()" *ngIf="closeExist" class="border-right"> X </button>
+  </span>
+</div>

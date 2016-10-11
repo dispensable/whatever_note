@@ -14,12 +14,6 @@ export class SingUpService {
   private userUrl = 'http://localhost:4200/api/user_qualification';  // URL to web API
   constructor (private http: Http) {}
 
-  getUsers (): Observable<User> {
-    return this.http.get(this.userUrl)
-                    .map(this.extractData)
-                    .catch(this.handleError);
-  }
-
   addUser (username: string, email: string, password: string): Observable<User> {
   let body = JSON.stringify({ username, email, password });
   let headers = new Headers({ 'Content-Type': 'application/json' });

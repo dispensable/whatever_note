@@ -56,14 +56,16 @@ class ApiAuthHandler(BasicHandler):
     def post(self, *args, **kwargs):
         login_data = self.json_args
 
+        print("Request body: {0}".format(self.request.body))
         email = login_data['email']
         password = login_data['password']
 
         if verify_password(email, password):
-            token = generate_auth_token(SECRET_KEY, int(time.time()) + 3600, get_username_by_email(email))
-            self.write({"expiration": 3600, "token": token.decode()})
+            expiration = int(time.time() + 3600)
+            token = generate_auth_token(SECRET_KEY, expiration, get_username_by_email(email))
+            self.write({"expiration": expiration, "token": token.decode()})
         else:
-            self.write_error(403)
+            self.set_status(403, reason="login failed, please check your password or email.")
 
 
 class NameUniqueHandler(BasicHandler):
