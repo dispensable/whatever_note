@@ -12,7 +12,7 @@ import {singInRouting, singInRoutingProviders} from "./singin.routing";
 import {CommonModule} from "@angular/common";
 import { NameUniqueService } from '../shared/name_unique.service';
 import { NotificationService } from '../shared/notification-component/notification.service';
-import { AuthGuard } from '../shared/router-guards/auth-guard.service';
+import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
 
 @NgModule({
   declarations: [
@@ -25,6 +25,6 @@ import { AuthGuard } from '../shared/router-guards/auth-guard.service';
     HttpModule,
     singInRouting
   ],
-  providers: [SingInService, NameUniqueService, singInRoutingProviders, NotificationService, AuthGuard],
+  providers: [SingInService, NameUniqueService, singInRoutingProviders, NotificationService, SingInUpGuard],
 })
 export class SingInModule { }

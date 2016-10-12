@@ -44,4 +44,8 @@ export class SingInComponent {
       }
     )
   }
+
+  goSingUp() {
+    this.router.navigate(['singup']);
+  }
 }

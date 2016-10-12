@@ -5,10 +5,10 @@ import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SingInComponent }    from './singin.component';
-import { AuthGuard } from '../shared/router-guards/auth-guard.service';
+import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
 
 const singInRoutes: Routes = [
-  { path: 'singin',  component: SingInComponent, canActivate: [!AuthGuard] },
+  { path: 'singin',  component: SingInComponent, canActivate: [SingInUpGuard] },
 ];
 export const singInRoutingProviders: any[] = [
 

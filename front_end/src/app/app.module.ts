@@ -9,11 +9,15 @@ import { HomeModule } from './home-module/home.module';
 import { SingInModule } from './sing-in-module/singin.module';
 
 import { NotificationComponent } from './shared/notification-component/notification.component';
+import { AuthService } from './shared/auth.service';
 
 // jwt support
 import { AUTH_PROVIDERS } from 'angular2-jwt';
 
 import { JwtHelper } from 'angular2-jwt';
+
+// drop down menue
+import { DropdownModule } from 'ng2-dropdown';
 
 @NgModule({
   imports: [
@@ -22,13 +26,14 @@ import { JwtHelper } from 'angular2-jwt';
     SingUpModule,
     HomeModule,
     SingInModule,
+    DropdownModule,
     routing
   ],
   declarations: [
     AppComponent,
     NotificationComponent
   ],
-  providers: [ appRoutingProviders, AUTH_PROVIDERS, {provide: JwtHelper, useClass: JwtHelper} ],
+  providers: [ appRoutingProviders, AUTH_PROVIDERS, {provide: JwtHelper, useClass: JwtHelper}, AuthService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

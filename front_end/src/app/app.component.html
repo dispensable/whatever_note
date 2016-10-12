@@ -1,20 +1,34 @@
 <div class="navbar-inverse" role="navigation">
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <a routerLink="/" routerLinkActive="active" class="navbar-brand">WhateverNote</a>
+  <div class="container">
+    <div class="navbar-header">
+      <!--<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">-->
+        <!--<span class="sr-only">Toggle navigation</span>-->
+        <!--<span class="icon-bar"></span>-->
+        <!--<span class="icon-bar"></span>-->
+        <!--<span class="icon-bar"></span>-->
+      <!--</button>-->
+      <a routerLink="/" routerLinkActive="active" class="navbar-brand">WhateverNote</a>
+    </div>
+
+    <!-- 这里的li占位符,不知道为何此处有两行,奇葩,懒得去找,改天再弄吧,浪费好多时间,好在暂时能用-->
+    <li></li>
+
+    <!-- 下拉菜单 -->
+    <div class="navbar-collapse collapse">
+      <div class="nav navbar-nav navbar-right">
+        <div class="dropdown" dropdown>
+              <a dropdown-open class="my-dropdown">Account</a>
+              <ul class="dropdown-menu">
+                <li><a *ngIf="!isLogin()" routerLink="/singup" routerLinkActive="active">SingUp</a></li>
+                <li><a *ngIf="!isLogin()" routerLink="/singin" routerLinkActive="active">SingIn</a></li>
+                <li><a *ngIf="isLogin()" (click)="logOut()" >SingOut</a></li>
+              </ul>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="navbar-collapse collapse">
-    <ul class="nav navbar-nav">
-      <li><a *ngIf="!isLogin()" routerLink="/singup" routerLinkActive="active">SingUp</a></li>
-      <li><a *nfIf="!isLogin()" routerLink="/singin" routerLinkActive="active">SingIn</a></li>
-      <li><a (click)="logOut()" >SingOut</a></li>
-    </ul>
-  </div>
+
 </div>
+
 <notification></notification>
 <router-outlet></router-outlet>

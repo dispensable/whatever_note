@@ -1,6 +1,7 @@
 import tornado.ioloop
 import tornado.web
-from Back_end.app.model.user_data import registe, generate_auth_token, verify_auth_token, verify_password, get_username_by_email, is_name_exist
+from Back_end.app.model.user_data import registe, generate_auth_token, \
+    verify_auth_token, verify_password, get_username_by_email, is_name_exist
 import json
 import time
 

@@ -5,10 +5,10 @@ import { ModuleWithProviders }  from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SingUpComponent }    from './singup.component';
-import { AuthGuard } from '../shared/router-guards/auth-guard.service';
+import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
 
 const singupRoutes: Routes = [
-  { path: 'singup',  component: SingUpComponent, canActivate: [!AuthGuard] },
+  { path: 'singup',  component: SingUpComponent, canActivate: [SingInUpGuard] },
 ];
 
 export const singupRouting: ModuleWithProviders = RouterModule.forChild(singupRoutes);
