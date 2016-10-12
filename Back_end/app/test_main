@@ -1,11 +1,16 @@
-import tornado.ioloop
-import tornado.web
-from Back_end.app.model.user_data import registe, generate_auth_token, \
-    verify_auth_token, verify_password, get_username_by_email, is_name_exist
 import json
 import time
 
+import tornado.ioloop
+import tornado.web
+
+from celery_mq.tasks import auth_mail_task
+from Back_end.app.model.user_data import registe, generate_auth_token, \
+    verify_auth_token, verify_password, get_username_by_email, is_name_exist, confirm_user, has_confirmed
+
 SECRET_KEY = "TESTFORSECRETAUTH" #TODO: replace this with a random key move to config file
+EMAIL_SECRET_KEY = "EMAILSECRETKEY"
+WEBSITE_ADDR = 'http://localhost:8888/api/confirm_token/'
 
 
 class BasicHandler(tornado.web.RequestHandler):
@@ -29,6 +34,7 @@ class BasicHandler(tornado.web.RequestHandler):
                 self.json_args = None
         except KeyError as e:
             print("can't find key.")
+            print(e)
 
 
 class MainHandler(BasicHandler):
@@ -40,13 +46,21 @@ class MainHandler(BasicHandler):
             self.write('<h1>Hello Stranger!</h1>')
 
 
-class LoginHandler(BasicHandler):
-    """ handler for /registe """
+class SingUpHandler(BasicHandler):
+    """ handler for /api/user_qualification """
     def post(self, *args, **kwargs):
         print("Get data from angular: {0}".format(self.request))
         print("Request body: {0}".format(self.request.body))
         singup = registe(self.request.body.decode(encoding='UTF-8'))
         if singup:
+            # 发送确认邮件
+            username = singup['username']
+            email = singup['email']
+
+            token = generate_auth_token(EMAIL_SECRET_KEY, int(time.time()) + 36000, username)
+            active_link = WEBSITE_ADDR + token.decode()
+            print("ready to add tasks to celery.")
+            auth_mail_task.delay(username, active_link, email)
             self.write(singup)
         else:
             self.write_error(403)
@@ -77,13 +91,42 @@ class NameUniqueHandler(BasicHandler):
         self.write({'is_unique': is_name_exist(name)})
 
 
+class ConfirmTokenHandler(BasicHandler):
+    """ 发送确认邮件 """
+    def get(self, token):
+        """ 从邮箱确认用户账户 """
+        payload = verify_auth_token(EMAIL_SECRET_KEY, token)
+        # 正常验证,可以确认
+        if payload:
+            confirm_user(payload['username'])
+            self.write("<h1>Confirm successed!</h1> <h2>redirecting to sing in page ....</h2>")
+            self.redirect(self.get_login_url())
+        # 无法验证token
+        else:
+            self.write("Confirm failed.")
+            self.set_status(403, "Can't confirm your link. The link is wrong or expired.")
+
+    def post(self, *args, **kwargs):
+        """ 重新发送确认邮件 """
+        resend_info = self.json_args
+        if not has_confirmed(resend_info['username']):
+            token = generate_auth_token(EMAIL_SECRET_KEY, int(time.time()) + 36000, resend_info['username'])
+            active_link = WEBSITE_ADDR + token.decode()
+            auth_mail_task.delay(resend_info['username'], active_link, resend_info['email'])
+            self.write('Your confirm email has been sent, check your inbox or trash box to confirm.')
+        else:
+            self.set_status(403, 'You account has been confirmed.')
+            self.redirect(self.get_login_url())
+
+
 def make_app():
     return tornado.web.Application([
         (r'/', MainHandler),
-        (r'/api/user_qualification', LoginHandler),
+        (r'/api/user_qualification', SingUpHandler),
         (r'/api/token', ApiAuthHandler),
-        (r'/api/name', NameUniqueHandler)
-    ])
+        (r'/api/name', NameUniqueHandler),
+        (r'/api/confirm_token/(.*)', ConfirmTokenHandler)
+    ], login_url='http://localhost:4200/singin')
 
 
 if __name__ == "__main__":

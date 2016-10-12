@@ -77,3 +77,15 @@ def get_username_by_email(email):
 
 def is_name_exist(name):
     return True if user.find_one({'username': name}) else False
+
+
+def confirm_user(username: str):
+    if not user.find_one({'username': username})['confirmed']:
+        user.update({'username': username}, {"$set": {"confirmed": True}}, multi=False)
+
+
+def has_confirmed(username):
+    return user.find_one({'username': username})['confirmed']
+
+if __name__ == "__main__":
+    pass

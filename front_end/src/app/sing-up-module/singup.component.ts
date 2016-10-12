@@ -7,10 +7,12 @@ import { RegisterError } from '../shared/register_error'
 import { SingUpService } from './singup.service';
 import { Router } from '@angular/router';
 import {NameUniqueService} from "../shared/name_unique.service";
-import { Subject }           from 'rxjs/Subject';
 import { UserName } from '../shared/name_unique.service';
 import { Observable }        from 'rxjs/Observable';
 import '../shared/rxjs-operators'
+
+import {NotificationService} from "../shared/notification-component/notification.service";
+import { Notification } from '../shared/notification-component/notification';
 
 @Component({
   selector: 'singup',
@@ -20,12 +22,16 @@ import '../shared/rxjs-operators'
 export class SingUpComponent {
   errorMessage: string;
 
+  // notification obj
+  notification = new Notification(1, '', 0);
+
   user: User = new User('', '', '', '');
   name: Observable<UserName[]>;
   registerError: RegisterError = new RegisterError('Username required', 'Email required',
     'Password required!', 'Repeat the password!');
   submitted: boolean = true;
   successed: boolean = false;
+  hasresend = false;
 
   // form verification css control
   username_valid: boolean = false;
@@ -35,6 +41,7 @@ export class SingUpComponent {
 
   constructor(private usersevice: SingUpService,
               private is_name_exist: NameUniqueService,
+              private notify: NotificationService,
               private router: Router) { }
 
   // form verification logic
@@ -112,9 +119,21 @@ export class SingUpComponent {
         console.log(newuser);
         this.submitted = false;
         this.successed = true;
-        setTimeout(() => this.router.navigate(['/']), 5000);
+        setTimeout(() => this.router.navigate(['/singin']), 5000);
       },
       error => { this.errorMessage = <any>error;
       });
+  }
+
+  resend() {
+    this.usersevice.resendConfirm(this.user.username, this.user.password).subscribe(
+      () => { this.hasresend = true; setTimeout(this.hasresend = false, 60000)},
+      error => { this.errorMessage = <any>error;
+        // notify user
+        this.notification.content = this.errorMessage;
+        this.notification.type = 3;
+        this.notification.timer = -1;
+        this.notify.pushNotification(this.notification);}
+    )
   }
 }

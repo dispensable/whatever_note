@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*-coding:utf-8-*-
 
-from send_mail import send_email
+from .send_mail import send_email
 from functools import partial
 import os
 
@@ -19,14 +19,17 @@ def send_auth_mail(username, activelink, to_addr):
 
     html_text = """
         <h1>Dear {0}:</h1>
-        <p>You recived this email because you have singed up WhateverNote(wwww.whatevernot.com).</p>
+        <p>You recieved this email because you have singed up WhateverNote(www.whatevernot-fake-url.com).</p>
         <p>please paste this link to browser to active your account, so you can use our website.</p>
         <br>
         <p>link: <a href="{1}">click me to active your account</a></p>
         <br>
+        <p> if you can't click link, paste this link to browser and active your account:</p>
+        <p> link: {2} </p>
+        <br>
         <p>thank you!</p>
         <p>WhateverNote team</p>
-    """.format(username, activelink)
+    """.format(username, activelink, activelink)
 
     from_addr = os.environ.get('ADMINEMAIL')
     password = os.environ.get('PASSWORD')
@@ -43,4 +46,10 @@ def send_auth_mail(username, activelink, to_addr):
     return auth_mail_send(username=username, to_addr=to_addr)
 
 if __name__ == '__main__':
-    send_auth_mail('test', 'www.dispensable.com', '897300299@qq.com')
+    """ python的导入规则非常奇葩,需要单元测试时请讲上方的from .send_emai 改为from send_email
+    在包内文件可以相对引用,但是直接运行该文件必须改为直接引用。
+    是的,很奇葩不是么……
+
+    请依次配置环境变量之后再运行此函数
+    """
+    send_auth_mail('test', 'www.try-to-registe-fake.com', 'example@test.com')

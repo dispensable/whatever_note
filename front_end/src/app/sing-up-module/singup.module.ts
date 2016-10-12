@@ -12,6 +12,7 @@ import { singupRouting } from "./singup.routing";
 import {CommonModule} from "@angular/common";
 import { NameUniqueService } from '../shared/name_unique.service';
 import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
+import { NotificationService } from '../shared/notification-component/notification.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,6 @@ import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
     HttpModule,
     singupRouting
   ],
-  providers: [SingUpService, NameUniqueService, SingInUpGuard],
+  providers: [SingUpService, NameUniqueService, SingInUpGuard, NotificationService],
 })
 export class SingUpModule { }

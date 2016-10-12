@@ -47,6 +47,13 @@
       <div class="col-xs-3">Email</div>
       <div class="col-xs-9 pull-left">{{ user.email }}</div>
     </div>
+
+    <h2>Nearly to success...</h2>
+    <p>Before you can access this site you need to confirm your account. Check your inbox, you should have recieved an email with
+    a confirmation link.</p>
+    <p>Need another confirmation email?
+      <button type="button" class="btn btn-info" [disabled]="hasresend" (click)="resend()" >Resend</button>>
+    </p>
     <h2> Sing up successed! </h2>
   </div>
 
