@@ -9,6 +9,9 @@ import { routing, homeRoutingProviders }  from './home.routing';
 import { JwtHelper } from 'angular2-jwt';
 import { AuthGuard } from '../shared/router-guards/auth-guard.service';
 
+import {NotificationService} from "../shared/notification-component/notification.service";
+
+
 @NgModule({
   declarations: [
     HomeComponent
@@ -18,6 +21,6 @@ import { AuthGuard } from '../shared/router-guards/auth-guard.service';
     HttpModule,
     routing
   ],
-  providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper}, AuthGuard],
+  providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper}, AuthGuard, NotificationService],
 })
 export class HomeModule { }

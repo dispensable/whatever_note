@@ -36,7 +36,7 @@ def send_auth_mail(username, activelink, to_addr):
 
     smtp_server = os.environ.get('SMTPSERVER')
     smtp_port = int(os.environ.get('SMTPPORT'))
-    subject = '[WhateverNote] Confirm Account'
+    subject = 'Confirm Account'
 
     auth_mail_send = partial(send_email, plain_text=plain_text, html_text=html_text,
                              from_addr=from_addr, password=password, smtp_server=smtp_server,

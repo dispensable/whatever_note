@@ -12,7 +12,7 @@ import '../shared/rxjs-operators';
 @Injectable()
 export class SingUpService {
   private userUrl = 'http://localhost:4200/api/user_qualification';  // URL to web API
-  private resendUrl = 'http://localhost:4200/api/confirm_token';
+  private resendUrl = 'http://localhost:4200/api/confirm_token/anystring';
   constructor (private http: Http) {}
 
   addUser (username: string, email: string, password: string): Observable<User> {

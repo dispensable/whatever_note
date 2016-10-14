@@ -10,7 +10,7 @@ import { SingInComponent } from './singin.component'
 import {SingInService} from "./singin.service";
 import {singInRouting, singInRoutingProviders} from "./singin.routing";
 import {CommonModule} from "@angular/common";
-import { NameUniqueService } from '../shared/name_unique.service';
+//import { NameEmailUniqueService } from '../shared/name_email_isunique.service';
 import { NotificationService } from '../shared/notification-component/notification.service';
 import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
 
@@ -25,6 +25,6 @@ import { SingInUpGuard } from '../shared/router-guards/singinup-guard.service';
     HttpModule,
     singInRouting
   ],
-  providers: [SingInService, NameUniqueService, singInRoutingProviders, NotificationService, SingInUpGuard],
+  providers: [SingInService, singInRoutingProviders, NotificationService, SingInUpGuard],
 })
 export class SingInModule { }

@@ -6,8 +6,8 @@ import { User }    from '../shared/user';
 import { RegisterError } from '../shared/register_error'
 import { SingUpService } from './singup.service';
 import { Router } from '@angular/router';
-import {NameUniqueService} from "../shared/name_unique.service";
-import { UserName } from '../shared/name_unique.service';
+import {NameEmailUniqueService} from "../shared/name_email_isunique.service";
+import { IsUnique } from '../shared/name_email_isunique.service';
 import { Observable }        from 'rxjs/Observable';
 import '../shared/rxjs-operators'
 
@@ -26,7 +26,7 @@ export class SingUpComponent {
   notification = new Notification(1, '', 0);
 
   user: User = new User('', '', '', '');
-  name: Observable<UserName[]>;
+  name: Observable<IsUnique[]>;
   registerError: RegisterError = new RegisterError('Username required', 'Email required',
     'Password required!', 'Repeat the password!');
   submitted: boolean = true;
@@ -40,14 +40,14 @@ export class SingUpComponent {
   password2_valid: boolean = false;
 
   constructor(private usersevice: SingUpService,
-              private is_name_exist: NameUniqueService,
+              private isNameEmailUnique: NameEmailUniqueService,
               private notify: NotificationService,
               private router: Router) { }
 
   // form verification logic
-  verification_unique() {
-    this.is_name_exist.search(this.user.username).subscribe(name => {
-      if (name.is_unique) {
+  verification_name_unique() {
+    this.isNameEmailUnique.search(this.user.username, 'name').subscribe(name => {
+      if (!name.nameUnique) {
         this.username_valid = false;
         this.registerError.username_error = 'The name has been used try another one. '
       }
@@ -77,6 +77,15 @@ export class SingUpComponent {
       this.email_valid = true;
       this.registerError.email_error = 'Email address input right.';
     }
+  }
+
+  verification_email_unique() {
+    this.isNameEmailUnique.search(this.user.email, 'email').subscribe(email => {
+      if (!email.emailUnique) {
+        this.email_valid = false;
+        this.registerError.email_error = 'This email has been registed, choose another one. '
+      }
+    }, error => {}); //TODO: replace real error handler.
   }
 
   verification_password() {
@@ -119,15 +128,22 @@ export class SingUpComponent {
         console.log(newuser);
         this.submitted = false;
         this.successed = true;
-        setTimeout(() => this.router.navigate(['/singin']), 5000);
+        // setTimeout(() => this.router.navigate(['/singin']), 5000);
       },
       error => { this.errorMessage = <any>error;
       });
   }
 
   resend() {
-    this.usersevice.resendConfirm(this.user.username, this.user.password).subscribe(
-      () => { this.hasresend = true; setTimeout(this.hasresend = false, 60000)},
+    this.usersevice.resendConfirm(this.user.username, this.user.email).subscribe(
+      () => {
+        this.hasresend = true;
+        setTimeout(this.hasresend = false, 60000);
+        this.notification.content = 'The confirmation has been resent, please check your email inbox or trashbox.';
+        this.notification.type = 1;
+        this.notification.timer = -1;
+        this.notify.pushNotification(this.notification);
+      },
       error => { this.errorMessage = <any>error;
         // notify user
         this.notification.content = this.errorMessage;
@@ -135,5 +151,9 @@ export class SingUpComponent {
         this.notification.timer = -1;
         this.notify.pushNotification(this.notification);}
     )
+  }
+
+  singin() {
+    this.router.navigate(['/singin']);
   }
 }

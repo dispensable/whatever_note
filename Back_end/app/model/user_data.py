@@ -52,8 +52,11 @@ def registe(user_json):
     return data
 
 
-def generate_auth_token(secret_key, expiration, username):
-    return jwt.encode({'exp': expiration, 'username': username}, secret_key)
+def generate_auth_token(secret_key, expiration, username, confirmed=True):
+    if confirmed:
+        return jwt.encode({'exp': expiration, 'username': username}, secret_key)
+    else:
+        return jwt.encode({'exp': expiration, 'username': username, 'confirmed': confirmed}, secret_key)
 
 
 def verify_auth_token(secret_key, token):
@@ -79,13 +82,17 @@ def is_name_exist(name):
     return True if user.find_one({'username': name}) else False
 
 
+def is_email_exist(email):
+    return True if user.find_one({'email': email}) else False
+
+
 def confirm_user(username: str):
     if not user.find_one({'username': username})['confirmed']:
         user.update({'username': username}, {"$set": {"confirmed": True}}, multi=False)
 
 
-def has_confirmed(username):
-    return user.find_one({'username': username})['confirmed']
+def has_confirmed(email):
+    return user.find_one({'email': email})['confirmed']
 
 if __name__ == "__main__":
     pass

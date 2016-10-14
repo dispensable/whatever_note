@@ -5,16 +5,18 @@ import { Injectable }     from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs';
 
-export class UserName {
-  is_unique: boolean
+export class IsUnique {
+  nameUnique: boolean;
+  emailUnique: boolean;
 }
 
 @Injectable()
-export class NameUniqueService {
+export class NameEmailUniqueService {
   constructor(private http: Http) {}
-  search(term: string): Observable<UserName> {
+
+  search(term: string, item: string): Observable<IsUnique> {
     return this.http
-               .get(`http://localhost:4200/api/name?name=${term}`)
+               .get(`http://localhost:4200/api/${item}?${item}=${term}`)
                .map(this.extractData).catch(this.handleError);
   }
 

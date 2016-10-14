@@ -27,11 +27,12 @@ export class SingInComponent {
     this.singinService.getToken(email, password).subscribe(
       // successed
       results => {
-        this.notification.type = 0;
-        this.notification.content = "Login Successed, turning to homepage...";
-        this.notification.timer = 1000;
-        this.notify.pushNotification(this.notification);
-        setTimeout(() => {this.router.navigate(['/']);}, 500);
+        // this.notification.type = 0;
+        // this.notification.content = "Login Successed, turning to homepage...";
+        // this.notification.timer = 1000;
+        // this.notify.pushNotification(this.notification);
+        // setTimeout(() => {this.router.navigate(['/']);}, 1000);
+        this.router.navigate(['/']);
       },
       // error
       error => {
