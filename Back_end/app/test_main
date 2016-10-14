@@ -57,11 +57,13 @@ class SingUpHandler(BasicHandler):
             # 发送确认邮件
             username = singup['username']
             email = singup['email']
-
+            # 生成确认链接
             token = generate_auth_token(EMAIL_SECRET_KEY, int(time.time()) + 36000, username)
             active_link = WEBSITE_ADDR + token.decode()
             print("ready to add tasks to celery.")
+            # 添加到邮件发送队列
             auth_mail_task.delay(username, active_link, email)
+            # 讲用户名和邮件地址发送到客户端
             self.write(singup)
         else:
             self.set_status(500, 'Sing up failed T_T')

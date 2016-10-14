@@ -15,6 +15,21 @@ db = connection.whatever_note
 user = db.user
 
 
+class Permission(object):
+    FOLLOW = 0x01
+    COMMENT = 0x02
+    WRITE_ARTICLES = 0x04
+    MODERATE_COMMENTS = 0x08
+    ADMINISTER = 0x80
+
+
+class Role:
+    unconfirmed_user = Permission.FOLLOW
+    user = Permission.FOLLOW | Permission.COMMENT | Permission.WRITE_ARTICLES
+    moderator = Permission.FOLLOW | Permission.COMMENT | Permission.WRITE_ARTICLES | Permission.MODERATE_COMMENTS
+    administrator = 0xff
+
+
 def generate_pwd_hash(password: bytes) -> bytes:
     """ generate password hash value : password must be encoded before hashing."""
     hashed = bcrypt.hashpw(password, bcrypt.gensalt())
@@ -37,9 +52,13 @@ def registe(user_json):
     if user.find_one({'email': user_data['email']}) or user.find_one({'username': user_data['username']}):
         return None
     else:
-        # 保存email和加密hash密码,返回新创建的用户,标记邮箱确认状态为未确认
+        # 标记邮箱确认状态为未确认
         user_data['confirmed'] = False
+        # 设置用户角色为默认角色
+        user_data['role'] = Role.unconfirmed_user
+        # 加密密码添加到数据库
         user_data['password'] = generate_pwd_hash(user_data['password'])
+        # 保存用户信息
         try:
             print("user registe data is: {0}".format(user_data))
             user.insert(user_data)
@@ -47,6 +66,7 @@ def registe(user_json):
         except Exception as e:
             print("During save register data {0} happened!".format(e))
 
+    # 查询以确认已成功保存 //TODO: 完善错误处理(数据保存失败的情况
     data = user.find_one({"email": user_data['email']}, {'_id': 0, 'confirmed': 0, 'password': 0})
 
     return data
@@ -88,7 +108,7 @@ def is_email_exist(email):
 
 def confirm_user(username: str):
     if not user.find_one({'username': username})['confirmed']:
-        user.update({'username': username}, {"$set": {"confirmed": True}}, multi=False)
+        user.update({'username': username}, {"$set": {"confirmed": True}, "$set": {"role": Role.user}}, multi=False)
 
 
 def has_confirmed(email):
