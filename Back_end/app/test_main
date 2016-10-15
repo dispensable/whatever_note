@@ -4,10 +4,14 @@ import time
 import tornado.ioloop
 import tornado.web
 
+# user handle
 from celery_mq.tasks import auth_mail_task
 from Back_end.app.model.user_data import registe, generate_auth_token, \
     verify_auth_token, verify_password, get_username_by_email, is_name_exist,\
     confirm_user, has_confirmed, is_email_exist
+
+# posts handle
+from .model import user_post
 
 SECRET_KEY = "TESTFORSECRETAUTH" #TODO: replace this with a random key move to config file
 EMAIL_SECRET_KEY = "EMAILSECRETKEY"
@@ -135,13 +139,79 @@ class ConfirmTokenHandler(BasicHandler):
             self.redirect(self.get_login_url())
 
 
+class PostsHandler(BasicHandler):
+    def get(self, *args, **kwargs):
+        page = self.get_argument('page')
+        max_per_page = self.get_argument('perpage')
+        if page >= 0 && max_per_page >= 0:
+            self.write(user_post.get_posts_collection((page - 1) * max_per_page, max_per_page))
+        else:
+            self.set_status(400, 'Wrong argument, page and max_per_page must be positive.')
+
+    def post(self, *args, **kwargs):
+        post_json = self.json_args
+        post = user_post.create_post(post_json['poster'], post_json['content'])
+
+        if post:
+            post['post_id'] = post['_id']._ObjectId__id.hex()
+
+            del post['_id']
+            del post['who_comments']
+            del post['comment_ids']
+
+            self.set_header('Location', self.reverse_url(SinglePostHandler) + post['post_id'])
+            self.set_status(201, 'Create success!')
+            self.write(post)
+        else:
+            self.set_status(500, 'Create failed.')
+
+
+class SinglePostHandler(BasicHandler):
+    def get(self, post_id):
+        post = user_post.get_post(post_id)
+        if post:
+            del post['_id']
+            del post['who_comments']
+            del post['comment_ids']
+            self.write(post)
+        else:
+            self.set_status(404)
+
+    def put(self, post_id):
+        new = self.json_args
+        user_post.edit_post(post_id, new['content'])
+
+
+class CommentsHandler(BasicHandler):
+    def get(self, *args, **kwargs):
+        pass
+
+    def post(self, *args, **kwargs):
+        pass
+
+
+class UserHandler(BasicHandler):
+    def get(self, *args, **kwargs):
+        pass
+
+
+class UserPostsHandler(BasicHandler):
+    def get(self, *args, **kwargs):
+        pass
+
+
 def make_app():
     return tornado.web.Application([
         (r'/', MainHandler),
         (r'/api/user_qualification', SingUpHandler),
         (r'/api/token', ApiAuthHandler),
         (r'/api/name$|/api/email', NameEmailUniqueHandler),
-        (r'/api/confirm_token/(.*)', ConfirmTokenHandler)
+        (r'/api/confirm_token/(.*)', ConfirmTokenHandler),
+        (r'/api/posts/', PostsHandler),
+        (r'/api/posts/([abcdef0123456789]*)', SinglePostHandler),
+        (r'/api/posts/([abcdef0123456789]*)/comments', CommentsHandler),
+        (r'/api/users/([abcdef0123456789]*)', UserHandler),
+        (r'/api/users/([abcdef0123456789]*)/posts', UserPostsHandler)
     ], login_url='http://localhost:4200/singin')
 
 

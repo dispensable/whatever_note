@@ -1,92 +1,83 @@
 #!/usr/bin/env python
 #  _*_coding:utf-8_*_
 
-from pymongo import MongoClient
+from .database_connection import open_database, str2object_id, get_db_connection
 import time
-import bson
-import binascii
+from bson.dbref import DBRef
 
 
-def get_db_connection():
-    try:
-        return MongoClient()
-    except Exception as e:
-        raise e
+def create_post(poster: str, content: str, date=time.time()):
+
+    with open_database('post') as post_collection:
+
+        post = {'poster': DBRef('user', str2object_id(poster)),
+                'content': content,
+                'who_comments': set([]),
+                'create_date': date,
+                'last_modify': date,
+                'comment_ids': []
+        }
+
+        post_id = post_collection.insert(post)
+        return post_collection.find_one({"_id": post_id})
 
 
-def get_collection(db_con):
-    try:
-        return db_con.whatever_note.post
-    except Exception as e:
-        raise e
+def add_comment(post_id: str, comment_id: str, user_id: str):
+    with open_database('post') as post_collection:
+        # 构造object id
+        post_id = str2object_id(post_id)
+        comment_id = str2object_id(comment_id)
 
-
-def create_post(poster: str, content: str, who_comments: set, date=time.time()):
-
-    connection = get_db_connection()
-    post_collection = get_collection(connection)
-
-    post = {'poster': poster,
-            'content': content,
-            'who_comments': set([]).union(who_comments),
-            'date': date,
-            'comment_ids': []
-    }
-
-    try:
-        post_collection.insert(post)
-    finally:
-        connection.close()
-
-
-def str2object_id(id: str):
-    return bson.objectid.ObjectId(binascii.unhexlify(id))
-
-
-def add_comment(post_id: str, comment_id: str):
-    connection = get_db_connection()
-    post_collection = get_collection(connection)
-    # 构造object id
-    post_id = str2object_id(post_id)
-    comment_id = str2object_id(comment_id)
-
-    try:
-        post_collection.update({"_id": post_id}, {"$addToSet": {"comment_ids": comment_id}})
-    finally:
-        connection.close()
+        post_collection.update({"_id": post_id}, {"$addToSet": {"comment_ids": DBRef('comments', str2object_id(comment_id))},
+                                                  "$addToSet": {"who_comments": DBRef('user', str2object_id(user_id))}})
 
 
 def get_post(post_id: str) -> dict:
-    connection = get_db_connection()
-    post_collection = get_collection(connection)
-    post_id = str2object_id(post_id)
+    """ 按照id获取单个文章 """
+    with open_database('post') as post_collection:
+        post_id = str2object_id(post_id)
 
-    try:
-        return post_collection.find_one({"_id": post_id}, {'_id': 0})
-    finally:
-        connection.close()
+        return post_collection.find_one({"_id": post_id})
+
+
+def get_posts_collection(skip_pages: int, posts_per_page: int):
+    result = {}
+    with open_database('post') as post_collection:
+        posts_gen = post_collection.find().skip(skip_pages).limit(posts_per_page)
+        if posts_gen:
+            try:
+                db_connection = get_db_connection().get_database('whatever')
+                for index, post in enumerate(posts_gen):
+                    post['poster'] = db_connection.dereference(post['poster'])['username']
+                    post['post_id'] = post['_id']._ObjectId__id.hex()
+                    post['comments_count'] = len(post['comment_ids'])
+
+                    result[index] = {
+                        'poster_name': post['poster'],
+                        'create_date': post['create_date'],
+                        'last_modify': post['last_modify'],
+                        'post_id': post['post_id'],
+                        'comments_count': post['comments_count']
+                    }
+            finally:
+                db_connection.close()
+    return result
+
 
 
 def edit_post(post_id: str, new_version: str):
-    # find post and modify
-    connection = get_db_connection()
-    post_collection = get_collection(connection)
-
-    try:
+    with open_database('post') as post_collection:
         obj_post_id = str2object_id(post_id)
         post_collection.update({'_id': obj_post_id},
-                               {"$set": {"content": new_version}, "$set": {"date": time.time()}},
+                               {"$set": {"content": new_version}, "$set": {"last_modify": time.time()}},
                                multi=False)
-    finally:
-        connection.close()
 
 
 def del_post(post_id: str):
-    connection = get_db_connection()
-    post_collection = get_collection(connection)
-
-    try:
+    with open_database('post') as post_collection:
         obj_post_id = str2object_id(post_id)
         post_collection.remove({'_id': obj_post_id})
-    finally:
-        connection.close()
+
+
+if __name__ == '__main__':
+    pass
