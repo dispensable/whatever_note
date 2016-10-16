@@ -6,11 +6,11 @@ import time
 from bson.dbref import DBRef
 
 
-def create_post(poster: str, content: str, date=time.time()):
+def create_post(post_by_id: str, content: str, date=time.time()):
 
     with open_database('post') as post_collection:
 
-        post = {'poster': DBRef('user', str2object_id(poster)),
+        post = {'post_by': DBRef('user', str2object_id(post_by_id)),
                 'content': content,
                 'who_comments': set([]),
                 'create_date': date,
@@ -48,12 +48,12 @@ def get_posts_collection(skip_pages: int, posts_per_page: int):
             try:
                 db_connection = get_db_connection().get_database('whatever')
                 for index, post in enumerate(posts_gen):
-                    post['poster'] = db_connection.dereference(post['poster'])['username']
+                    post['post_by'] = db_connection.dereference(post['post_by'])['username']
                     post['post_id'] = post['_id']._ObjectId__id.hex()
                     post['comments_count'] = len(post['comment_ids'])
 
                     result[index] = {
-                        'poster_name': post['poster'],
+                        'post_by_name': post['post_by'],
                         'create_date': post['create_date'],
                         'last_modify': post['last_modify'],
                         'post_id': post['post_id'],

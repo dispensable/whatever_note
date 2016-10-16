@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*-coding:utf-8-*-
 
-from .database_connection import open_database, str2object_id
+from .database_connection import open_database, str2object_id, open_db_con
 from .user_post import add_comment
 import time
 from bson.dbref import DBRef
 
 
-def create_comment(content: str, poster: str, post_id: str, create_date=time.time()):
+def create_comment(content: str, post_by: str, post_id: str, create_date=time.time()):
     with open_database('comments') as comments_collection:
         comment = {
             'content': content,
@@ -16,12 +16,12 @@ def create_comment(content: str, poster: str, post_id: str, create_date=time.tim
             'down': 0,
             'hold': 0,
             'create_date': create_date,
-            'post_by': DBRef('user', str2object_id(poster))
+            'post_by': DBRef('user', str2object_id(post_by))
         }
         comment_id = comments_collection.insert(comment)
 
         # 将评论添加到post下的相关引用位置
-        add_comment(post_id, comment_id, poster)
+        add_comment(post_id, comment_id, post_by)
 
         return comments_collection.find_one({'_id': comment_id})
 
@@ -53,3 +53,20 @@ def vote_comment(comment_id: str, point: int):
                 point = 1
 
             comments_collection.update({'_id': str2object_id(comment_id)}, {"$inc": {attitude: point}})
+
+
+def get_comments_by_post_id(post_id: str):
+    with open_database('comments') as comments_collection:
+        comments = comments_collection.find({'post_id': DBRef('post', str2object_id(post_id))})
+        if comments:
+            results = {}
+            with open_db_con(databasename='whatevernote') as db_con:
+                for index, comment in enumerate(comments):
+                    del comment['post_id']
+                    del comment['_id']
+                    comment['post_by'] = db_con.dereference(comment['post_by'])['username'] #TODO: 添加内容以构造个人资料链接
+
+                    results[index] = comment
+                return results
+        else:
+            return None

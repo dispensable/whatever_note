@@ -21,6 +21,24 @@ class open_database(object):
             self.db_con.close()
 
 
+class open_db_con(object):
+    def __init__(self, host='localhost', port=27017,
+                 document_class=dict, tz_aware=False, connect=True, databasename='whatever'):
+        self.mongo_con = MongoClient(host, port, document_class, tz_aware, connect)
+        self.db_connection = self.mongo_con.get_database(databasename)
+
+    def __enter__(self):
+        return self.db_connection
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            if exc_type is not None:
+                print("database error, get connetion error")
+                raise exc_type
+        finally:
+            self.mongo_con.close()
+
+
 def str2object_id(id: str):
     """ 将给定字符串转为object——id对象 """
     return bson.objectid.ObjectId(binascii.unhexlify(id))

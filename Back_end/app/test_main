@@ -11,7 +11,10 @@ from Back_end.app.model.user_data import registe, generate_auth_token, \
     confirm_user, has_confirmed, is_email_exist
 
 # posts handle
-from .model import user_post
+from model import user_post
+
+# comments handle
+from model import post_comments
 
 SECRET_KEY = "TESTFORSECRETAUTH" #TODO: replace this with a random key move to config file
 EMAIL_SECRET_KEY = "EMAILSECRETKEY"
@@ -143,14 +146,14 @@ class PostsHandler(BasicHandler):
     def get(self, *args, **kwargs):
         page = self.get_argument('page')
         max_per_page = self.get_argument('perpage')
-        if page >= 0 && max_per_page >= 0:
+        if page >= 0 and max_per_page >= 0:
             self.write(user_post.get_posts_collection((page - 1) * max_per_page, max_per_page))
         else:
             self.set_status(400, 'Wrong argument, page and max_per_page must be positive.')
 
     def post(self, *args, **kwargs):
         post_json = self.json_args
-        post = user_post.create_post(post_json['poster'], post_json['content'])
+        post = user_post.create_post(post_json['post_by'], post_json['content'])
 
         if post:
             post['post_id'] = post['_id']._ObjectId__id.hex()
@@ -183,11 +186,16 @@ class SinglePostHandler(BasicHandler):
 
 
 class CommentsHandler(BasicHandler):
-    def get(self, *args, **kwargs):
-        pass
+    def get(self, post_id):
+        comments = post_comments.get_comments_by_post_id(post_id)
+        if comments:
+            self.write(comments)
+        else:
+            self.set_status(404, "comments not found, may be there is no comments or network broken.")
 
-    def post(self, *args, **kwargs):
-        pass
+    def post(self, post_id):
+        comment = self.json_args
+        post_comments.create_comment(comment['content'], comment['post_by'], post_id)
 
 
 class UserHandler(BasicHandler):
