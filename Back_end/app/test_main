@@ -88,11 +88,11 @@ class ApiAuthHandler(BasicHandler):
 
         if user_data.verify_password(email, password):
             expiration = int(time.time() + 3600)
+            username = user_data.get_username_by_email(email)
+            userid = user_data.get_userid_by_email(email)
             token = user_data.generate_auth_token(SECRET_KEY, expiration,
-                                                  user_data.get_username_by_email(email),
-                                                  user_data.get_userid_by_email(email),
                                                   confirmed=user_data.has_confirmed(email))
-            self.write({"expiration": expiration, "token": token.decode()})
+            self.write({"expiration": expiration, "userid": userid, "username": username, "token": token.decode()})
         else:
             self.set_status(403, reason="login failed, please check your password or email.")
 

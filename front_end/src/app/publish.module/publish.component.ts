@@ -11,6 +11,22 @@ import { Router, ActivatedRoute, Params} from '@angular/router';
   templateUrl: './publish.component.html',
   styleUrls: ['./publish.component.css', '../shared/bootstrap.css']
 })
-export class PublishComponent implements OnInit{
+export class PublishComponent {
+  content: string = '';
 
+  constructor(
+    private publishService: BaseDataService,
+  ){ }
+
+  clear() {
+    this.content = '';
+  }
+
+  publish(post_by: string, content: string) {
+    let post: string = JSON.stringify({post_by, content});
+    this.publishService.postData(Api.getPosts(), post).subscribe(
+      results => {},
+      error => {}
+    );
+  }
 }

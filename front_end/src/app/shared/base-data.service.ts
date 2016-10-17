@@ -19,17 +19,27 @@ export class BaseDataService {
   constructor (private http: Http) {
   }
 
-  getData(apiUrl: string) {
-    let token = localStorage.getItem('token');
+  token = localStorage.getItem('token');
 
-    if (!token) {
+  getData(apiUrl: string) {
+
+    if (!this.token) {
       return;
     }
 
-    let headers = new Headers({'Access-token': token});
+    let headers = new Headers({'Access-token': this.token});
     let options = new RequestOptions({ headers: headers });
 
     return this.http.get(apiUrl, options)
+                  .map(this.extractData)
+                  .catch(this.handleError);
+  }
+
+  postData(apiUrl: string, body: string) {
+    let headers = new Headers({ 'Content-Type': 'application/json', 'Access-token': this.token });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.post(apiUrl, body, options)
                   .map(this.extractData)
                   .catch(this.handleError);
   }

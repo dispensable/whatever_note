@@ -29,8 +29,6 @@ export class SingInComponent {
     this.singinService.getToken(email, password).subscribe(
       // successed
       results => {
-        let payload = this.jwt.decodeToken(localStorage.getItem('token'));
-        localStorage.setItem('payload', payload);
         this.router.navigate(['/']);
       },
       // error

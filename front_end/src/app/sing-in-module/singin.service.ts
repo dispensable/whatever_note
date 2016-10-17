@@ -37,7 +37,9 @@ export class SingInService {
   private extractData(res: Response) {
     let body = res.json();
     localStorage.setItem("expiration", body.expiration);
-    localStorage.setItem('token', body.token);
+    localStorage.setItem("token", body.token);
+    localStorage.setItem("userid", body.userid);
+    localStorage.setItem("username", body.username);
     return body;
   }
 
