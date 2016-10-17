@@ -1,18 +1,10 @@
-# _*_coding:utf-8_*_
 #!/usr/bin/env python
+#  _*_coding:utf-8_*_
 
-from pymongo import MongoClient
 import json
 import jwt
 import bcrypt
-
-
-# 建立数据库连接
-connection = MongoClient()
-# 取得数据库
-db = connection.whatever_note
-# 取得用户集合
-user = db.user
+from .database_connection import open_database, str2object_id
 
 
 class Permission(object):
@@ -42,41 +34,42 @@ def check_password(password: bytes, hashed: bytes) -> bool:
 
 
 def registe(user_json):
-    # 将jason转化为字典
-    user_data = json.loads(user_json)
-    user_data['password'] = user_data['password'].encode()
-    print("**** get data from angular ******")
-    print(user_data)
+    with open_database('user') as user:
+        # 将jason转化为字典
+        user_data = json.loads(user_json)
+        user_data['password'] = user_data['password'].encode()
+        print("**** get data from angular ******")
+        print(user_data)
 
-    # 查找是否存在相同email的用户
-    if user.find_one({'email': user_data['email']}) or user.find_one({'username': user_data['username']}):
-        return None
-    else:
-        # 标记邮箱确认状态为未确认
-        user_data['confirmed'] = False
-        # 设置用户角色为默认角色
-        user_data['role'] = Role.unconfirmed_user
-        # 加密密码添加到数据库
-        user_data['password'] = generate_pwd_hash(user_data['password'])
-        # 保存用户信息
-        try:
-            print("user registe data is: {0}".format(user_data))
-            user.insert(user_data)
-            print("success!")
-        except Exception as e:
-            print("During save register data {0} happened!".format(e))
+        # 查找是否存在相同email的用户
+        if user.find_one({'email': user_data['email']}) or user.find_one({'username': user_data['username']}):
+            return None
+        else:
+            # 标记邮箱确认状态为未确认
+            user_data['confirmed'] = False
+            # 设置用户角色为默认角色
+            user_data['role'] = Role.unconfirmed_user
+            # 加密密码添加到数据库
+            user_data['password'] = generate_pwd_hash(user_data['password'])
+            # 保存用户信息
+            try:
+                print("user registe data is: {0}".format(user_data))
+                user.insert(user_data)
+                print("success!")
+            except Exception as e:
+                print("During save register data {0} happened!".format(e))
 
-    # 查询以确认已成功保存 //TODO: 完善错误处理(数据保存失败的情况
-    data = user.find_one({"email": user_data['email']}, {'_id': 0, 'confirmed': 0, 'password': 0})
+        # 查询以确认已成功保存 //TODO: 完善错误处理(数据保存失败的情况
+        data = user.find_one({"email": user_data['email']}, {'_id': 0, 'confirmed': 0, 'password': 0})
 
-    return data
+        return data
 
 
-def generate_auth_token(secret_key, expiration, username, confirmed=True):
+def generate_auth_token(secret_key, expiration, username, userid, confirmed=True):
     if confirmed:
-        return jwt.encode({'exp': expiration, 'username': username}, secret_key)
+        return jwt.encode({'exp': expiration, 'username': username, 'userid': userid}, secret_key)
     else:
-        return jwt.encode({'exp': expiration, 'username': username, 'confirmed': confirmed}, secret_key)
+        return jwt.encode({'exp': expiration, 'username': username, 'userid': userid, 'confirmed': confirmed}, secret_key)
 
 
 def verify_auth_token(secret_key, token):
@@ -88,31 +81,47 @@ def verify_auth_token(secret_key, token):
 
 
 def verify_password(email, password):
-    user_data = user.find_one({'email': email})
-    if user_data and password:
-        hashed = user_data['password']
-        return check_password(password.encode(), hashed)
+    with open_database('user') as user:
+        user_data = user.find_one({'email': email})
+        if user_data and password:
+            hashed = user_data['password']
+            return check_password(password.encode(), hashed)
 
 
 def get_username_by_email(email):
-    return user.find_one({'email': email}, {'username': 1})['username']
+    with open_database('user') as user:
+        return user.find_one({'email': email}, {'username': 1})['username']
 
 
 def is_name_exist(name):
-    return True if user.find_one({'username': name}) else False
+    with open_database('user') as user:
+        return True if user.find_one({'username': name}) else False
 
 
 def is_email_exist(email):
-    return True if user.find_one({'email': email}) else False
+    with open_database('user') as user:
+        return True if user.find_one({'email': email}) else False
 
 
 def confirm_user(username: str):
-    if not user.find_one({'username': username})['confirmed']:
-        user.update({'username': username}, {"$set": {"confirmed": True}, "$set": {"role": Role.user}}, multi=False)
+    with open_database('user') as user:
+        if not user.find_one({'username': username})['confirmed']:
+            user.update({'username': username}, {"$set": {"confirmed": True, "role": Role.user}}, multi=False)
 
 
 def has_confirmed(email):
-    return user.find_one({'email': email})['confirmed']
+    with open_database('user') as user:
+        return user.find_one({'email': email})['confirmed']
+
+
+def get_user_by_id(user_id: str) -> dict:
+    with open_database('user') as user:
+        return user.find_one({"_id": str2object_id(user_id)})
+
+
+def get_userid_by_email(email: str) -> dict:
+    with open_database('user') as user:
+        return user.find_one({'email': email})['_id']._ObjectId__id.hex()
 
 if __name__ == "__main__":
     pass

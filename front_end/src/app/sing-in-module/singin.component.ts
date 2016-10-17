@@ -4,8 +4,9 @@
 import { Component } from '@angular/core';
 import { SingInService } from './singin.service';
 import { Router } from '@angular/router';
-import {NotificationService} from "../shared/notification-component/notification.service";
+import { NotificationService } from "../shared/notification-component/notification.service";
 import { Notification } from '../shared/notification-component/notification';
+import { JwtHelper } from "angular2-jwt";
 
 @Component({
   selector: '<singin>',
@@ -18,6 +19,7 @@ export class SingInComponent {
     private singinService: SingInService,
     private router: Router,
     private notify: NotificationService,
+    private jwt: JwtHelper,
   ){ }
 
   errorMessage: string;
@@ -27,11 +29,8 @@ export class SingInComponent {
     this.singinService.getToken(email, password).subscribe(
       // successed
       results => {
-        // this.notification.type = 0;
-        // this.notification.content = "Login Successed, turning to homepage...";
-        // this.notification.timer = 1000;
-        // this.notify.pushNotification(this.notification);
-        // setTimeout(() => {this.router.navigate(['/']);}, 1000);
+        let payload = this.jwt.decodeToken(localStorage.getItem('token'));
+        localStorage.setItem('payload', payload);
         this.router.navigate(['/']);
       },
       // error

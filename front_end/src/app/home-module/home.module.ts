@@ -11,6 +11,8 @@ import { AuthGuard } from '../shared/router-guards/auth-guard.service';
 
 import {NotificationService} from "../shared/notification-component/notification.service";
 
+import { HomeTimeLineService } from "./hometimeline.service";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -19,8 +21,10 @@ import {NotificationService} from "../shared/notification-component/notification
   imports: [
     FormsModule,
     HttpModule,
+    CommonModule,
     routing
   ],
-  providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper}, AuthGuard, NotificationService],
+  providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper},
+    AuthGuard, NotificationService, HomeTimeLineService],
 })
 export class HomeModule { }

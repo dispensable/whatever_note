@@ -5,7 +5,7 @@ import binascii
 
 class open_database(object):
     def __init__(self, collection_name, host='localhost', port=27017,
-                 document_class=dict, tz_aware=False, connect=True, databasename='whatever'):
+                 document_class=dict, tz_aware=False, connect=True, databasename='whatever_note'):
         self.db_con = MongoClient(host, port, document_class, tz_aware, connect)
         self.collection = self.db_con.get_database(databasename).get_collection(collection_name)
 
@@ -23,7 +23,7 @@ class open_database(object):
 
 class open_db_con(object):
     def __init__(self, host='localhost', port=27017,
-                 document_class=dict, tz_aware=False, connect=True, databasename='whatever'):
+                 document_class=dict, tz_aware=False, connect=True, databasename='whatever_note'):
         self.mongo_con = MongoClient(host, port, document_class, tz_aware, connect)
         self.db_connection = self.mongo_con.get_database(databasename)
 
@@ -51,7 +51,7 @@ def get_db_connection(host='localhost', port=27017, document_class=dict, tz_awar
         raise e
 
 
-def get_collection(db_con, collection_name, databasename='whatevernote'):
+def get_collection(db_con, collection_name, databasename='whatever_note'):
     try:
         return db_con.get_database(databasename).get_collection(collection_name)
     except Exception as e:

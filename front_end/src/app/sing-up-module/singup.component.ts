@@ -6,7 +6,7 @@ import { User }    from '../shared/user';
 import { RegisterError } from '../shared/register_error'
 import { SingUpService } from './singup.service';
 import { Router } from '@angular/router';
-import {NameEmailUniqueService} from "../shared/name_email_isunique.service";
+import { NameEmailUniqueService } from "../shared/name_email_isunique.service";
 import { IsUnique } from '../shared/name_email_isunique.service';
 import { Observable }        from 'rxjs/Observable';
 import '../shared/rxjs-operators'

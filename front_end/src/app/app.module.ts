@@ -7,6 +7,7 @@ import { SingUpModule } from './sing-up-module/singup.module'
 import { routing, appRoutingProviders }  from './app.routing';
 import { HomeModule } from './home-module/home.module';
 import { SingInModule } from './sing-in-module/singin.module';
+import { UserProfileModule } from './user-module/user-profile.module';
 
 import { NotificationComponent } from './shared/notification-component/notification.component';
 import { AuthService } from './shared/auth.service';
@@ -27,6 +28,7 @@ import { DropdownModule } from 'ng2-dropdown';
     HomeModule,
     SingInModule,
     DropdownModule,
+    UserProfileModule,
     routing
   ],
   declarations: [

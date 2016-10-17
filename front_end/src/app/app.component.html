@@ -19,6 +19,7 @@
         <div class="dropdown" dropdown>
               <a dropdown-open class="my-dropdown">Account</a>
               <ul class="dropdown-menu">
+                <li><a *ngIf="isLogin()" routerLink="/profile/{{userid}}" routerLinkActive="active">Profile</a></li>
                 <li><a *ngIf="!isLogin()" routerLink="/singup" routerLinkActive="active">SingUp</a></li>
                 <li><a *ngIf="!isLogin()" routerLink="/singin" routerLinkActive="active">SingIn</a></li>
                 <li><a *ngIf="isLogin()" (click)="logOut()" >SingOut</a></li>
