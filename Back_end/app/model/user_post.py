@@ -6,10 +6,11 @@ import time
 from bson.dbref import DBRef
 
 
-def create_post(post_by_id: str, content: str, date=time.time()):
+def create_post(post_by_id: str, post_head: str, content: str, date=time.time()):
     with open_database('post') as post_collection:
 
-        post = {'post_by': DBRef('user', str2object_id(post_by_id)),
+        post = {'post_head': post_head,
+                'post_by': DBRef('user', str2object_id(post_by_id)),
                 'content': content,
                 'who_comments': [],
                 'create_date': date,

@@ -2,9 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Post</title>
 </head>
 <body>
+
+    <!--private comments_count: number,-->
+    <!--private content: string,-->
+    <!--private create_date: number,-->
+    <!--private last_modify: number,-->
+    <!--private post_by_name: string, -->
+    <!--private post_by_id: string,-->
+    <!--private post_id: string,-->
+
+  <div class="article">
+
+    <h1>{{post.post_name}}</h1>
+
+    <div class="article-info">
+      Posted by: {{post.post_by_name}} at {{post.create_date}}
+      with {{post.comments_count}} comments | Modified at: {{post.last_modify}}
+    </div>
+
+    <hr>
+    <br>
+
+    <div class="article-content">
+      {{post.content}}
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="comments">
+      <!--comments component-->
+  </div>
 
 </body>
 </html>

@@ -1,5 +1,25 @@
 <h1>Publish New Post</h1>
-<textarea [(ngModel)]="content"></textarea>
+<hr>
+
+<div>Title:
+  <input [(ngModel)]="head" required>
+</div>
+
+<div>
+  Content:
+  <textarea class="mce-textbox" [(ngModel)]="content" required></textarea>
+</div>
+
+<br>
+<button type="submit" (click)="publish()">Publish</button>
+<button type="reset" (click)="clear(); content='';">Reset</button>
+<hr>
+Preview:
+<div><b>{{head}}</b></div>
 <div>{{content}}</div>
-<button type="reset" (click)="clear()">Publish</button>
-<button type="submit" (click)="publish()">Reset</button>
+<hr>
+<div Markdown>
+  {{content}}
+</div>
+
+

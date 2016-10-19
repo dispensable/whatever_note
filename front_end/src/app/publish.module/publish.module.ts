@@ -12,6 +12,8 @@ import { PublishComponent } from "./publish.component";
 import { BaseDataService } from "../shared/base-data.service";
 
 import { publishRouting, publishRoutingProviders } from "./publish.routing";
+// markdown support
+import { MarkdownModule } from 'angular2-markdown';
 
 @NgModule({
   imports: [
@@ -19,6 +21,8 @@ import { publishRouting, publishRoutingProviders } from "./publish.routing";
     CommonModule,
     FormsModule,
     HttpModule,
+    MarkdownModule,
+    BrowserModule,
     publishRouting
   ],
   declarations: [

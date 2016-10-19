@@ -13,16 +13,14 @@ import '../shared/rxjs-operators';
 @Injectable()
 export class HomeTimeLineService {
 
-  private userUrl = 'http://localhost:4200/api/posts?page=1&perpage=10';  // URL to web API
-
   constructor (private http: Http) {}
 
-  getPosts() {
+  getPosts(pageUrl: string) {
     let token = localStorage.getItem('token');
     let headers = new Headers({'Access-token': token});
     let options = new RequestOptions({ headers: headers });
 
-    return this.http.get(this.userUrl, options)
+    return this.http.get(pageUrl, options)
                   .map(this.extractData)
                   .catch(this.handleError);
   }

@@ -16,7 +16,7 @@ from model import post_comments
 
 SECRET_KEY = "TESTFORSECRETAUTH" #TODO: replace this with a random key move to config file
 EMAIL_SECRET_KEY = "EMAILSECRETKEY"
-WEBSITE_ADDR = 'http://localhost:8888/api/confirm_token/'
+WEBSITE_ADDR = 'http://localhost:4200'
 
 
 class BasicHandler(tornado.web.RequestHandler):
@@ -67,7 +67,7 @@ class SingUpHandler(BasicHandler):
             email = singup['email']
             # 生成确认链接
             token = user_data.generate_auth_token(EMAIL_SECRET_KEY, int(time.time()) + 36000, username)
-            active_link = WEBSITE_ADDR + token.decode()
+            active_link = WEBSITE_ADDR.join(self.reverse_url('confirm_token')).join(token.decode())
             print("ready to add tasks to celery.")
             # 添加到邮件发送队列
             tasks.auth_mail_task.delay(username, active_link, email)
@@ -137,7 +137,7 @@ class ConfirmTokenHandler(BasicHandler):
         print(resend_info)
         if not user_data.has_confirmed(resend_info['email']):
             token = user_data.generate_auth_token(EMAIL_SECRET_KEY, int(time.time()) + 36000, resend_info['username'])
-            active_link = WEBSITE_ADDR + token.decode()
+            active_link = WEBSITE_ADDR.join(self.reverse_url('confirm_token')).join(token.decode())
             user_data.auth_mail_task.delay(resend_info['username'], active_link, resend_info['email'])
             self.write('Your confirm email has been sent, check your inbox or trash box to confirm.')
         else:
@@ -150,17 +150,43 @@ class PostsHandler(BasicHandler):
         page = int(self.get_argument('page'))
         max_per_page = int(self.get_argument('perpage'))
         if page >= 0 and max_per_page >= 0:
-            self.write(user_post.get_posts_collection((page - 1) * max_per_page, max_per_page))
+            posts = user_post.get_posts_collection((page - 1) * max_per_page, max_per_page)
+
+            # 构造上一页,下一页链接
+            # 如果posts存在的话
+            if posts:
+                # 如果不是第一页(第一页没有上一页)
+                if page > 1:
+                    pre_link = WEBSITE_ADDR + self.reverse_url('postshandler') \
+                                                 + ("?page={0}&perpage={1}".format((page - 1), max_per_page))
+                    posts['pre_page'] = pre_link
+                else:
+                    # 如果是第一页,链接为空
+                    posts['pre_page'] = ''
+
+                # 如果返回的长度>=每页要求的内容的数量+1个prepage参数的数量 视为有下一页
+                print(len(posts))
+                if len(posts) >= max_per_page + 1:
+                    next_link = WEBSITE_ADDR + self.reverse_url('postshandler') \
+                                + ("?page={0}&perpage={1}".format((page + 1), max_per_page))
+                    posts['next_page'] = next_link
+                else:
+                    posts['next_page'] = ''
+
+                self.write(posts)
+            else:
+                self.set_status(404, "Can not found your page.")
         else:
             self.set_status(400, 'Wrong argument, page and max_per_page must be positive.')
 
     def post(self, *args, **kwargs):
         post_json = self.json_args
-        post = user_post.create_post(post_json['post_by'], post_json['content'])
+        post = user_post.create_post(post_json['post_by'], post_json['post_head'], post_json['content'])
 
         if post:
             post['post_id'] = post['_id']._ObjectId__id.hex()
 
+            # 删除不需要的数据
             del post['_id']
             del post['who_comments']
             del post['comment_ids']
@@ -233,12 +259,12 @@ class UserPostsHandler(BasicHandler):
 
 def make_app():
     return tornado.web.Application([
-        (r'/', MainHandler),
+        tornado.web.url(r'/', MainHandler),
         (r'/api/user_qualification', SingUpHandler),
         (r'/api/token', ApiAuthHandler),
         (r'/api/name|/api/email', NameEmailUniqueHandler),
-        (r'/api/confirm_token/(.*)', ConfirmTokenHandler),
-        (r'/api/posts', PostsHandler),
+        tornado.web.url(r'/api/confirm_token/(.*)', ConfirmTokenHandler, name="confirm_token"),
+        tornado.web.url(r'/api/posts', PostsHandler, name="postshandler"),
         (r'/api/posts/([abcdef0123456789]*)', SinglePostHandler),
         (r'/api/posts/([abcdef0123456789]*)/comments', CommentsHandler),
         (r'/api/users/([abcdef0123456789]*)', UserHandler),

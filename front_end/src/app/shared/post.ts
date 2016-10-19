@@ -9,6 +9,6 @@ export class Post {
     private last_modify: number,
     private post_by_name: string,
     private post_by_id: string,
-    private post_id: string
+    private post_id: string,
   ){ }
 }

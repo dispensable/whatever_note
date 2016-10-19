@@ -2,7 +2,6 @@
  * Created by dispensable on 2016/10/9.
  */
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HomeComponent } from './home.component';
 import { routing, homeRoutingProviders }  from './home.routing';
@@ -19,7 +18,6 @@ import {CommonModule} from "@angular/common";
     HomeComponent
   ],
   imports: [
-    FormsModule,
     HttpModule,
     CommonModule,
     routing
