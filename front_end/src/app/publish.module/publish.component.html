@@ -11,15 +11,18 @@
 </div>
 
 <br>
-<button type="submit" (click)="publish()">Publish</button>
-<button type="reset" (click)="clear(); content='';">Reset</button>
+<button class="btn-default" type="submit" (click)="publish()">Publish</button>
+<button class="btn-danger" type="reset" (click)="clear(); content='';">Reset</button>
 <hr>
 Preview:
 <div><b>{{head}}</b></div>
-<div>{{content}}</div>
-<hr>
-<div Markdown>
-  {{content}}
+
+<div>
+  <pre>
+    {{content}}
+  </pre>
 </div>
 
+Markdown preview:
+<div [innerHTML]="content|MarkdownToHtml"></div>
 

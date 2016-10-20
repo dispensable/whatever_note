@@ -10,5 +10,7 @@ export class Post {
     private post_by_name: string,
     private post_by_id: string,
     private post_id: string,
+    private participants_num: number,
+    private post_head: string
   ){ }
 }

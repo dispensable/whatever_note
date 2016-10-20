@@ -4,7 +4,7 @@
 import json
 import jwt
 import bcrypt
-from .database_connection import open_database, str2object_id
+from .database_connection import open_database, str2object_id, open_db_con
 
 
 class Permission(object):
@@ -122,6 +122,17 @@ def get_user_by_id(user_id: str) -> dict:
 def get_userid_by_email(email: str) -> dict:
     with open_database('user') as user:
         return user.find_one({'email': email})['_id']._ObjectId__id.hex()
+
+
+def get_user_by_objid(objid):
+    with open_database('user') as user:
+        return user.find_one({'_id': objid})
+
+
+def get_user_by_dbref(dbref):
+    with open_db_con() as db_con:
+        return db_con.dereference(dbref)
+
 
 if __name__ == "__main__":
     pass

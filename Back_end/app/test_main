@@ -203,12 +203,27 @@ class SinglePostHandler(BasicHandler):
     def get(self, post_id):
         post = user_post.get_post(post_id)
         if post:
+            # comments_count: number,
+            post['comments_count'] = len(post['comment_ids'])
+            # content: string, 元数据中存在
+            # create_date: number,存在
+            # last_modify: number,存在
+            # post_id: string,存在
+            post['post_id'] = post['_id']._ObjectId__id.hex()
+            # post_by_name: string,
+            post['post_by_name'] = user_data.get_user_by_dbref(post['post_by'])['username']
+            # post_by_id: string,
+            # 修改DBref为字符串
+            post['post_by_id'] = post['post_by'].id._ObjectId__id.hex()
+            # post_head: string
+            # participants_num: number
+            post['participants_num'] = len(post['who_comments'])
+
+            # 去除冗余数据
             del post['_id']
             del post['who_comments']
             del post['comment_ids']
-
-            # 修改DBref为字符串
-            post['post_by'] = post['post_by'].id._ObjectId__id.hex()
+            del post['post_by']
 
             self.write(post)
         else:
@@ -216,7 +231,7 @@ class SinglePostHandler(BasicHandler):
 
     def put(self, post_id):
         new = self.json_args
-        user_post.edit_post(post_id, new['content'])
+        user_post.edit_post(post_id, new['post_head'], new['content'])
 
 
 class CommentsHandler(BasicHandler):

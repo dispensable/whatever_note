@@ -16,7 +16,7 @@
 
   <div class="article">
 
-    <h1>{{post.post_name}}</h1>
+    <h1>{{post.post_head || 'No head'}}</h1>
 
     <div class="article-info">
       Posted by: {{post.post_by_name}} at {{post.create_date}}
@@ -27,8 +27,12 @@
     <br>
 
     <div class="article-content">
-      {{post.content}}
+      <pre>
+        {{post.content}}
+      </pre>
     </div>
+
+    <hr>
   </div>
 
   <hr>
@@ -36,6 +40,5 @@
   <div class="comments">
       <!--comments component-->
   </div>
-
 </body>
 </html>

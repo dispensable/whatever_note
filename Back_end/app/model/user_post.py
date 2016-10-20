@@ -67,11 +67,11 @@ def get_posts_collection(skip_pages: int, posts_per_page: int):
     return result
 
 
-def edit_post(post_id: str, new_version: str):
+def edit_post(post_id: str, new_head: str, new_version: str):
     with open_database('post') as post_collection:
         obj_post_id = str2object_id(post_id)
         post_collection.update({'_id': obj_post_id},
-                               {"$set": {"content": new_version, "last_modify": time.time()}},
+                               {"$set": {"content": new_version, "post_head": new_head, "last_modify": time.time()}},
                                multi=False)
         print(post_collection.find_one({'_id': obj_post_id}))
 

@@ -8,7 +8,8 @@ import { routing, appRoutingProviders }  from './app.routing';
 import { HomeModule } from './home-module/home.module';
 import { SingInModule } from './sing-in-module/singin.module';
 import { UserProfileModule } from './user-module/user-profile.module';
-import { PublishModule } from './publish.module/publish.module'
+import { PublishModule } from './publish.module/publish.module';
+import { PostModule } from './post-module/post.module';
 
 import { NotificationComponent } from './shared/notification-component/notification.component';
 import { AuthService } from './shared/auth.service';
@@ -31,11 +32,12 @@ import { DropdownModule } from 'ng2-dropdown';
     DropdownModule,
     UserProfileModule,
     PublishModule,
+    PostModule,
     routing
   ],
   declarations: [
     AppComponent,
-    NotificationComponent
+    NotificationComponent,
   ],
   providers: [ appRoutingProviders, AUTH_PROVIDERS, {provide: JwtHelper, useClass: JwtHelper}, AuthService ],
   bootstrap: [AppComponent]

@@ -1,0 +1,19 @@
+<div class="col-lg-offset-2">
+  <button class="btn-default" (click)="preview()"> Preview </button>
+  <button class="btn-default" (click)="save()"> Save </button>
+  <button class="btn-danger" (click)="clear()"> Reset </button>
+</div>
+
+<div class="col-lg-9" [(ngModel)]="content">
+  <textarea cols="10" rows="10"></textarea>
+</div>
+
+<div>
+  <pre>
+    {{content}}
+  </pre>
+</div>
+
+<div>
+  {{contentHtml}}
+</div>
