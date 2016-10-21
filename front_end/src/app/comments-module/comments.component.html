@@ -1,0 +1,26 @@
+<div>COMMENTS:
+  <div class="commentBox">
+    <textarea rows="5" cols="80" placeholder="Please input your comment. DON'T LEAVE REAL INFORMATION IF YOU CAN'T BE SURE."
+              required #newComment></textarea>
+  </div>
+  <button type="submit" (click)="sendComment(newComment.value); newComment.value=''">Submit</button>
+</div>
+
+<hr>
+
+<div *ngFor="let comment of comments">
+  <hr>
+  Comment by <a routerLink="/profile/{{ comment.post_by_id }}">{{ comment.post_by }}</a>
+  at {{comment.create_date * 1000 | date:'medium'}}:
+  <div [innerHtml]="comment.content | MarkdownToHtml"></div>
+  <a (click)="vote(comment.comment_id, 1)"> up({{comment.up}})</a>
+  |<a (click)="vote(comment.comment_id, -1)"> down({{comment.down}})</a>
+  |<a (click)="vote(comment.comment_id, 0)"> hold({{comment.hold}})</a>
+  |<a (click)="replyContent='@'+ comment.post_by + ' '; reply(comment.comment_id)"> reply</a>
+  |<a (click)="deleteComment(comment.comment_id)"> delete</a>
+
+  <div *ngIf="isRplied[comment.comment_id]">
+    <textarea rows="5" cols="80" placeholder="write your reply" [(ngModel)]="replyContent"></textarea>
+    <button type="button" (click)="sendComment(replyContent); replyContent='';">Send</button>
+  </div>
+</div>

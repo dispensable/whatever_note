@@ -42,4 +42,8 @@ export class Api {
   static getUserPosts(userid: string) {
     return `http://localhost:4200/api/users/${userid}/posts`;
   }
+
+  static getComment(post_id: string, comment_id: string) {
+    return `http://localhost:4200/api/posts/${post_id}/comments/${comment_id}`
+  }
 }

@@ -65,9 +65,9 @@ def registe(user_json):
         return data
 
 
-def generate_auth_token(secret_key, expiration, confirmed=True):
+def generate_auth_token(secret_key, expiration, userid, confirmed=True):
     if confirmed:
-        return jwt.encode({'exp': expiration}, secret_key)
+        return jwt.encode({'exp': expiration, 'userid': userid}, secret_key)
     else:
         return jwt.encode({'exp': expiration, 'confirmed': confirmed}, secret_key)
 

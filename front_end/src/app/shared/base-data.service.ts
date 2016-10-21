@@ -44,6 +44,24 @@ export class BaseDataService {
                   .catch(this.handleError);
   }
 
+  delData(apiUrl: string) {
+    let headers = new Headers({ 'Content-Type': 'application/json', 'Access-token': this.token });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.delete(apiUrl, options)
+                  .map(this.extractData)
+                  .catch(this.handleError);
+  }
+
+  putData(apiUrl: string, body: string) {
+    let headers = new Headers({ 'Content-Type': 'application/json', 'Access-token': this.token });
+    let options = new RequestOptions({ headers: headers });
+
+    return this.http.put(apiUrl, body, options)
+                  .map(this.extractData)
+                  .catch(this.handleError);
+  }
+
   private extractData(res: Response) {
     let body = res.json();
     return body;

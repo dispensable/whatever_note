@@ -17,6 +17,8 @@ import { BaseDataService } from "../shared/base-data.service";
 import { postRouting, postRoutingProviders } from "./post.routing";
 import { MarkdownModule } from '../shared/markdown.module/markdown.module';
 
+import { CommentsModule } from '../comments-module/comments.module';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -25,6 +27,7 @@ import { MarkdownModule } from '../shared/markdown.module/markdown.module';
     HttpModule,
     BrowserModule,
     MarkdownModule,
+    CommentsModule,
     postRouting
   ],
   declarations: [

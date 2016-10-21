@@ -19,12 +19,12 @@
     <h1>{{post.post_head || 'No head'}}</h1>
 
     <div class="article-info">
-      Posted by: {{post.post_by_name}} at {{post.create_date | date:'medium'}}
-      with {{post.comments_count}} comments | Modified at: {{post.last_modify | date:'medium'}}
+      Posted by: {{post.post_by_name}} at {{post.create_date * 1000 | date:'medium'}}
+      with {{post.comments_count}} comments |
+      <span *ngIf="post.create_date !== post.last_modify"> Modified at: {{post.last_modify * 1000 | date:'medium'}}</span>
     </div>
 
     <hr>
-    <br>
 
     <div class="article-content">
       <div [innerHTML]="post.content | MarkdownToHtml"></div>
@@ -36,7 +36,7 @@
   <hr>
 
   <div class="comments">
-      <!--comments component-->
+      <comments></comments>
   </div>
 </body>
 </html>

@@ -27,14 +27,15 @@ class BasicHandler(tornado.web.RequestHandler):
         token = self.request.headers["Access-token"]
         if user_data.verify_auth_token(SECRET_KEY, token):
             pay_load = user_data.verify_auth_token(SECRET_KEY, token)
-            return pay_load['username']
+            return pay_load['userid']
         else:
             return None
 
     def prepare(self):
         """自动处理json类型"""
         try:
-            if self.request.headers["Content-Type"].startswith("application/json"):
+            if self.request.headers["Content-Type"].startswith("application/json") and \
+                    self.request.body != b'':
                 self.json_args = json.loads(self.request.body.decode())
             else:
                 self.json_args = None
@@ -90,7 +91,7 @@ class ApiAuthHandler(BasicHandler):
             expiration = int(time.time() + 3600)
             username = user_data.get_username_by_email(email)
             userid = user_data.get_userid_by_email(email)
-            token = user_data.generate_auth_token(SECRET_KEY, expiration,
+            token = user_data.generate_auth_token(SECRET_KEY, expiration, userid,
                                                   confirmed=user_data.has_confirmed(email))
             self.write({"expiration": expiration, "userid": userid, "username": username, "token": token.decode()})
         else:
@@ -203,28 +204,6 @@ class SinglePostHandler(BasicHandler):
     def get(self, post_id):
         post = user_post.get_post(post_id)
         if post:
-            # comments_count: number,
-            post['comments_count'] = len(post['comment_ids'])
-            # content: string, 元数据中存在
-            # create_date: number,存在
-            # last_modify: number,存在
-            # post_id: string,存在
-            post['post_id'] = post['_id']._ObjectId__id.hex()
-            # post_by_name: string,
-            post['post_by_name'] = user_data.get_user_by_dbref(post['post_by'])['username']
-            # post_by_id: string,
-            # 修改DBref为字符串
-            post['post_by_id'] = post['post_by'].id._ObjectId__id.hex()
-            # post_head: string
-            # participants_num: number
-            post['participants_num'] = len(post['who_comments'])
-
-            # 去除冗余数据
-            del post['_id']
-            del post['who_comments']
-            del post['comment_ids']
-            del post['post_by']
-
             self.write(post)
         else:
             self.set_status(404)
@@ -245,6 +224,25 @@ class CommentsHandler(BasicHandler):
     def post(self, post_id):
         comment = self.json_args
         post_comments.create_comment(comment['content'], comment['post_by'], post_id)
+
+
+class SingleCommentHandler(BasicHandler):
+    def get(self, post_id, comments_id):
+        pass
+
+    def put(self, post_id, comments_id):
+        point = self.json_args
+        post_comments.vote_comment(comments_id, int(point['point']), self.get_current_user())
+        self.set_status(200, 'successed!')
+
+    def delete(self, post_id, comments_id):
+        try:
+            post_comments.del_comment(post_id, comments_id)
+            self.set_status(204, 'DELETE successed')
+        except Exception as e:
+            print("Error happened when delete comment")
+            print(e)
+            self.set_status(500, 'delete comment error.')
 
 
 class UserHandler(BasicHandler):
@@ -282,6 +280,7 @@ def make_app():
         tornado.web.url(r'/api/posts', PostsHandler, name="postshandler"),
         (r'/api/posts/([abcdef0123456789]*)', SinglePostHandler),
         (r'/api/posts/([abcdef0123456789]*)/comments', CommentsHandler),
+        (r'/api/posts/([abcdef0123456789]*)/comments/([abcdef0123456789]*)', SingleCommentHandler),
         (r'/api/users/([abcdef0123456789]*)', UserHandler),
         (r'/api/users/([abcdef0123456789]*)/posts', UserPostsHandler),
     ], login_url='http://localhost:4200/singin')
