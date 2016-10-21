@@ -12,16 +12,17 @@ import { NotificationService } from "../shared/notification-component/notificati
 
 import { HomeTimeLineService } from "./hometimeline.service";
 import { CommonModule} from "@angular/common";
-import { MarkdownModule } from '../shared/markdown-derictive/markdown.module';
+import { MarkdownModule } from "../shared/markdown.module/markdown.module";
+
 
 @NgModule({
   declarations: [
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
-    MarkdownModule,
     HttpModule,
     CommonModule,
+    MarkdownModule,
     routing
   ],
   providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper},

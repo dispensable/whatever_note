@@ -16,7 +16,6 @@ import { Api } from '../shared/api';
   styleUrls: ['../shared/bootstrap.css'],
 })
 export class HomeComponent implements OnInit{
-
   constructor(
     private jwtHelper: JwtHelper,
     private notify: NotificationService,

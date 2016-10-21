@@ -12,7 +12,7 @@ import { PublishComponent } from "./publish.component";
 import { BaseDataService } from "../shared/base-data.service";
 
 import { publishRouting, publishRoutingProviders } from "./publish.routing";
-import { MarkdownToHtmlPipe } from '../shared/markdown-to-html-pipe-master';
+import { MarkdownModule } from '../shared/markdown.module/markdown.module';
 
 @NgModule({
   imports: [
@@ -21,11 +21,11 @@ import { MarkdownToHtmlPipe } from '../shared/markdown-to-html-pipe-master';
     FormsModule,
     HttpModule,
     BrowserModule,
+    MarkdownModule,
     publishRouting
   ],
   declarations: [
     PublishComponent,
-    MarkdownToHtmlPipe,
   ],
   providers: [
     publishRoutingProviders,

@@ -15,6 +15,7 @@ import { PostComponent } from "./post.component";
 import { BaseDataService } from "../shared/base-data.service";
 
 import { postRouting, postRoutingProviders } from "./post.routing";
+import { MarkdownModule } from '../shared/markdown.module/markdown.module';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { postRouting, postRoutingProviders } from "./post.routing";
     FormsModule,
     HttpModule,
     BrowserModule,
+    MarkdownModule,
     postRouting
   ],
   declarations: [
