@@ -1,12 +1,14 @@
 /**
  * Created by dispensable on 2016/10/17.
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import { BaseDataService} from "../shared/base-data.service";
 import { Api } from '../shared/api';
 import { Router, ActivatedRoute, Params} from '@angular/router';
 
 import { Post } from '../shared/post';
+import { TextHandler } from '../shared/text.handler';
+import {MarkdownToHtmlPipe} from "../shared/markdown.module/index";
 
 @Component({
   selector: 'post',
@@ -18,6 +20,8 @@ export class PostComponent implements OnInit{
     0, '', 0, 0, '', '', '', 0, ''
   );
   error: Error;
+  content: any[][];
+  markdown = new MarkdownToHtmlPipe();
 
   constructor(
     private router: Router,
@@ -31,6 +35,7 @@ export class PostComponent implements OnInit{
       this.postService.getData(Api.getPost(post_id)).subscribe(
         post => {
           this.post = post;
+          this.content = TextHandler.genShowText(this.markdown.transform(post.content));
         },
         error => {
           this.error = error;
@@ -38,5 +43,9 @@ export class PostComponent implements OnInit{
         }
       );
     });
+  }
+
+  comment(paragraphId: number, sentenceId: number) {
+    console.log("i am working...with: " + sentenceId.toString() + 'in' + paragraphId.toString() + 'paragraph.');
   }
 }

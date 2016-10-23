@@ -1,13 +1,17 @@
 <h1>Publish New Post</h1>
+
+<button (click)="test1()">test genText</button>
+
 <hr>
 
-<div>Title:
-  <input [(ngModel)]="head" required>
+<div>
+  <p>Title:</p>
+  <input width="80" [(ngModel)]="head" required>
 </div>
 
 <div>
-  Content:
-  <textarea [(ngModel)]="content" required></textarea>
+  <p>Content:</p>
+  <textarea rows="20" cols="80" [(ngModel)]="content" required></textarea>
 </div>
 
 <br>

@@ -5,7 +5,7 @@ import {Component, OnInit} from '@angular/core';
 import { BaseDataService} from "../shared/base-data.service";
 import { Api } from '../shared/api';
 import { Router} from '@angular/router';
-
+import { TextHandler } from '../shared/text.handler';
 
 @Component({
   selector: 'publish',
@@ -13,9 +13,19 @@ import { Router} from '@angular/router';
   styleUrls: ['./publish.component.css', '../shared/bootstrap.css'],
 })
 export class PublishComponent {
+
   content: string;
   head: string;
   post_by = localStorage.getItem('userid');
+
+  // gen test
+  textHandler = new TextHandler();
+
+  test1() {
+    this.textHandler.testGen();
+    console.log('test complete.')
+  }
+  // getn test end
 
   constructor(
     private publishService: BaseDataService,
