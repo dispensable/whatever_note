@@ -3,13 +3,15 @@
  */
 export class Comment {
   constructor(
-    private comment_id: string,
-    private content: string,
-    private create_date: number,
-    private down: number,
-    private hold: number,
-    private post_by: string,
-    private post_by_id: string,
-    private up: number
+    comment_id: string,
+    content: string,
+    create_date: number,
+    down: number,
+    hold: number,
+    post_by: string,
+    post_by_id: string,
+    up: number,
+    p_num: number,
+    s_num: number
   ) {}
 }

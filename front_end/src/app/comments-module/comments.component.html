@@ -10,9 +10,11 @@
 
   <hr>
 
-  <div *ngFor="let comment of comments" class="commentsList">
+  <div *ngFor="let comment of comments" class="commentsList" id="{{'comment' + comment.p_num + comment.s_num}}">
     <hr>
-    Comment by <a routerLink="/profile/{{ comment.post_by_id }}">{{ comment.post_by }}</a>
+    Comment <a href="{{getCurrentUrl() + '#' + comment.p_num.toString() + comment.s_num.toString()}}"
+               (click)="clickId(comment.p_num, comment.s_num)">{{ comment.p_num}} paragraph {{comment.s_num}} sentence</a> by <a routerLink="/profile/{{ comment.post_by_id }}">
+    {{ comment.post_by }}</a>
     at {{comment.create_date * 1000 | date:'medium'}}:
     <div [innerHtml]="comment.content | MarkdownToHtml"></div>
     <a (click)="vote(comment.comment_id, 1)"> up({{comment.up}})</a>
@@ -23,7 +25,7 @@
 
     <div *ngIf="isRplied[comment.comment_id]">
       <textarea rows="5" cols="80" placeholder="write your reply" [(ngModel)]="replyContent"></textarea>
-      <button type="button" (click)="sendComment(replyContent); replyContent='';">Send</button>
+      <button type="button" (click)="sendComment(replyContent, -1, -1); replyContent='';">Send</button>
     </div>
   </div>
 </footer>

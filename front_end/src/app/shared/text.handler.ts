@@ -1,34 +1,9 @@
 /**
  * Created by dispensable on 2016/10/22.
  */
+import { Comment } from '../shared/comment';
+
 export class TextHandler {
-  static genPost(pureText: string) {
-    // 根据相关分隔符分割字符
-    let textSeq: string[] = pureText.split(/[.\u3002\uff1f\uff01]+/);
-    console.log(textSeq);
-
-    // 添加标识符
-    for (let sentenceNum in textSeq) {
-      textSeq[sentenceNum] += ('^^' + sentenceNum.toString() + '^^')
-    }
-    console.log(textSeq);
-    // 返回生成的特殊文字
-    console.log(textSeq.join('.'));
-    return textSeq.join('.');
-  }
-
-  static postFilter(specialText: string, comments: {[id: number]: string}) {
-    // 根据commentsNum数组删除相关标识符
-    for (let i in comments) {
-      specialText = specialText.replace('^^'+ i.toString() + '^^', ('[' + comments[i].fontcolor("Red") + ']'));
-    }
-    // 返回过滤后的post
-    console.log(specialText);
-    specialText = specialText.replace('${[0-9]*} ', '');
-    console.log(specialText);
-    return specialText;
-  }
-
   static genShowText(pureText: string) {
     let paragraphSeq: string[] = pureText.split(/<\/p>/);
     let sentences: Array<Array<any>> = []; //[[[01], [02], [03] ...], [[11], [12], [13] ...]...]
@@ -69,7 +44,62 @@ export class TextHandler {
     return sentences;
   }
 
+  static handleComments(comments: Array<Comment>) {
+    let results: Array<any> = [];
+    for (let comment of comments) {
+      let pNum = comment['p_num'];
+      let sNum = comment['s_num'];
+      let commentText = comment['content'];
+      let up = comment['up'];
+      results.push([pNum, sNum, up, commentText]);
+    }
+
+    results.sort(TextHandler.compareUpComment);
+
+    let finalResults = [];
+    // 在有序结果中仅保存up最多的结果
+    let oldP = results[0][0];  // results结构[[p_num, s_num, up, comment],[]...]
+    let oldS = results[0][1];
+    results[0].splice(2, 1);  // 语法真是奇葩的要死
+    finalResults.push(results[0]); // 去掉up数
+    for (let comment of results) {
+      if (comment[0] !== oldP || comment[1] !== oldS) {
+        // 跳到新句子的评论集中时才添加评论到文中（仅选一条最佳）
+        oldS = comment[1];
+        oldP = comment[0];
+        comment.splice(2, 1);
+        finalResults.push(comment);
+      }
+    }
+    return finalResults;
+  }
+
+  private static compareUpComment(a, b) {
+    if (a[0] > b[0]) { return -1;}
+    if (a[0] < b[0]) { return 1;}
+    if (a[0] === b[0]) {
+      if (a[1] > b[1]) {return -1;}
+      if (a[1] < b[1]) {return 1;}
+      if (a[1] === b[1]) {
+        if (a[2] > b[2]) {return -1;}
+        if (a[2] < b[2]) {return 1;}
+        if (a[2] === b[2]) {
+          if (a[3] > b[3]) {return -1;}
+          if (a[3] < b[3]) {return 1;}
+          if (a[3] === b[3]) {return 0;}
+        }
+      }
+    }
+  }
+
   testGen() {
-    TextHandler.genShowText('this is a test. this is a test. this is a test.这是一个测试啊。这是一个测试？这个一个测试！')
+    let c1 = {'p_num': 1, 's_num': 2, 'content': 'test up2', 'up': 2};
+    let c2 = {'p_num': 1, 's_num': 2, 'content': 'test up4', 'up': 4};
+    let c3 = {'p_num': 1, 's_num': 2, 'content': 'test up12', 'up': 12};
+    let c4 = {'p_num': 2, 's_num': 3, 'content': 'test up2 2,3', 'up': 2};
+    let c5 = {'p_num': 2, 's_num': 3, 'content': 'test up3', 'up': 3};
+    let comments = [c1, c2, c3, c4, c5];
+    console.log(comments);
+    TextHandler.handleComments(comments);
   }
 }

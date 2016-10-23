@@ -1,14 +1,15 @@
 /**
  * Created by dispensable on 2016/10/17.
  */
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { BaseDataService} from "../shared/base-data.service";
 import { Api } from '../shared/api';
-import { Router, ActivatedRoute, Params} from '@angular/router';
+import { ActivatedRoute, Params} from '@angular/router';
 
 import { Post } from '../shared/post';
 import { TextHandler } from '../shared/text.handler';
 import {MarkdownToHtmlPipe} from "../shared/markdown.module/index";
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'post',
@@ -22,28 +23,25 @@ export class PostComponent implements OnInit{
   error: Error;
   content: any[][];
   markdown = new MarkdownToHtmlPipe();
-  pCommentBoxVisible: boolean[] = [];
-  inlinePosition: number[] = [0, 0];
-  inlineCommentVisible: boolean = false;
+  inlinePosition: number[] = [-1, -1];
+  comments: Comment[];
+  inlineComments: Comment[];
 
   constructor(
-    private router: Router,
+    private location: Location,
     private route: ActivatedRoute,
     private postService: BaseDataService
   ){}
 
   ngOnInit() {
-      this.route.params.forEach((params: Params) => {
+    this.route.params.forEach((params: Params) => {
+      this.getComments();
       let post_id = params['post_id'];
       this.postService.getData(Api.getPost(post_id)).subscribe(
         post => {
           this.post = post;
           this.content = TextHandler.genShowText(this.markdown.transform(post.content));
-          for (let par in this.content) {
-            this.pCommentBoxVisible[par] = false;
-          }
-          this.content = TextHandler.addComments(this.content, [[0, 0, "this is the 0,0 comment."],
-            [3, 2, "this is the 3,2 comment"]]);
+          this.content = TextHandler.addComments(this.content, TextHandler.handleComments(this.comments));
         },
         error => {
           this.error = error;
@@ -54,8 +52,57 @@ export class PostComponent implements OnInit{
   }
 
   comment(paragraphId: number, sentenceId: number) {
-    console.log("i am working...with: " + sentenceId.toString() + 'in' + paragraphId.toString() + 'paragraph.');
     this.inlinePosition = [paragraphId, sentenceId];
-    this.pCommentBoxVisible[paragraphId] = !this.pCommentBoxVisible[paragraphId];
+  }
+
+  getComments() {
+    this.route.params.forEach((params: Params) => {
+      let post_id = params['post_id'];
+      this.postService.getData(Api.getPostComments(post_id)).subscribe(
+        comments => {
+          // TODO: 添加上一页，下一页链接的评论分页功能
+          // // 获取上下一页的链接
+          // if (this.next_page === "") {}
+          // this.next_page = posts['next_page'];
+          // this.pre_page = posts['pre_page'];
+          //
+          // // 删除相关的数据
+          // delete posts['next_page'];
+          // delete posts['pre_page'];
+          this.comments = [];
+          // 遍历comments列表取得comment数组
+          for (let commentNum in comments) {
+            let comment = comments[commentNum.toString()];
+            this.comments.push(comment);
+          }
+        },
+        error => {
+          console.log(error);
+        });
+      }
+    );
+  }
+
+  cancle() {
+    this.inlinePosition = [-1, -1]; // 取消高亮
+  }
+
+  onClickId(anhor: number[]) {
+    this.inlinePosition = anhor;
+  }
+
+  getSentenceComments(pNum: number, sNum: number) {
+    let result = [];
+    for (let comment of this.comments) {
+      if (comment['p_num'] === pNum && comment['s_num'] === sNum) {
+        result.push(comment);
+      }
+    }
+    // TODO: order comments by up/down/hold
+    this.inlineComments = result;
+  }
+
+  getCurrentUrl() {
+    return this.location.path();
   }
 }

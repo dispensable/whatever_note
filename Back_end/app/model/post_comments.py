@@ -7,7 +7,7 @@ import time
 from bson.dbref import DBRef
 
 
-def create_comment(content: str, post_by: str, post_id: str):
+def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
     create_date = time.time()
     with open_database('comments') as comments_collection:
         comment = {
@@ -19,6 +19,8 @@ def create_comment(content: str, post_by: str, post_id: str):
             'create_date': create_date,
             'post_by': DBRef('user', str2object_id(post_by)),
             'voted_ids': [],
+            'p_num': p_num,
+            's_num': s_num
         }
 
         comment_id = comments_collection.insert(comment)

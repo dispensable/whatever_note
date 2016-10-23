@@ -23,7 +23,7 @@ export class PublishComponent {
 
   test1() {
     this.textHandler.testGen();
-    console.log('test complete.')
+    console.log('test complete.');
   }
   // getn test end
 

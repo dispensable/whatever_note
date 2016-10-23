@@ -1,9 +1,10 @@
 aside {
   float: right;
+  width: 24%;
 }
 
-#paragraph {
-  width:80%;
+p.paragraph {
+  width:75%;
   float:left;
   padding:5px;
   font-size: small;
@@ -15,4 +16,17 @@ hr.lineOfComments {
 
 comments.comments {
   float: left;
+}
+
+span.highlight-for-comment {
+  background-color: yellow;
+}
+
+span.dis-highlight {
+  background-color: inherit;
+}
+
+div.sideComment {
+  font-size: small;
+  width: 85%;
 }

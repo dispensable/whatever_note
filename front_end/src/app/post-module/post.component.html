@@ -19,18 +19,38 @@
   <hr>
   <div class="article-content">
     <div *ngFor="let paragraph of content; let i = index;">
-      <p id="paragraph">
-        <span *ngFor="let sentence of paragraph"
-              [innerHTML]="sentence[0]" (click)="comment(sentence[1], sentence[2])"></span>
+      <p class="paragraph" id="{{i.toString()}}">
+        <span *ngFor="let sentence of paragraph; let j = index;" id="{{i.toString() + j.toString()}}"
+              [innerHTML]="sentence[0]"
+              [ngClass]="{'highlight-for-comment': ((inlinePosition[0] === i) && (inlinePosition[1] == j)),
+              'dis-highlight': !((inlinePosition[0] === i) && (inlinePosition[1] == j))}"
+              (click)="comment(sentence[1], sentence[2]); getSentenceComments(i, j)"></span>
       </p>
 
-      <aside>
-        <textarea rows="5" cols="27" placeholder="Add sentence comments of Paragraph {{inlinePosition[0]}}, sentence {{inlinePosition[1]}}"
-                  *ngIf="pCommentBoxVisible[i]"></textarea>
+      <aside *ngIf="inlinePosition[0] === i">
+        <div>
+          <textarea rows="5" cols="30" #inlineCommentBox
+                    placeholder="Add sentence comments of Paragraph {{inlinePosition[0]}}, sentence {{inlinePosition[1]}}"
+                    required></textarea>
+          <br>
+          <button type="submit"
+                  (click)="commentComponent.sendComment(inlineCommentBox.value,
+                  inlinePosition[0], inlinePosition[1]); inlineCommentBox.value='';
+                  getComments(); getSentenceComments(inlinePosition[0], inlinePosition[1]);">Send</button>
+          <button type="button" (click)="cancle()">Cancel</button>
+          <hr class="sideComment">
+          <div *ngFor="let comment of inlineComments" class="sideComment">
+            {{comment.post_by}} | {{comment.create_date * 1000 | date:'short'}} | <a href="{{getCurrentUrl() + '#' + 'comment'
+            + inlinePosition[0].toString() + inlinePosition[1].toString()}}">Reply</a>
+            <br>
+            {{comment.content}}
+            <hr>
+          </div>
+        </div>
       </aside>
     </div>
   </div>
 </article>
 
 <hr class="lineOfComments">
-<comments class="comments"></comments>
+<comments class="comments" #commentComponent (onClickId)="onClickId($event)"></comments>

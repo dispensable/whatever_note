@@ -1,7 +1,8 @@
 /**
  * Created by dispensable on 2016/10/21.
  */
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import { Location } from '@angular/common';
 
 import {NotificationService} from "../shared/notification-component/notification.service";
 import {Notification} from "../shared/notification-component/notification";
@@ -11,6 +12,7 @@ import { Api } from '../shared/api';
 import { BaseDataService } from '../shared/base-data.service';
 import { Comment } from '../shared/comment';
 import { ActivatedRoute, Params, RouterLink } from '@angular/router'
+import {TextHandler} from "../shared/text.handler";
 
 @Component({
   selector: 'comments',
@@ -21,22 +23,34 @@ export class CommentsComponent implements OnInit{
   constructor(
     private dataService: BaseDataService,
     private route: ActivatedRoute,
+    private location: Location,
   ){}
   comments: Comment[] = [];
   isVotied: { [id: string]: boolean} = {};
   isRplied: { [id: string]: boolean} = {};
   replyContent: string;
+  @Output() onClickId = new EventEmitter<number[]>();
 
   ngOnInit() {
     this.reloadComments();
   }
 
-  sendComment(comment: string) {
+  clickId(parNum: number, senNum: number) {
+    this.onClickId.emit([parNum, senNum]);
+  }
+
+  sendComment(comment: string, paragraphNum: number, sentenceNum: number) {
+    if (comment === '') {return;}
     this.route.params.forEach((params: Params) => {
+      // 构造json
       let post_id = params['post_id'];
       let content = comment;
       let post_by = localStorage.getItem('userid');
-      let body = JSON.stringify({content, post_by, post_id});
+      let p_num = paragraphNum; // if p_num < 0; 针对全文发表评论
+      let s_num = sentenceNum; // if s_num < 0; 针对全文发表评论 默认评论框后两位参数-1， -1
+      // 序列化
+      let body = JSON.stringify({content, post_by, post_id, p_num, s_num});
+      // 发送评论
       this.dataService.postData(Api.getPostComments(post_id), body).subscribe(
         () => {
           this.reloadComments();
@@ -112,6 +126,7 @@ export class CommentsComponent implements OnInit{
       let post_id = params['post_id'];
       this.dataService.getData(Api.getPostComments(post_id)).subscribe(
         comments => {
+          // TODO: 添加上一页，下一页链接的评论分页功能
           // // 获取上下一页的链接
           // if (this.next_page === "") {}
           // this.next_page = posts['next_page'];
@@ -148,5 +163,9 @@ export class CommentsComponent implements OnInit{
   reply(commentId: string) {
     console.log(commentId);
     this.isRplied[commentId] = !this.isRplied[commentId];
+  }
+
+  getCurrentUrl() {
+    return this.location.path()
   }
 }
