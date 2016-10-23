@@ -1,44 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Post</title>
-</head>
-<body>
+<!--private comments_count: number,-->
+<!--private content: string,-->
+<!--private create_date: number,-->
+<!--private last_modify: number,-->
+<!--private post_by_name: string, -->
+<!--private post_by_id: string,-->
+<!--private post_id: string,-->
 
-    <!--private comments_count: number,-->
-    <!--private content: string,-->
-    <!--private create_date: number,-->
-    <!--private last_modify: number,-->
-    <!--private post_by_name: string, -->
-    <!--private post_by_id: string,-->
-    <!--private post_id: string,-->
+<article class="article">
 
-  <div class="article">
+  <header>{{post.post_head || 'No head'}}</header>
 
-    <h1>{{post.post_head || 'No head'}}</h1>
-
-    <div class="article-info">
-      Posted by: {{post.post_by_name}} at {{post.create_date * 1000 | date:'medium'}}
-      with {{post.comments_count}} comments
-      <span *ngIf="post.create_date !== post.last_modify">| Modified at: {{post.last_modify * 1000 | date:'medium'}}</span>
-    </div>
-
-    <hr>
-    <div class="article-content">
-      <p *ngFor="let paragraph of content">
-        <span *ngFor="let sentence of paragraph"
-              [innerHTML]="sentence[0]" (click)="comment(sentence[1], sentence[2])"></span>
-      </p>
-    </div>
-
-    <hr>
+  <div class="article-info">
+    Posted by: {{post.post_by_name}} at {{post.create_date * 1000 | date:'medium'}}
+    with {{post.comments_count}} comments
+    <span *ngIf="post.create_date !== post.last_modify">| Modified at: {{post.last_modify * 1000 | date:'medium'}}</span>
   </div>
 
   <hr>
+  <div class="article-content">
+    <div *ngFor="let paragraph of content; let i = index;">
+      <p id="paragraph">
+        <span *ngFor="let sentence of paragraph"
+              [innerHTML]="sentence[0]" (click)="comment(sentence[1], sentence[2])"></span>
+      </p>
 
-  <div class="comments">
-      <comments></comments>
+      <aside>
+        <textarea rows="5" cols="27" placeholder="Add sentence comments of Paragraph {{inlinePosition[0]}}, sentence {{inlinePosition[1]}}"
+                  *ngIf="pCommentBoxVisible[i]"></textarea>
+      </aside>
+    </div>
   </div>
-</body>
-</html>
+</article>
+
+<hr class="lineOfComments">
+<comments class="comments"></comments>

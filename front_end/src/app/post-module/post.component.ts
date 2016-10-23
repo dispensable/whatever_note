@@ -22,6 +22,9 @@ export class PostComponent implements OnInit{
   error: Error;
   content: any[][];
   markdown = new MarkdownToHtmlPipe();
+  pCommentBoxVisible: boolean[] = [];
+  inlinePosition: number[] = [0, 0];
+  inlineCommentVisible: boolean = false;
 
   constructor(
     private router: Router,
@@ -36,6 +39,11 @@ export class PostComponent implements OnInit{
         post => {
           this.post = post;
           this.content = TextHandler.genShowText(this.markdown.transform(post.content));
+          for (let par in this.content) {
+            this.pCommentBoxVisible[par] = false;
+          }
+          this.content = TextHandler.addComments(this.content, [[0, 0, "this is the 0,0 comment."],
+            [3, 2, "this is the 3,2 comment"]]);
         },
         error => {
           this.error = error;
@@ -47,5 +55,7 @@ export class PostComponent implements OnInit{
 
   comment(paragraphId: number, sentenceId: number) {
     console.log("i am working...with: " + sentenceId.toString() + 'in' + paragraphId.toString() + 'paragraph.');
+    this.inlinePosition = [paragraphId, sentenceId];
+    this.pCommentBoxVisible[paragraphId] = !this.pCommentBoxVisible[paragraphId];
   }
 }

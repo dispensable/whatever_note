@@ -1,0 +1,8 @@
+footer {
+  width: 80%;
+}
+
+footer#commentlist {
+  width: 80%;
+  float: left;
+}

@@ -35,6 +35,7 @@ export class TextHandler {
 
     let paragrahNum = 0;
     paragraphSeq.pop(); // 删除最后空字符段落
+
     // 遍历段
     for (let paragraph of paragraphSeq) {
       let sentenceNum = 0;
@@ -45,12 +46,25 @@ export class TextHandler {
       allSentences.pop();
       // 初始化该段落数组
       sentences.push([]);
+
       // 遍历段落中的句子
       for (let sentence of allSentences) {
         sentences[paragrahNum].push([sentence + spliter[sentenceNum], paragrahNum, sentenceNum]);
         sentenceNum++;
       }
       paragrahNum++;
+    }
+    return sentences;
+  }
+
+  static addComments(sentences: Array<any>, comments: Array<any>) {
+    for (let comment of comments) {
+      let paragraphNum = comment[0];
+      let sentenceNum = comment[1];
+      let commentString = comment[2];
+      // comments 格式： [[段落号， 句子号， 评论内容],[]...] 二维数组
+      // sentences 格式： [[[句子，段落号， 文本号]， [句子，段落号，文本号]...]] 三维数组
+      sentences[paragraphNum][sentenceNum][0] += ('[' + commentString.fontcolor('Red') + ']');
     }
     return sentences;
   }

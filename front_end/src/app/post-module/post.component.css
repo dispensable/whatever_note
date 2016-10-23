@@ -1,0 +1,18 @@
+aside {
+  float: right;
+}
+
+#paragraph {
+  width:80%;
+  float:left;
+  padding:5px;
+  font-size: small;
+}
+
+hr.lineOfComments {
+  float: left;
+}
+
+comments.comments {
+  float: left;
+}
