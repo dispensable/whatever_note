@@ -39,9 +39,8 @@ class BasicHandler(tornado.web.RequestHandler):
                 self.json_args = json.loads(self.request.body.decode())
             else:
                 self.json_args = None
-        except KeyError as e:
-            print("can't find key.")
-            print(e)
+        except KeyError:
+            pass
 
     def set_default_headers(self):
         self.set_header('Access-Control-Allow-Origin', 'http://localhost:4200')
@@ -272,6 +271,25 @@ class UserPostsHandler(BasicHandler):
             self.set_status(404, 'User or post not exists.')
 
 
+class MentionListHandler(BasicHandler):
+    def get(self, *args, **kwargs):
+        post_id = self.get_argument('post_id')
+        if post_id:
+            self.write(user_post.get_mentionlist(post_id))
+        else:
+            self.set_status(404, 'argument error')
+
+
+class UserIdHandler(BasicHandler):
+    def get(self, *args, **kwargs):
+        username = self.get_argument('username')
+        userid = user_data.get_userid_by_name(username)
+        if userid:
+            self.write({'username': username, 'userid': userid})
+        else:
+            self.set_status(404, 'No such user.')
+
+
 def make_app():
     return tornado.web.Application([
         tornado.web.url(r'/', MainHandler),
@@ -284,7 +302,9 @@ def make_app():
         (r'/api/posts/([abcdef0123456789]*)/comments', CommentsHandler),
         (r'/api/posts/([abcdef0123456789]*)/comments/([abcdef0123456789]*)', SingleCommentHandler),
         (r'/api/users/([abcdef0123456789]*)', UserHandler),
+        (r'/api/userid', UserIdHandler),
         (r'/api/users/([abcdef0123456789]*)/posts', UserPostsHandler),
+        (r'/api/users/mentionlist', MentionListHandler)
     ], login_url='http://localhost:4200/singin')
 
 

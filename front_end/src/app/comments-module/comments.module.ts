@@ -10,8 +10,10 @@ import { NotificationService } from "../shared/notification-component/notificati
 import { CommonModule} from "@angular/common";
 import { MarkdownModule } from "../shared/markdown.module/markdown.module";
 import { BaseDataService } from '../shared/base-data.service';
-import {RouterModule} from "@angular/router";
-import {FormsModule} from "@angular/forms";
+import { RouterModule} from "@angular/router";
+import { FormsModule} from "@angular/forms";
+
+import { MentionModule } from 'angular2-mentions/mention/mention.module';
 
 
 @NgModule({
@@ -24,6 +26,7 @@ import {FormsModule} from "@angular/forms";
     MarkdownModule,
     RouterModule,
     FormsModule,
+    MentionModule
   ],
   providers: [ NotificationService, BaseDataService],
   exports: [CommentsComponent]

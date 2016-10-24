@@ -3,7 +3,7 @@
     COMMENTS:
     <div class="commentsBox">
       <textarea rows="5" cols="80" placeholder="Please input your comment. DON'T LEAVE REAL INFORMATION IF YOU CAN'T BE SURE."
-                required #newComment></textarea>
+                required #newComment [mention]="mentionList" class="form-control"></textarea>
     </div>
     <button type="submit" (click)="sendComment(newComment.value); newComment.value=''">Submit</button>
   </div>
@@ -16,7 +16,7 @@
                (click)="clickId(comment.p_num, comment.s_num)">{{ comment.p_num}} paragraph {{comment.s_num}} sentence</a> by <a routerLink="/profile/{{ comment.post_by_id }}">
     {{ comment.post_by }}</a>
     at {{comment.create_date * 1000 | date:'medium'}}:
-    <div [innerHtml]="comment.content | MarkdownToHtml"></div>
+    <div [innerHtml]="comment.content | MarkdownToHtml | AtNameTolink"></div>
     <a (click)="vote(comment.comment_id, 1)"> up({{comment.up}})</a>
     |<a (click)="vote(comment.comment_id, -1)"> down({{comment.down}})</a>
     |<a (click)="vote(comment.comment_id, 0)"> hold({{comment.hold}})</a>

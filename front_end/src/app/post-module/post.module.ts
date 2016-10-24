@@ -18,6 +18,7 @@ import { postRouting, postRoutingProviders } from "./post.routing";
 import { MarkdownModule } from '../shared/markdown.module/markdown.module';
 
 import { CommentsModule } from '../comments-module/comments.module';
+import { MentionModule } from 'angular2-mentions/mention/mention.module';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { CommentsModule } from '../comments-module/comments.module';
     BrowserModule,
     MarkdownModule,
     CommentsModule,
+    MentionModule,
     postRouting
   ],
   declarations: [

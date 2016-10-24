@@ -134,5 +134,9 @@ def get_user_by_dbref(dbref):
         return db_con.dereference(dbref)
 
 
+def get_userid_by_name(username: str):
+    with open_database('user') as user:
+        return user.find_one({'username': username}, {'_id': True})['_id']._ObjectId__id.hex()
+
 if __name__ == "__main__":
     pass

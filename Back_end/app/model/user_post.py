@@ -136,5 +136,14 @@ def get_posts_by_userid(user_id):
     return results
 
 
+def get_mentionlist(post_id):
+    with open_database('post') as post_collection:
+        who_comments = post_collection.find_one({'_id': str2object_id(post_id)}, {'who_comments': True})['who_comments']
+    with open_db_con(databasename='whatever_note') as db_con:
+        mentionlist = []
+        for user_dbref in who_comments:
+            mentionlist.append(db_con.dereference(user_dbref)['username'])
+    return {'who_comments': mentionlist}
+
 if __name__ == '__main__':
     pass

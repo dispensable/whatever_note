@@ -44,6 +44,14 @@ export class Api {
   }
 
   static getComment(post_id: string, comment_id: string) {
-    return `http://localhost:4200/api/posts/${post_id}/comments/${comment_id}`
+    return `http://localhost:4200/api/posts/${post_id}/comments/${comment_id}`;
+  }
+
+  static getMentionlistByPostid(post_id: string) {
+    return `http://localhost:4200/api/users/mentionlist?post_id=${post_id}`;
+  }
+
+  static getUserIdByName(username: string) {
+    return `http://localhost:4200/api/userid?username=${username}`;
   }
 }

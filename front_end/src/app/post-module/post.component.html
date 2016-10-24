@@ -29,7 +29,7 @@
 
       <aside *ngIf="inlinePosition[0] === i">
         <div>
-          <textarea rows="5" cols="30" #inlineCommentBox
+          <textarea rows="5" cols="30" #inlineCommentBox [mention]="mentionItems" class="form-control"
                     placeholder="Add sentence comments of Paragraph {{inlinePosition[0]}}, sentence {{inlinePosition[1]}}"
                     required></textarea>
           <br>
@@ -53,4 +53,4 @@
 </article>
 
 <hr class="lineOfComments">
-<comments class="comments" #commentComponent (onClickId)="onClickId($event)"></comments>
+<comments class="comments" #commentComponent (onClickId)="onClickId($event)" [mentionList]="mentionItems"></comments>

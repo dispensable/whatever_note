@@ -1,14 +1,14 @@
 /**
  * Created by dispensable on 2016/10/17.
  */
-import {Component, OnInit} from '@angular/core';
-import { BaseDataService} from "../shared/base-data.service";
+import { Component, OnInit } from '@angular/core';
+import { BaseDataService } from "../shared/base-data.service";
 import { Api } from '../shared/api';
-import { ActivatedRoute, Params} from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 
 import { Post } from '../shared/post';
 import { TextHandler } from '../shared/text.handler';
-import {MarkdownToHtmlPipe} from "../shared/markdown.module/index";
+import { MarkdownToHtmlPipe } from "../shared/markdown.module/index";
 import { Location } from '@angular/common';
 
 @Component({
@@ -26,28 +26,21 @@ export class PostComponent implements OnInit{
   inlinePosition: number[] = [-1, -1];
   comments: Comment[];
   inlineComments: Comment[];
+  mentionItems: string[] = [];
 
   constructor(
     private location: Location,
     private route: ActivatedRoute,
+    private router: Router,
     private postService: BaseDataService
   ){}
 
   ngOnInit() {
     this.route.params.forEach((params: Params) => {
-      this.getComments();
       let post_id = params['post_id'];
-      this.postService.getData(Api.getPost(post_id)).subscribe(
-        post => {
-          this.post = post;
-          this.content = TextHandler.genShowText(this.markdown.transform(post.content));
-          this.content = TextHandler.addComments(this.content, TextHandler.handleComments(this.comments));
-        },
-        error => {
-          this.error = error;
-          console.log(error);
-        }
-      );
+      this.getComments(post_id);
+      this.getPost(post_id);
+      this.getMentionlist(post_id);
     });
   }
 
@@ -55,32 +48,28 @@ export class PostComponent implements OnInit{
     this.inlinePosition = [paragraphId, sentenceId];
   }
 
-  getComments() {
-    this.route.params.forEach((params: Params) => {
-      let post_id = params['post_id'];
-      this.postService.getData(Api.getPostComments(post_id)).subscribe(
-        comments => {
-          // TODO: 添加上一页，下一页链接的评论分页功能
-          // // 获取上下一页的链接
-          // if (this.next_page === "") {}
-          // this.next_page = posts['next_page'];
-          // this.pre_page = posts['pre_page'];
-          //
-          // // 删除相关的数据
-          // delete posts['next_page'];
-          // delete posts['pre_page'];
-          this.comments = [];
-          // 遍历comments列表取得comment数组
-          for (let commentNum in comments) {
-            let comment = comments[commentNum.toString()];
-            this.comments.push(comment);
-          }
-        },
-        error => {
-          console.log(error);
-        });
-      }
-    );
+  getComments(post_id) {
+    this.postService.getData(Api.getPostComments(post_id)).subscribe(
+      comments => {
+        // TODO: 添加上一页，下一页链接的评论分页功能
+        // // 获取上下一页的链接
+        // if (this.next_page === "") {}
+        // this.next_page = posts['next_page'];
+        // this.pre_page = posts['pre_page'];
+        //
+        // // 删除相关的数据
+        // delete posts['next_page'];
+        // delete posts['pre_page'];
+        this.comments = [];
+        // 遍历comments列表取得comment数组
+        for (let commentNum in comments) {
+          let comment = comments[commentNum.toString()];
+          this.comments.push(comment);
+        }
+      },
+      error => {
+        console.log(error);
+      });
   }
 
   cancle() {
@@ -104,5 +93,40 @@ export class PostComponent implements OnInit{
 
   getCurrentUrl() {
     return this.location.path();
+  }
+
+  getMentionlist(post_id: string) {
+    this.postService.getData(Api.getMentionlistByPostid(post_id)).subscribe(
+        mentionlist => {
+          this.mentionItems = mentionlist['who_comments'];
+        },
+        error => {
+          this.error = error;
+          console.log(error);
+        }
+      );
+  }
+
+  getPost(post_id) {
+      this.postService.getData(Api.getPost(post_id)).subscribe(
+        post => {
+          this.post = post;
+          this.content = TextHandler.genShowText(this.markdown.transform(post.content));
+          this.content = TextHandler.addComments(this.content, TextHandler.handleComments(this.comments));
+        },
+        error => {
+          this.error = error;
+          console.log(error);
+        }
+      );
+  }
+
+  goProfile(username: string) {
+    this.postService.getData(Api.getUserIdByName(username)).subscribe(
+      data => {
+        this.router.navigate([`/profile/${data['userid']}`]);
+      },
+      error => { console.log(error); }
+    );
   }
 }

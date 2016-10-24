@@ -1,7 +1,7 @@
 /**
  * Created by dispensable on 2016/10/21.
  */
-import {Component, OnInit, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, Output, EventEmitter, Input} from '@angular/core';
 import { Location } from '@angular/common';
 
 import {NotificationService} from "../shared/notification-component/notification.service";
@@ -11,8 +11,7 @@ import { Api } from '../shared/api';
 
 import { BaseDataService } from '../shared/base-data.service';
 import { Comment } from '../shared/comment';
-import { ActivatedRoute, Params, RouterLink } from '@angular/router'
-import {TextHandler} from "../shared/text.handler";
+import {ActivatedRoute, Params, Router} from '@angular/router';
 
 @Component({
   selector: 'comments',
@@ -23,6 +22,7 @@ export class CommentsComponent implements OnInit{
   constructor(
     private dataService: BaseDataService,
     private route: ActivatedRoute,
+    private router: Router,
     private location: Location,
   ){}
   comments: Comment[] = [];
@@ -30,6 +30,7 @@ export class CommentsComponent implements OnInit{
   isRplied: { [id: string]: boolean} = {};
   replyContent: string;
   @Output() onClickId = new EventEmitter<number[]>();
+  @Input() mentionList: String[];
 
   ngOnInit() {
     this.reloadComments();
@@ -127,14 +128,6 @@ export class CommentsComponent implements OnInit{
       this.dataService.getData(Api.getPostComments(post_id)).subscribe(
         comments => {
           // TODO: 添加上一页，下一页链接的评论分页功能
-          // // 获取上下一页的链接
-          // if (this.next_page === "") {}
-          // this.next_page = posts['next_page'];
-          // this.pre_page = posts['pre_page'];
-          //
-          // // 删除相关的数据
-          // delete posts['next_page'];
-          // delete posts['pre_page'];
           this.comments = [];
           // 遍历comments列表取得comment数组
           for (let commentNum in comments) {
@@ -165,7 +158,16 @@ export class CommentsComponent implements OnInit{
     this.isRplied[commentId] = !this.isRplied[commentId];
   }
 
-  getCurrentUrl() {
+  getCurrentUrl(): string {
     return this.location.path()
+  }
+
+  goProfile(username: string) {
+    this.dataService.getData(Api.getUserIdByName(username)).subscribe(
+      data => {
+        this.router.navigate([`/profile/${data['userid']}`]);
+      },
+      error => { console.log(error); }
+    );
   }
 }
