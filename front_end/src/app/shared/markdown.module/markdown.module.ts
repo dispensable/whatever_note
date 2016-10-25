@@ -8,7 +8,6 @@ import { BrowserModule} from '@angular/platform-browser';
 
 import { CommonModule} from "@angular/common";
 import { MarkdownToHtmlPipe } from './index';
-import { AtNameToLinkPipe } from './at-name-to-link.pipes';
 
 
 @NgModule({
@@ -21,12 +20,10 @@ import { AtNameToLinkPipe } from './at-name-to-link.pipes';
   ],
   declarations: [
     MarkdownToHtmlPipe,
-    AtNameToLinkPipe,
   ],
   providers: [],
   exports: [
     MarkdownToHtmlPipe,
-    AtNameToLinkPipe
   ]
 })
 

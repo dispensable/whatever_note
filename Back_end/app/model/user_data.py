@@ -136,6 +136,7 @@ def get_user_by_dbref(dbref):
 
 def get_userid_by_name(username: str):
     with open_database('user') as user:
+        print('username: {0}'.format(username))
         return user.find_one({'username': username}, {'_id': True})['_id']._ObjectId__id.hex()
 
 if __name__ == "__main__":

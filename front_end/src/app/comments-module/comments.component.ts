@@ -75,7 +75,7 @@ export class CommentsComponent implements OnInit{
          },
         error => {
           this.comments.splice(+this.getCommentNumById(comment_id));
-          // this.reloadComments();
+          this.reloadComments();
           console.log(error);
         });
       }
@@ -160,14 +160,5 @@ export class CommentsComponent implements OnInit{
 
   getCurrentUrl(): string {
     return this.location.path()
-  }
-
-  goProfile(username: string) {
-    this.dataService.getData(Api.getUserIdByName(username)).subscribe(
-      data => {
-        this.router.navigate([`/profile/${data['userid']}`]);
-      },
-      error => { console.log(error); }
-    );
   }
 }

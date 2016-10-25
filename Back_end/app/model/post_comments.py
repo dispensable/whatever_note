@@ -3,13 +3,16 @@
 
 from .database_connection import open_database, str2object_id, open_db_con
 from .user_post import add_comment, delete_comment
+from .user_data import get_userid_by_name
 import time
 from bson.dbref import DBRef
+import re
 
 
 def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
     create_date = time.time()
     with open_database('comments') as comments_collection:
+        content = at_mention_replace(content)
         comment = {
             'content': content,
             'post_id': DBRef('post', str2object_id(post_id)),
@@ -80,3 +83,23 @@ def get_comments_by_post_id(post_id: str):
                 return results
         else:
             return None
+
+
+def at_mention_replace(content: str) -> str:
+    # 找出@之后的用户名
+    regx = re.compile(r'@([A-Za-z0-9_]+)\s')
+    mentioned = re.findall(regx, content)
+
+    # 最多@五个人在一条评论中
+    if len(mentioned) > 6:
+        mentioned = mentioned[0: 4]
+
+    # 替换为显影带链接的文本
+    for mention in mentioned:
+        userid = get_userid_by_name(mention)
+        if (len(mention) > 15) or (userid is None):
+            continue
+        repl = '<a href="/profile/{0}">{1}</a>'.format(userid, '@{0} '.format(mention))
+        content = re.sub('@' + mention + ' ', repl, content)
+    # 返回
+    return content

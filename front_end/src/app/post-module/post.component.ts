@@ -120,13 +120,4 @@ export class PostComponent implements OnInit{
         }
       );
   }
-
-  goProfile(username: string) {
-    this.postService.getData(Api.getUserIdByName(username)).subscribe(
-      data => {
-        this.router.navigate([`/profile/${data['userid']}`]);
-      },
-      error => { console.log(error); }
-    );
-  }
 }

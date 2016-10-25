@@ -32,11 +32,16 @@ export class TextHandler {
     return sentences;
   }
 
+  // 添加内联评论
   static addComments(sentences: Array<any>, comments: Array<any>) {
     for (let comment of comments) {
       let paragraphNum = comment[0];
       let sentenceNum = comment[1];
       let commentString = comment[2];
+
+      if (paragraphNum === -1) {
+        continue;
+      }
       // comments 格式： [[段落号， 句子号， 评论内容],[]...] 二维数组
       // sentences 格式： [[[句子，段落号， 文本号]， [句子，段落号，文本号]...]] 三维数组
       sentences[paragraphNum][sentenceNum][0] += ('[' + commentString.fontcolor('Red') + ']');
