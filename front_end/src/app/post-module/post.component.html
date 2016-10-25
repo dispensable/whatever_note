@@ -34,18 +34,26 @@
                     required></textarea>
           <br>
           <button type="submit"
-                  (click)="commentComponent.sendComment(inlineCommentBox.value,
+                  (click)="inlineComments=[]; commentComponent.sendComment(inlineCommentBox.value,
                   inlinePosition[0], inlinePosition[1]); inlineCommentBox.value='';
                   getComments(post.post_id); getSentenceComments(inlinePosition[0], inlinePosition[1]);">Send</button>
           <button type="button" (click)="cancle()">Cancel</button>
           <hr class="sideComment">
-          <div *ngFor="let comment of inlineComments" class="sideComment">
-            {{comment.post_by}} | {{comment.create_date * 1000 | date:'short'}} | <a href="{{getCurrentUrl() + '#' + 'comment'
-            + inlinePosition[0].toString() + inlinePosition[1].toString()}}">Reply</a>
-            <br>
-            <div [innerHtml] = "comment.content | MarkdownToHtml"></div>
-            <hr>
+
+          <div *ngIf="isInlineCommentExist()">
+            <div *ngFor="let comment of inlineComments" class="sideComment">
+              {{comment.post_by}} | {{comment.create_date * 1000 | date:'short'}} | <a href="{{getCurrentUrl() + '#' + 'comment'
+              + inlinePosition[0].toString() + inlinePosition[1].toString()}}">Reply</a>
+              <br>
+              <div [innerHtml] = "comment.content | MarkdownToHtml"></div>
+              <hr>
+            </div>
           </div>
+
+          <div *ngIf="!isInlineCommentExist()">
+            <p>There is no comments for this sentence, try add one!</p>
+          </div>
+
         </div>
       </aside>
     </div>

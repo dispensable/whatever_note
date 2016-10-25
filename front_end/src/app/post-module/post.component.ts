@@ -11,6 +11,7 @@ import { TextHandler } from '../shared/text.handler';
 import { MarkdownToHtmlPipe } from "../shared/markdown.module/index";
 import { Location } from '@angular/common';
 import {isUndefined} from "util";
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'post',
@@ -83,6 +84,7 @@ export class PostComponent implements OnInit{
 
   getSentenceComments(pNum: number, sNum: number) {
     let result = [];
+    if (isNullOrUndefined(this.comments)) { this.inlineComments = []; return;}
     for (let comment of this.comments) {
       if (comment['p_num'] === pNum && comment['s_num'] === sNum) {
         result.push(comment);
@@ -123,5 +125,9 @@ export class PostComponent implements OnInit{
           console.log(error);
         }
       );
+  }
+
+  isInlineCommentExist() {
+    return !isNullOrUndefined(this.inlineComments) && !(this.inlineComments.length === 0);
   }
 }

@@ -11,16 +11,23 @@ export class TextHandler {
 
     let paragrahNum = 0;
 
-    // 遍历段
+    // 遍历段,分割句子，还原分隔符，提供句子段落号信息并返回
     for (let paragraph of paragraphSeq) {
       if (isNullOrUndefined(paragraph)) { continue; }
       let sentenceNum = 0;
       paragraph = paragraph.replace(/<p>/, '');  // 删除<p>标签
-      let spliter: string[] = paragraph.match(/[.\u3002\uff1f\uff01]+/g); // 记录句子分割符
-      let allSentences: string[] = paragraph.split(/[.\u3002\uff1f\uff01]+/); // 分割句子到数组
+      let spliter: string[] = paragraph.match(/[.\u3002\uff1f\uff01]+\)?/g); // 记录句子分割符
+      let allSentences: string[] = paragraph.split(/[.\u3002\uff1f\uff01]+\)?/); // 分割句子到数组
 
+      console.log(spliter);
+      console.log(allSentences);
       // 初始化该段落数组
       sentences.push([]);
+
+      if (!isNullOrUndefined(allSentences) && !isNullOrUndefined(spliter) && (allSentences.length - spliter.length) === 1) {
+        allSentences[allSentences.length - 2] += allSentences[allSentences.length - 1];
+        allSentences.pop();
+      }
 
       // 遍历段落中的句子, 将失去的分隔符添加回去，添加判断条件防止未匹配的符号丢失（例如右边小括号等）
       for (let sentence of allSentences) {
