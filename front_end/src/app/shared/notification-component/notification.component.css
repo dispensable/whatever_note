@@ -1,0 +1,9 @@
+div.notification {
+  z-index: 2;
+  position: fixed;
+  left: 30%;
+  right: 30%;
+  width: 40%;
+  opacity: 0.7;
+  text-align: center;
+}

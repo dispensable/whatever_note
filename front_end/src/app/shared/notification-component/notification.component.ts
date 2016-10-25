@@ -1,14 +1,37 @@
 /**
  * Created by dispensable on 2016/10/11.
  */
-import {Component} from '@angular/core';
+import {
+  Component,
+  trigger,
+  state,
+  style,
+  transition,
+  animate} from '@angular/core';
 import { NotificationService } from './notification.service';
 import { Notification } from './notification';
 
 @Component({
   selector: '<notification>',
   templateUrl: './notification.component.html',
-  styleUrls: ['../bootstrap.css'],
+  styleUrls: ['../bootstrap.css', './notification.component.css'],
+  animations: [
+  trigger('flyInOut', [
+    state('in', style({opacity: 1, transform: 'translateX(0)'})),
+    transition('void => *', [
+      style({
+        opacity: 0,
+        transform: 'translateY(-100%)'
+      }),
+      animate('0.2s ease-in')
+    ]),
+    transition('* => void', [
+      animate('0.2s 10 ease-in', style({
+        opacity: 0,
+        transform: 'translateY(-100%)'
+      }))
+    ])
+  ])],
 })
 
 export class NotificationComponent {
@@ -76,5 +99,10 @@ export class NotificationComponent {
 
   close() {
     this.isNewExist = false;
+  }
+
+  getState() {
+    if (this.isNewExist) { return 'in';}
+    else { return 'out'; }
   }
 }

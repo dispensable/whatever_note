@@ -19,8 +19,6 @@ export class TextHandler {
       let spliter: string[] = paragraph.match(/[.\u3002\uff1f\uff01]+\)?/g); // 记录句子分割符
       let allSentences: string[] = paragraph.split(/[.\u3002\uff1f\uff01]+\)?/); // 分割句子到数组
 
-      console.log(spliter);
-      console.log(allSentences);
       // 初始化该段落数组
       sentences.push([]);
 

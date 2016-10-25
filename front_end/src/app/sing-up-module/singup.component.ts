@@ -153,6 +153,13 @@ export class SingUpComponent {
     )
   }
 
+  noteme() {
+    this.notification.content = 'this is the notify! **bload**';
+    this.notification.type = 3;
+    this.notification.timer = 3000;
+    this.notify.pushNotification(this.notification);
+  }
+
   singin() {
     this.router.navigate(['/singin']);
   }
