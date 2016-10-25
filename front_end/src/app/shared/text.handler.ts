@@ -2,6 +2,7 @@
  * Created by dispensable on 2016/10/22.
  */
 import { Comment } from '../shared/comment';
+import {isNullOrUndefined} from "util";
 
 export class TextHandler {
   static genShowText(pureText: string) {
@@ -9,21 +10,26 @@ export class TextHandler {
     let sentences: Array<Array<any>> = []; //[[[01], [02], [03] ...], [[11], [12], [13] ...]...]
 
     let paragrahNum = 0;
-    paragraphSeq.pop(); // 删除最后空字符段落
 
     // 遍历段
     for (let paragraph of paragraphSeq) {
+      if (isNullOrUndefined(paragraph)) { continue; }
       let sentenceNum = 0;
       paragraph = paragraph.replace(/<p>/, '');  // 删除<p>标签
       let spliter: string[] = paragraph.match(/[.\u3002\uff1f\uff01]+/g); // 记录句子分割符
       let allSentences: string[] = paragraph.split(/[.\u3002\uff1f\uff01]+/); // 分割句子到数组
-      // 删除最后一个空字符串
-      allSentences.pop();
+
       // 初始化该段落数组
       sentences.push([]);
 
-      // 遍历段落中的句子
+      // 遍历段落中的句子, 将失去的分隔符添加回去，添加判断条件防止未匹配的符号丢失（例如右边小括号等）
       for (let sentence of allSentences) {
+        // spliter不存在，直接跳过还原分隔符的流程
+        if (isNullOrUndefined(spliter)) {
+          sentences[paragrahNum].push([sentence, paragrahNum, sentenceNum]);
+          break;
+        }
+        if (isNullOrUndefined(paragraph)) { continue; }
         sentences[paragrahNum].push([sentence + spliter[sentenceNum], paragrahNum, sentenceNum]);
         sentenceNum++;
       }

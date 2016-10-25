@@ -10,6 +10,7 @@ import { Post } from '../shared/post';
 import { TextHandler } from '../shared/text.handler';
 import { MarkdownToHtmlPipe } from "../shared/markdown.module/index";
 import { Location } from '@angular/common';
+import {isUndefined} from "util";
 
 @Component({
   selector: 'post',
@@ -112,7 +113,10 @@ export class PostComponent implements OnInit{
         post => {
           this.post = post;
           this.content = TextHandler.genShowText(this.markdown.transform(post.content));
-          this.content = TextHandler.addComments(this.content, TextHandler.handleComments(this.comments));
+
+          if (!isUndefined(this.comments)) {
+            this.content = TextHandler.addComments(this.content, TextHandler.handleComments(this.comments));
+          }
         },
         error => {
           this.error = error;
