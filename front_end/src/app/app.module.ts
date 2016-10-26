@@ -49,7 +49,7 @@ import { DropdownModule } from 'ng2-dropdown';
     AUTH_PROVIDERS,
     {provide: JwtHelper, useClass: JwtHelper},
     AuthService,
-    {provide: Notification, useValue: new Notification('', 1, '', 1, new Date().getTime())}
+    {provide: Notification, useValue: new Notification('', 1, '', 1, new Date().getTime(), '', false)}
   ],
   bootstrap: [AppComponent]
 })

@@ -141,7 +141,7 @@ export class SingUpComponent {
       () => {
         this.hasresend = true;
         setTimeout(this.hasresend = false, 60000);
-        this.notification.from = "System";
+        this.notification.info_from = "System";
         this.notification.content = 'The confirmation has been resent, please check your email inbox or trashbox.';
         this.notification.type = 1;
         this.notification.timer = -1;
@@ -149,7 +149,7 @@ export class SingUpComponent {
       },
       error => { this.errorMessage = <any>error;
         // notify user
-        this.notification.from = "System";
+        this.notification.info_from = "System";
         this.notification.content = this.errorMessage;
         this.notification.type = 3;
         this.notification.timer = -1;
@@ -163,12 +163,12 @@ export class SingUpComponent {
     // this.notification.type = 3;
     // this.notification.timer = 3000;
     // this.notify.pushNotification(this.notification);
-    let notify = new Notification('System', 1, 'green 5s', 5000, new Date().getTime());
-    this.notify.pushNotification(notify);
-    let fuck = new Notification('me', 2, 'pink 4s', 4000, new Date().getTime());
-    this.notify.pushNotification(fuck);
-    this.notify.pushNotification(new Notification('test:::', 3, 'red 5s to close', -1, new Date().getTime()));
-    this.notify.pushNotification(new Notification('test', 3, 'red 5s', 5000, new Date().getTime()));
+    // let notify = new Notification('System', 1, 'green 5s', 5000, new Date().getTime());
+    // this.notify.pushNotification(notify);
+    // let fuck = new Notification('me', 2, 'pink 4s', 4000, new Date().getTime());
+    // this.notify.pushNotification(fuck);
+    // this.notify.pushNotification(new Notification('test:::', 3, 'red 5s to close', -1, new Date().getTime()));
+    // this.notify.pushNotification(new Notification('test', 3, 'red 5s', 5000, new Date().getTime()));
   }
 
   singin() {

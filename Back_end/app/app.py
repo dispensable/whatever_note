@@ -20,7 +20,7 @@ def make_app():
         (r'/api/users/([abcdef0123456789]*)/posts', user_data_handler.UserPostsHandler),
         (r'/api/users/mentionlist', user_data_handler.MentionListHandler),
         (r'/api/websocket', websockets_handler.EchoWebSocket),
-        (r'/api/notifications', notifications_data.NotifyHandler),
+        (r'/api/notifications', notification_handler.NotifyHandler),
     ], login_url='http://localhost:4200/singin')
 
 

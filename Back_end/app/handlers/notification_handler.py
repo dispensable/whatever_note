@@ -1,5 +1,5 @@
 # notification handle
-from model import notification_data as info_data
+from model import notifications_data as info_data
 
 from .base_handler import BasicHandler
 
