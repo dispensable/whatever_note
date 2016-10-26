@@ -4,6 +4,22 @@ div.notification {
   left: 30%;
   right: 30%;
   width: 40%;
-  opacity: 0.7;
-  text-align: center;
+  opacity: 0.8;
+  text-align: left;
+}
+
+strong#from-where {
+  float: left;
+}
+
+span#alert-time {
+  float: right;
+}
+
+button#close-button {
+  float: right;
+}
+
+img#notify-icon {
+  float: left;
 }

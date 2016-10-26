@@ -35,10 +35,8 @@ import { Notification } from './notification';
 })
 
 export class NotificationComponent {
-
   // 控制通知可见性
   isNewExist = false;
-  notification = new Notification(1, 'init', 10);
 
   // 控制关闭按钮是否存在
   closeExist = true;
@@ -49,13 +47,36 @@ export class NotificationComponent {
   warningClass = false;
   dangerClass = false;
 
-  constructor(private notificationData: NotificationService) {
+  notifications: Array<any> = [];
+
+  constructor(private notificationData: NotificationService, private notification: Notification) {
     this.notificationData.notification$.subscribe(
       notification => {
-        this.isNewExist = true;
-        this.notification = notification;
+        this.notifications.push(notification);
+        this.notifications = this.notifications.sort(this.notifySort);
+        if (this.isNewExist === false) {
+         this.showNotify();
+        }
+      },
+      error => {
+        this.isNewExist = false;
+      }
+    )
+  }
 
-        //显示类型 TODO:重写精简逻辑
+  close() {
+    this.isNewExist = false;
+    this.isNewExist = false;
+    this.showNotify();
+  }
+
+  getState() {
+    if (this.isNewExist) { return 'in';}
+    else { return 'out'; }
+  }
+
+  cssHandler() {
+    //显示类型 TODO:重写精简逻辑
         if (this.notification.type == 0) {
           this.successClass = true;
           this.infoClass = false;
@@ -82,27 +103,28 @@ export class NotificationComponent {
           this.warningClass = false;
           this.dangerClass = false;
         }
-        //显示时间 -1不会自动消失
-        if (this.notification.timer > 0) {
-          this.closeExist = false;
-          setTimeout(() => this.isNewExist = false, this.notification.timer);
-        } else {
-          this.closeExist = true;
-        }
-
-      },
-      error => {
-        this.isNewExist = false;
-      }
-    )
   }
 
-  close() {
-    this.isNewExist = false;
+  timerHandler(): void {
+    //显示时间 -1不会自动消失
+    if (this.notification.timer > 0) {
+      this.closeExist = false;
+      setTimeout(() => {this.isNewExist = false; this.showNotify();}, this.notification.timer);
+    } else {
+      this.closeExist = true;
+    }
   }
 
-  getState() {
-    if (this.isNewExist) { return 'in';}
-    else { return 'out'; }
+  showNotify() {
+    if (this.notifications.length > 0) {
+      this.notification = this.notifications.shift();
+      this.cssHandler();
+      this.isNewExist = true;
+      this.timerHandler();
+    }
+  }
+
+  notifySort(a: Notification, b: Notification) {
+    return a.type - b.type;
   }
 }

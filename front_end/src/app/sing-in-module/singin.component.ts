@@ -19,11 +19,11 @@ export class SingInComponent {
     private singinService: SingInService,
     private router: Router,
     private notify: NotificationService,
-    private jwt: JwtHelper,
+    private notification: Notification,
   ){ }
 
   errorMessage: string;
-  notification = new Notification(1, '', 0);
+  // notification = new Notification('', 1, '', 0);
 
   login(email: string, password: string) {
     this.singinService.getToken(email, password).subscribe(

@@ -12,7 +12,11 @@ import { PublishModule } from './publish.module/publish.module';
 import { PostModule } from './post-module/post.module';
 
 import { NotificationComponent } from './shared/notification-component/notification.component';
+import { Notification } from './shared/notification-component/notification';
 import { AuthService } from './shared/auth.service';
+
+// css skeleton
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // jwt support
 import { AUTH_PROVIDERS } from 'angular2-jwt';
@@ -33,13 +37,20 @@ import { DropdownModule } from 'ng2-dropdown';
     UserProfileModule,
     PublishModule,
     PostModule,
+    NgbModule.forRoot(),
     routing
   ],
   declarations: [
     AppComponent,
     NotificationComponent,
   ],
-  providers: [ appRoutingProviders, AUTH_PROVIDERS, {provide: JwtHelper, useClass: JwtHelper}, AuthService ],
+  providers: [
+    appRoutingProviders,
+    AUTH_PROVIDERS,
+    {provide: JwtHelper, useClass: JwtHelper},
+    AuthService,
+    {provide: Notification, useValue: new Notification('', 1, '', 1, new Date().getTime())}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

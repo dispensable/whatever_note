@@ -19,12 +19,13 @@ export class HomeComponent implements OnInit{
   constructor(
     private jwtHelper: JwtHelper,
     private notify: NotificationService,
-    private timeline: HomeTimeLineService
+    private timeline: HomeTimeLineService,
+    private notification: Notification,
   ){}
 
   title = 'Whatever Note';
   username = 'stranger';
-  notification = new Notification(2, '', -1);
+  // notification = new Notification(2, '', -1);
   posts: Post[] = [];
 
   next_page : string;

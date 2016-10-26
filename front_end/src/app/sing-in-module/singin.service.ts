@@ -20,9 +20,9 @@ export class Token {
 @Injectable()
 export class SingInService {
   private userUrl = 'http://localhost:4200/api/token';  // URL to web API
-  notification = new Notification(1, 'some text to show to user for some target', 3000);
+  //notification = new Notification(1, 'some text to show to user for some target', 3000);
 
-  constructor (private http: Http, private notificationData: NotificationService) {}
+  constructor (private http: Http, private notificationData: NotificationService, notification: Notification) {}
 
   getToken(email: string, password: string): Observable<Token> {
     let body = JSON.stringify({ email, password });
