@@ -154,7 +154,6 @@ export class CommentsComponent implements OnInit{
   }
 
   reply(commentId: string) {
-    console.log(commentId);
     this.isRplied[commentId] = !this.isRplied[commentId];
   }
 

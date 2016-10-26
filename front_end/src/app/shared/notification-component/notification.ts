@@ -14,13 +14,13 @@ enum NotificationType {
  *  timer: 通知出现的时间,负值表示不自动消失 单位:ms */
 export class Notification {
   constructor(
-    public from: string,
+    public info_from: string,
     public type: NotificationType,
     public content: string,
     // TODO: add operation to support quick reply
     public timer: number,
     public date: number,
-  ) {
-
-  }
+    public info_to: string,
+    public has_read: boolean,
+  ) {}
 }

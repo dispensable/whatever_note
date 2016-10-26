@@ -95,3 +95,4 @@ class ConfirmTokenHandler(BasicHandler):
         else:
             self.set_status(403, 'You account has been confirmed.')
             self.redirect(self.get_login_url())
+

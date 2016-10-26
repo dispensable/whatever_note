@@ -48,4 +48,3 @@ class UserIdHandler(BasicHandler):
             self.write({'username': username, 'userid': userid})
         else:
             self.set_status(404, 'No such user.')
-

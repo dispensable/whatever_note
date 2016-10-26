@@ -3,6 +3,7 @@ import tornado.web
 
 # user handle
 from model import user_data
+from .handler_const import *
 
 
 class BasicHandler(tornado.web.RequestHandler):
@@ -13,7 +14,7 @@ class BasicHandler(tornado.web.RequestHandler):
         token = self.request.headers["Access-token"]
         if user_data.verify_auth_token(SECRET_KEY, token):
             pay_load = user_data.verify_auth_token(SECRET_KEY, token)
-            return pay_load['userid']
+            return pay_load
         else:
             return None
 
