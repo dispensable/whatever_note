@@ -5,6 +5,7 @@ import json
 import jwt
 import bcrypt
 from .database_connection import OpenCollection, str2object_id
+from bson.dbref import DBRef
 
 
 class Permission(object):
@@ -138,6 +139,20 @@ def get_userid_by_name(username: str):
     with OpenCollection('user') as user:
         print('username: {0}'.format(username))
         return user.find_one({'username': username}, {'_id': True})['_id']._ObjectId__id.hex()
+
+
+def add_notification(userid: str, notification_obj_id):
+    with OpenCollection('user') as user:
+        user.update({'_id': str2object_id(userid)},
+                    {'$push': {'notifications':
+                                       DBRef('notification', notification_obj_id)}})
+
+
+def del_notification_by_id(userid: str, notification_id: str):
+    with OpenCollection('user') as user:
+        user.update({'_id': str2object_id(userid)},
+                    {'$pull': {'notifications':
+                                       DBRef('notification', str2object_id(notification_id))}})
 
 if __name__ == "__main__":
     pass

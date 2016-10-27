@@ -26,11 +26,23 @@ class NotifyHandler(BasicHandler):
                 self.set_status(404, 'Not found unread message.')
 
     def post(self):
-        notification_list = self.json_args['notifications']
+        notification = self.json_args['notification']
         try:
-            info_data.create_notification(notification_list)
+            info_data.create_notification(notification)
             self.set_status(201, 'Create success!')
         except Exception as e:
             print(e)
             self.set_status(500, 'create failed!')
 
+    def put(self):
+        """
+        http PUT localhost:8888/api/notifications?userid=xxxx&notification_id=xxxxx
+        :return:
+        """
+        userid = self.get_argument('userid')
+        notification_id = self.get_argument('notification_id')
+        try:
+            info_data.set_notification_read(userid, notification_id)
+        except Exception as e:
+            self.set_status(500, '修改未读状态错误')
+            raise e

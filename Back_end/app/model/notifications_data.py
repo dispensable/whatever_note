@@ -2,6 +2,7 @@
 # -*-coding:utf-8-*-
 
 from .database_connection import OpenCollection, str2object_id
+from .user_data import del_notification_by_id
 
 
 class Notification(object):
@@ -16,21 +17,22 @@ class Notification(object):
         return "{0} @ {1} say: {2} ".format(self.info_from, self.date, self.content)
 
 
-def creat_notification(notification_list: list) -> None:
+def creat_notification(notification: dict):
+    """
+    :param notification:
+             notification = {
+            'info_from': notification.info_from,
+            'info_to': notification.info_to,
+            'type': notification.type,
+            'content': notification.content,
+            'timer': notification.timer,
+            'date': notification.date,
+            'has_read': notification.has_read
+        }
+    :return: 保存到数据库
+    """
     with OpenCollection('notification') as notify_collection:
-        for notification in notification_list:
-
-            notification = {
-                'info_from': notification.info_from,
-                'info_to': notification.info_to,
-                'type': notification.type,
-                'content': notification.content,
-                'timer': notification.timer,
-                'date': notification.date,
-                'has_read': notification.has_read
-            }
-
-            notify_collection.insert(notification)
+        return notify_collection.insert(notification)
 
 
 def get_notifications(userid: str):
@@ -57,7 +59,7 @@ def get_unread_info(userid: str):
             return results
 
 
-def set_notifications_read(infos_id: list):
+def set_notification_read(userid: str, notification_id: str):
     with OpenCollection('notification') as notification_collection:
-        for info_id in infos_id:
-            notification_collection.update({'_id': str2object_id(info_id)}, {'$set': {'has_read': True}})
+        notification_collection.update({'_id': str2object_id(notification_id)}, {'$set': {'has_read': True}})
+    del_notification_by_id(userid, notification_id)
