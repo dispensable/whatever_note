@@ -7,7 +7,7 @@ import * as Rx from 'rxjs/Rx';
 	template: `
 		<div class="messages">
 			<h2>Recieved messages:</h2>
-			<p *ngFor="let msg of messages">{{msg.author}}: {{msg.message}} ({{msg.newDate}})</p>
+			<p *ngFor="let msg of messages">{{msg.author}}: {{msg.message}} {{msg.date}}</p>
 		</div>
 	`
 })

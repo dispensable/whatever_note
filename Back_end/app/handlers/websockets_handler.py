@@ -3,6 +3,7 @@
 
 from tornado import websocket
 import json
+from model import notifications_data
 
 
 class EchoWebSocket(websocket.WebSocketHandler):
@@ -11,9 +12,12 @@ class EchoWebSocket(websocket.WebSocketHandler):
     def open(self):
         EchoWebSocket.users.add(self)
         print("WebSocket opened")
+        print(EchoWebSocket.users)
 
     def on_message(self, message):
         print(json.loads(message))
+
+        notifications_data.creat_notification()
 
         for chater in EchoWebSocket.users:
             chater.write_message(message)

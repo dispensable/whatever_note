@@ -29,7 +29,8 @@ export class CreateMessage {
 	btnDisabled: boolean = false;
 	private message = {
 		author: 'peter',
-		message: ''
+		message: '',
+    date: new Date()
 	};
 	constructor(private chatService: ChatService) {
 

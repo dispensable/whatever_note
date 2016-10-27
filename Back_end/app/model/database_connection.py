@@ -3,22 +3,23 @@ import bson
 import binascii
 
 
-class open_database(object):
-    def __init__(self, collection_name, host='localhost', port=27017,
-                 document_class=dict, tz_aware=False, connect=True, databasename='whatever_note'):
-        self.db_con = MongoClient(host, port, document_class, tz_aware, connect)
-        self.collection = self.db_con.get_database(databasename).get_collection(collection_name)
+class OpenCollection(object):
+    db_con = MongoClient(host='localhost', port=27017,
+                         document_class=dict, tz_aware=False, connect=True)
+    database = db_con.get_database('whatever_note')
+
+    def __init__(self, collection_name):
+        self.db_con = OpenCollection.db_con
+        self.database = OpenCollection.database
+        self.collection = self.database.get_collection(collection_name)
 
     def __enter__(self):
         return self.collection
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        try:
-            if exc_type is not None:
-                print("database error, get connetion error or get collection error")
-                raise exc_type
-        finally:
-            self.db_con.close()
+        if exc_type is not None:
+            print("database error, get connetion error or get collection error")
+            raise exc_type
 
 
 class open_db_con(object):

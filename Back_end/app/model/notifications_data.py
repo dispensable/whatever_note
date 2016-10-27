@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*-coding:utf-8-*-
 
-from .database_connection import open_database, str2object_id
+from .database_connection import OpenCollection, str2object_id
 
 
 class Notification(object):
@@ -17,7 +17,7 @@ class Notification(object):
 
 
 def creat_notification(notification_list: list) -> None:
-    with open_database('notification') as notify_collection:
+    with OpenCollection('notification') as notify_collection:
         for notification in notification_list:
 
             notification = {
@@ -35,7 +35,7 @@ def creat_notification(notification_list: list) -> None:
 
 def get_notifications(userid: str):
     """ 获取所有通知 """
-    with open_database('notification') as notification_collection:
+    with OpenCollection('notification') as notification_collection:
         all_notifications = notification_collection.find({'info_to': userid})
         if all_notifications:
             results = {}
@@ -47,7 +47,7 @@ def get_notifications(userid: str):
 
 def get_unread_info(userid: str):
     """ 获取所有未读通知 """
-    with open_database('notification') as notification_collection:
+    with OpenCollection('notification') as notification_collection:
         all_notifications = notification_collection.find({'info_to': userid, 'has_read': False})
         if all_notifications:
             results = {}
@@ -58,6 +58,6 @@ def get_unread_info(userid: str):
 
 
 def set_notifications_read(infos_id: list):
-    with open_database('notification') as notification_collection:
+    with OpenCollection('notification') as notification_collection:
         for info_id in infos_id:
             notification_collection.update({'_id': str2object_id(info_id)}, {'$set': {'has_read': True}})

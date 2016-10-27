@@ -4,7 +4,7 @@
 import json
 import jwt
 import bcrypt
-from .database_connection import open_database, str2object_id, open_db_con
+from .database_connection import OpenCollection, str2object_id
 
 
 class Permission(object):
@@ -34,7 +34,7 @@ def check_password(password: bytes, hashed: bytes) -> bool:
 
 
 def registe(user_json):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         # 将jason转化为字典
         user_data = json.loads(user_json)
         user_data['password'] = user_data['password'].encode()
@@ -81,7 +81,7 @@ def verify_auth_token(secret_key, token):
 
 
 def verify_password(email, password):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         user_data = user.find_one({'email': email})
         if user_data and password:
             hashed = user_data['password']
@@ -89,53 +89,53 @@ def verify_password(email, password):
 
 
 def get_username_by_email(email):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return user.find_one({'email': email}, {'username': 1})['username']
 
 
 def is_name_exist(name):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return True if user.find_one({'username': name}) else False
 
 
 def is_email_exist(email):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return True if user.find_one({'email': email}) else False
 
 
 def confirm_user(username: str):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         if not user.find_one({'username': username})['confirmed']:
             user.update({'username': username}, {"$set": {"confirmed": True, "role": Role.user}}, multi=False)
 
 
 def has_confirmed(email):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return user.find_one({'email': email})['confirmed']
 
 
 def get_user_by_id(user_id: str) -> dict:
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return user.find_one({"_id": str2object_id(user_id)})
 
 
 def get_userid_by_email(email: str) -> dict:
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return user.find_one({'email': email})['_id']._ObjectId__id.hex()
 
 
 def get_user_by_objid(objid):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         return user.find_one({'_id': objid})
 
 
 def get_user_by_dbref(dbref):
-    with open_db_con() as db_con:
-        return db_con.dereference(dbref)
+    db_con = OpenCollection.database
+    return db_con.dereference(dbref)
 
 
 def get_userid_by_name(username: str):
-    with open_database('user') as user:
+    with OpenCollection('user') as user:
         print('username: {0}'.format(username))
         return user.find_one({'username': username}, {'_id': True})['_id']._ObjectId__id.hex()
 
