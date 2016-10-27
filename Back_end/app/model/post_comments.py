@@ -7,12 +7,13 @@ from .user_data import get_userid_by_name
 import time
 from bson.dbref import DBRef
 import re
+from . import notifications_data, user_data
 
 
 def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
     create_date = time.time()
     with OpenCollection('comments') as comments_collection:
-        content = at_mention_replace(content)
+        content = at_mention_replace(post_id, content)
         comment = {
             'content': content,
             'post_id': DBRef('post', str2object_id(post_id)),
@@ -85,7 +86,7 @@ def get_comments_by_post_id(post_id: str):
             return None
 
 
-def at_mention_replace(content: str) -> str:
+def at_mention_replace(post_id: str, content: str) -> str:
     # 找出@之后的用户名
     regx = re.compile(r'@([A-Za-z0-9_]+)\s')
     mentioned = re.findall(regx, content)
@@ -99,6 +100,22 @@ def at_mention_replace(content: str) -> str:
         userid = get_userid_by_name(mention)
         if (len(mention) > 15) or (userid is None):
             continue
+
+        # 添加@提醒到提醒中心
+        notification = {
+            'info_from': post_id,
+            'info_to': userid,
+            'type': 1,
+            'content': content,
+            'timer': 3,
+            'date': time.time(),
+            'has_read': False,
+        }
+
+        notification_id = notifications_data.creat_notification(notification)
+        user_data.add_notification(userid, notification_id)
+
+        # 替换连接
         repl = '<a href="/profile/{0}">{1}</a>'.format(userid, '@{0} '.format(mention))
         content = re.sub('@' + mention + ' ', repl, content)
     # 返回

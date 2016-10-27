@@ -10,6 +10,8 @@ import { SingInModule } from './sing-in-module/singin.module';
 import { UserProfileModule } from './user-module/user-profile.module';
 import { PublishModule } from './publish.module/publish.module';
 import { PostModule } from './post-module/post.module';
+import { NotificationCenterModule } from './notification-center.module/notification-center.module';
+import { NotificationCenterComponent } from './notification-center.module/notificaiton-center.component';
 
 import { NotificationComponent } from './shared/notification-component/notification.component';
 import { Notification } from './shared/notification-component/notification';
@@ -38,11 +40,12 @@ import { DropdownModule } from 'ng2-dropdown';
     PublishModule,
     PostModule,
     NgbModule.forRoot(),
+    NotificationCenterModule,
     routing
   ],
   declarations: [
     AppComponent,
-    NotificationComponent,
+    NotificationComponent
   ],
   providers: [
     appRoutingProviders,

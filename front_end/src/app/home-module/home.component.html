@@ -1,14 +1,8 @@
-
 <h2>Welcome, {{username}}</h2>
-
-<h1>Angular 2 WebSockets example</h1>
-		<create-message></create-message>
-		<hr />
-		<chat-component></chat-component>
 
 <div *ngFor="let post of posts">
   <hr>
-  <h1><a routerLink="/post/{{post.post_id}}">{{post.post_head  || 'No head'}}</a></h1>
+  <header><a routerLink="/post/{{post.post_id}}">{{post.post_head  || 'No head'}}</a></header>
     <div [innerHTML]="content | MarkdownToHtml"></div>
   <p>Posted by: <a routerLink="/profile/{{ post.post_by_id }}">{{ post.post_by_name }}</a>
     Create at: {{post.create_date * 1000 | date:'medium'}}</p>

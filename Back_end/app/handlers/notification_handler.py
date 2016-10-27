@@ -1,5 +1,6 @@
 # notification handle
 from model import notifications_data as info_data
+from model import user_data
 
 from .base_handler import BasicHandler
 
@@ -28,7 +29,8 @@ class NotifyHandler(BasicHandler):
     def post(self):
         notification = self.json_args['notification']
         try:
-            info_data.create_notification(notification)
+            info_id = info_data.create_notification(notification)
+            user_data.add_notification(info_id)
             self.set_status(201, 'Create success!')
         except Exception as e:
             print(e)
@@ -46,3 +48,14 @@ class NotifyHandler(BasicHandler):
         except Exception as e:
             self.set_status(500, '修改未读状态错误')
             raise e
+
+
+class PersonalNotifications(BasicHandler):
+    """ http get http://localhost:8888/api/notifications/<userid>"""
+    def get(self, userid):
+        notifydict = user_data.get_notifications(userid)
+        print(notifydict)
+        if notifydict:
+            self.write(notifydict)
+        else:
+            self.set_status(404, 'no notifications')

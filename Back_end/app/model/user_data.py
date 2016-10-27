@@ -141,11 +141,27 @@ def get_userid_by_name(username: str):
         return user.find_one({'username': username}, {'_id': True})['_id']._ObjectId__id.hex()
 
 
+def get_notifications(userid: str) -> dict:
+
+    with OpenCollection('user') as user:
+        n_dbref = user.find_one({'_id': str2object_id(userid)}, {'notifications': True})
+
+    results = {}
+
+    for index, notify_dbref in enumerate(n_dbref['notifications']):
+        notification = OpenCollection.database.dereference(notify_dbref)
+        print(notification)
+        notification['id'] = notification['_id']._ObjectId__id.hex()
+        del notification['_id']
+        results[index] = notification
+    return results
+
+
 def add_notification(userid: str, notification_obj_id):
     with OpenCollection('user') as user:
         user.update({'_id': str2object_id(userid)},
                     {'$push': {'notifications':
-                                       DBRef('notification', notification_obj_id)}})
+                                   DBRef('notification', notification_obj_id)}})
 
 
 def del_notification_by_id(userid: str, notification_id: str):

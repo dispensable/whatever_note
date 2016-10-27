@@ -21,6 +21,7 @@ def make_app():
         (r'/api/users/mentionlist', user_data_handler.MentionListHandler),
         (r'/api/websocket', websockets_handler.EchoWebSocket),
         (r'/api/notifications', notification_handler.NotifyHandler),
+        (r'/api/notifications/([abcdef0123456789]*)', notification_handler.PersonalNotifications),
     ], login_url='http://localhost:4200/singin')
 
 

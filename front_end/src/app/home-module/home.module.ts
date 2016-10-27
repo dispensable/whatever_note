@@ -13,28 +13,19 @@ import { NotificationService } from "../shared/notification-component/notificati
 import { HomeTimeLineService } from "./hometimeline.service";
 import { CommonModule} from "@angular/common";
 import { MarkdownModule } from "../shared/markdown.module/markdown.module";
-import { ChatComponent } from "../chat.module/chat.component";
-
-import { ChatService } from "../chat.module/chat.service";
-import { CreateMessage } from "../chat.module/create-component";
-import { FormsModule } from "@angular/forms";
-import { WebSocketService } from '../chat.module/websocket.service';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
-    ChatComponent,
-    CreateMessage,
   ],
   imports: [
     HttpModule,
     CommonModule,
     MarkdownModule,
-    FormsModule,
     routing
   ],
   providers: [ homeRoutingProviders, {provide: JwtHelper, useClass: JwtHelper},
-    AuthGuard, NotificationService, HomeTimeLineService, ChatService, WebSocketService],
+    AuthGuard, NotificationService, HomeTimeLineService],
 })
 export class HomeModule { }

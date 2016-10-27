@@ -6,7 +6,10 @@ enum NotificationType {
   success,
   info,
   warning,
-  danger
+  danger,
+  personalMessage,
+  groupMessage,
+  globleMessage,
 }
 
 /** type: 决定了通知的类型,success, info, waring, danger可选
