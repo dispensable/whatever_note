@@ -8,6 +8,7 @@ import time
 from bson.dbref import DBRef
 import re
 from . import notifications_data, user_data
+from handlers import websockets_handler
 
 
 def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
@@ -95,28 +96,37 @@ def at_mention_replace(post_id: str, content: str) -> str:
     if len(mentioned) > 6:
         mentioned = mentioned[0: 4]
 
+    # 构造消息对象
+    notification = {
+        'info_from': post_id,
+        'info_to': [],
+        'type': 1,
+        'content': content,
+        'timer': 3000,
+        'date': time.time(),
+        'has_read': False,
+    }
+
     # 替换为显影带链接的文本
     for mention in mentioned:
         userid = get_userid_by_name(mention)
         if (len(mention) > 15) or (userid is None):
             continue
 
-        # 添加@提醒到提醒中心
-        notification = {
-            'info_from': post_id,
-            'info_to': userid,
-            'type': 1,
-            'content': content,
-            'timer': 3,
-            'date': time.time(),
-            'has_read': False,
-        }
-
-        notification_id = notifications_data.creat_notification(notification)
-        user_data.add_notification(userid, notification_id)
+        notification['info_to'].append(userid)
 
         # 替换连接
         repl = '<a href="/profile/{0}">{1}</a>'.format(userid, '@{0} '.format(mention))
         content = re.sub('@' + mention + ' ', repl, content)
+
+    if notification['info_to'] is not None:
+        # 添加@提醒到提醒中心
+        notification_id = notifications_data.creat_notification(notification)
+
+        # 推送到客户端
+        notification['id'] = notification['_id']._ObjectId__id.hex()
+        del notification['_id']
+        websockets_handler.EchoWebSocket.push_message(notification, notification_id)
+
     # 返回
     return content

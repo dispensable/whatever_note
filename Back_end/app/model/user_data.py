@@ -137,12 +137,12 @@ def get_user_by_dbref(dbref):
 
 def get_userid_by_name(username: str):
     with OpenCollection('user') as user:
-        print('username: {0}'.format(username))
-        return user.find_one({'username': username}, {'_id': True})['_id']._ObjectId__id.hex()
+        this_user = user.find_one({'username': username}, {'_id': True})
+        if this_user is not None:
+            return this_user['_id']._ObjectId__id.hex()
 
 
 def get_notifications(userid: str) -> dict:
-
     with OpenCollection('user') as user:
         n_dbref = user.find_one({'_id': str2object_id(userid)}, {'notifications': True})
 
@@ -150,7 +150,6 @@ def get_notifications(userid: str) -> dict:
 
     for index, notify_dbref in enumerate(n_dbref['notifications']):
         notification = OpenCollection.database.dereference(notify_dbref)
-        print(notification)
         notification['id'] = notification['_id']._ObjectId__id.hex()
         del notification['_id']
         results[index] = notification

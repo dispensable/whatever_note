@@ -23,7 +23,8 @@ export class Notification {
     // TODO: add operation to support quick reply
     public timer: number,
     public date: number,
-    public info_to: string,
+    public info_to: string[],
     public has_read: boolean,
+    public token: string,
   ) {}
 }

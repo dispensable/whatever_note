@@ -1,0 +1,6 @@
+div.notificationList {
+  position: absolute;
+  z-index: 2;
+  left: 45%;
+  right: 25%;
+}

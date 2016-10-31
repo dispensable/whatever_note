@@ -12,7 +12,7 @@ import {Api} from "../shared/api";
 @Component({
   selector: 'notify-center',
   templateUrl: 'notification-center.component.html',
-  styleUrls: ['../shared/bootstrap.css'],
+  styleUrls: ['../shared/bootstrap.css', './notification.css'],
 })
 export class NotificationCenterComponent implements OnInit{
 
@@ -40,27 +40,30 @@ export class NotificationCenterComponent implements OnInit{
       let userid = localStorage.getItem('userid');
       this.baseData.getData(Api.getPersonalNotifications(userid)).subscribe(
         notifications => {
-          console.log('fuck');
-          console.log(notifications);
           for (let i in notifications) {
-            console.log(i);
-            console.log('workding');
             this.notifications.push(notifications[i.toString()]);
-            console.log(notifications);
             this.numOfNotifications += 1;
           }
+
+          let handshakeNotification = new Notification(userid, 0, '', 0, new Date().getTime(), [], false, localStorage.getItem('token'));
+          this.ncService.notification.next(handshakeNotification);
         },
         error => {
           console.log(error);
         }
       );
     }
-
   }
 
   showNotifications() {
     this.showNotifyList = !this.showNotifyList;
     console.log("why click me so hard ?")
+  }
+
+  sendMessage() {
+    let userid = localStorage.getItem('userid');
+    let handshakeNotification = new Notification(userid, 1, 'test for websocket', 0, new Date().getTime(), [userid], false, localStorage.getItem('token'));
+    this.ncService.notification.next(handshakeNotification);
   }
 
 }

@@ -54,7 +54,6 @@ class PersonalNotifications(BasicHandler):
     """ http get http://localhost:8888/api/notifications/<userid>"""
     def get(self, userid):
         notifydict = user_data.get_notifications(userid)
-        print(notifydict)
         if notifydict:
             self.write(notifydict)
         else:

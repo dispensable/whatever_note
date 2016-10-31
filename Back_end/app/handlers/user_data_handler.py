@@ -15,6 +15,7 @@ class UserHandler(BasicHandler):
             user['id'] = user['_id']._ObjectId__id.hex()
             del user['_id']
             del user['password']
+            del user['notifications']
 
             self.write(user)
         else:

@@ -1,13 +1,17 @@
-<span (click)="showNotifications()">Notification[{{numOfNotifications}}]</span>
+<div (click)="showNotifications()">Notification[{{numOfNotifications}}]</div>
+
 <div class="notificationList" *ngIf="showNotifyList">
-    <ngb-accordion [closeOthers]="true" activeIds="1" *ngFor="let message of notifications; let i = index;">
+    <ngb-accordion [closeOthers]="true" activeIds="0" *ngFor="let message of notifications; let i = index;">
     <ngb-panel id="{{i}}" title="{{message.info_from}}: {{message.content | slice:0:15}}...  @{{message.date}}">
       <template ngbPanelContent>
         {{message.content}}
       </template>
     </ngb-panel>
-  </ngb-accordion>
+    </ngb-accordion>
+
+  <button (click)="sendMessage()">hello</button>
 </div>
+
 
 <!--<ngb-panel id="2">-->
       <!--<template ngbPanelTitle>-->

@@ -10,7 +10,9 @@ const CHAT_URL = 'ws://localhost:8888/api/websocket';
 export interface Message {
 	author: string,
 	message: string,
-	newDate?: string
+	date: string,
+  sendto: string[],
+
 }
 
 @Injectable()

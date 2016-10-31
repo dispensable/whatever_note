@@ -11,17 +11,7 @@
       <!--<a class="nav-link" href="#">Link</a>-->
     <!--</li>-->
 
-    <li class="nav-item">
-      <notify-center class="nav-link"></notify-center>
-    </li>
-  </ul>
-
-  <form class="form-inline float-xs-right">
-    <input class="form-control" type="text" placeholder="Search">
-    <button class="btn btn-outline-success" type="submit">Search</button>
-  </form>
-
-  <div class="nav-item dropdown float-xs-right d-inline">
+    <div class="nav-item dropdown float-xs-right d-inline">
       <div class="row">
         <div class="col-xs-6">
           <div ngbDropdown class="d-inline-block">
@@ -36,6 +26,16 @@
         </div>
       </div>
   </div>
+
+  <form class="form-inline float-xs-right">
+    <input class="form-control" type="text" placeholder="Search">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+
+  <span class="nav-item" id="notification">
+    <notify-center *ngIf="isLogin()" class="nav-link"></notify-center>
+  </span>
+  </ul>
 </nav>
 
 <notification></notification>

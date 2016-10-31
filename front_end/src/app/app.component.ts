@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./shared/bootstrap.css']
+  styleUrls: ['./shared/bootstrap.css', './app.component.css']
 })
 export class AppComponent {
   constructor(private authService: AuthService, private router: Router) {}
