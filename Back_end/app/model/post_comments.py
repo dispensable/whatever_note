@@ -14,7 +14,8 @@ from handlers import websockets_handler
 def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
     create_date = time.time()
     with OpenCollection('comments') as comments_collection:
-        content = at_mention_replace(post_id, content)
+        post_by_name = user_data.get_user_by_id(post_by)['username']
+        content = at_mention_replace(post_by, content, post_by_name)
         comment = {
             'content': content,
             'post_id': DBRef('post', str2object_id(post_id)),
@@ -23,6 +24,8 @@ def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: 
             'hold': 0,
             'create_date': create_date,
             'post_by': DBRef('user', str2object_id(post_by)),
+            'post_by_id': post_by,
+            'post_by_name': post_by_name,
             'voted_ids': [],
             'p_num': p_num,
             's_num': s_num
@@ -87,7 +90,7 @@ def get_comments_by_post_id(post_id: str):
             return None
 
 
-def at_mention_replace(post_id: str, content: str) -> str:
+def at_mention_replace(post_by: str, content: str, post_by_name: str) -> str:
     # 找出@之后的用户名
     regx = re.compile(r'@([A-Za-z0-9_]+)\s')
     mentioned = re.findall(regx, content)
@@ -98,7 +101,8 @@ def at_mention_replace(post_id: str, content: str) -> str:
 
     # 构造消息对象
     notification = {
-        'info_from': post_id,
+        'info_from': post_by,
+        'info_from_name': post_by_name,
         'info_to': [],
         'type': 1,
         'content': content,

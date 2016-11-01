@@ -2,7 +2,7 @@
 
 <div class="notificationList" *ngIf="showNotifyList">
     <ngb-accordion [closeOthers]="true" activeIds="0" *ngFor="let message of notifications; let i = index;">
-    <ngb-panel id="{{i}}" title="{{message.info_from}}: {{message.content | slice:0:15}}...  @{{message.date}}">
+    <ngb-panel id="{{i}}" title="{{message.info_from_name}}: {{message.content | slice:0:15}}...  @{{message.date | date:'medium'}}">
       <template ngbPanelContent>
         {{message.content}}
       </template>
