@@ -3,4 +3,46 @@ div.notificationList {
   z-index: 2;
   left: 45%;
   right: 25%;
+  height: 1000%;
+  overflow: auto;
+}
+
+div.messages {
+  float: right;
+  position: fixed;
+  z-index: 3;
+  right: 5px;
+  bottom: 60px;
+  height: 25%;
+  width: 24%;
+  overflow: auto;
+  line-height: 1.2em;
+  margin: 1px;
+  font-size: small;
+}
+
+div.chat-input {
+  position: fixed;
+  bottom: 20px;
+  right: 5px;
+  z-index: 3;
+  width: 24%;
+  opacity: 0.8;
+  font-size: small;
+}
+
+
+span.global-message {
+  color: #55595c;
+  margin: 0.2em;
+}
+
+span.group-message {
+  color: #33ff27;
+  margin: 0.1em;
+}
+
+span.personal-message {
+  color: #ff36e9;
+  margin: 0.3em;
 }

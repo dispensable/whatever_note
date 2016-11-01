@@ -12,27 +12,39 @@
   <button (click)="sendMessage()">hello</button>
 </div>
 
+<div class="chat">
+  <div #scrollMe class="messages"  *ngIf="showChatContent">
+    <div *ngFor="let msg of messages">
 
-<!--<ngb-panel id="2">-->
-      <!--<template ngbPanelTitle>-->
-        <!--<span>&#9733; <b>Fancy</b> title &#9733;</span>-->
-      <!--</template>-->
-      <!--<template ngbPanelContent>-->
-        <!--Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia-->
-        <!--aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,-->
-        <!--sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,-->
-        <!--craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings-->
-        <!--occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus-->
-        <!--labore sustainable VHS.-->
-      <!--</template>-->
-    <!--</ngb-panel>-->
-    <!--<ngb-panel id="3" title="Disabled" [disabled]="true">-->
-      <!--<template ngbPanelContent>-->
-        <!--Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia-->
-        <!--aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor,-->
-        <!--sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica,-->
-        <!--craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings-->
-        <!--occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus-->
-        <!--labore sustainable VHS.-->
-      <!--</template>-->
-    <!--</ngb-panel>-->
+      <div ngbDropdown class="d-inline-block">
+        <a id="dropdownMenu1" ngbDropdownToggle>
+          <span [ngClass]="{'global-message': msg.type === 6, 'personal-message': msg.type === 4, 'group-message': msg.type === 5 }">
+            [{{msg.info_from_name}}]</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <button class="dropdown-item" (click)="goToProfile(msg.info_from)">查看资料</button>
+        <button class="dropdown-item" (click)="sendMessageById(msg.info_from, msg.info_from_name)">发送消息</button>
+        <button class="dropdown-item">添加关注</button>
+        </div>
+      </div>
+
+
+      <span [ngClass]="{'global-message': msg.type === 6, 'personal-message': msg.type === 4, 'group-message': msg.type === 5 }"
+      (click)="showtime()">{{msg.content}}</span>
+
+      <span *ngIf="showTime">{{msg.date | date:'short'}}</span>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input #chat
+      name="msg"
+      type="text"
+      class="form-control"
+      placeholder={{placeholder()}}
+      (click)="showChatContent=true;"
+      (keyup.enter)="sendMsg(chat.value); chat.value='';"
+      (keyup.control)="changeSendTo()"
+      required>
+  </div>
+</div>

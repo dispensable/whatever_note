@@ -2,7 +2,7 @@
  * Created by dispensable on 2016/10/11.
  */
 
-enum NotificationType {
+export enum NotificationType {
   success,
   info,
   warning,
@@ -26,5 +26,6 @@ export class Notification {
     public info_to: string[],
     public has_read: boolean,
     public token: string,
+    public info_from_name: string
   ) {}
 }

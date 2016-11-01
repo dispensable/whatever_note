@@ -3,7 +3,7 @@
  */
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs/Rx';
-import { WebSocketService } from '../chat.module/websocket.service';
+import { WebSocketService } from '../shared/websocket.service';
 import { Api } from '../shared/api';
 import { Notification } from "../shared/notification-component/notification";
 
@@ -20,4 +20,4 @@ export class NotificationCenterService {
         return JSON.parse(response.data);
 			});
 	}
-} // end class ChatService
+}

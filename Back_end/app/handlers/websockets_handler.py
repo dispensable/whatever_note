@@ -8,7 +8,12 @@ from .handler_const import *
 
 
 class EchoWebSocket(websocket.WebSocketHandler):
+
     users = {}
+
+    def __init__(self, *args, **kwargs):
+        super(EchoWebSocket, self).__init__(*args, **kwargs)
+        self.user_id = ''
 
     def open(self):
         print("WebSocket opened")
@@ -26,7 +31,10 @@ class EchoWebSocket(websocket.WebSocketHandler):
         EchoWebSocket.push_message(for_send_msg[0], for_send_msg[1])
 
     def on_close(self):
-        del EchoWebSocket.users[self.user_id]
+        try:
+            del EchoWebSocket.users[self.user_id]
+        except KeyError as e:
+            print(e)
 
     def check_origin(self, origin):
         return True
@@ -58,9 +66,19 @@ class EchoWebSocket(websocket.WebSocketHandler):
     @classmethod
     def push_message(cls, message, notification_obj_id):
         # TODO: 使用消息队列推送消息，加快处理速度
-        for reciver in message['info_to']:
-            # 保存消息id到用户notification集合
-            user_data.add_notification(reciver, notification_obj_id)
-            # 在线直接推送
-            if reciver in EchoWebSocket.users:
-                EchoWebSocket.users[reciver].write_message(message)
+        if 'all' in message['info_to']:
+            for login_user in cls.users:
+                cls.users[login_user].write_message(message)
+            return
+
+        # 推送给自己， 保证发送成功
+        if message['info_to']:
+            self_ws_ins = cls.users[message['info_from']]
+            self_ws_ins.write_message(message)
+
+            for reciver in message['info_to']:
+                # 保存消息id到用户notification集合
+                user_data.add_notification(reciver, notification_obj_id)
+                # 在线直接推送
+                if reciver in EchoWebSocket.users:
+                    EchoWebSocket.users[reciver].write_message(message)

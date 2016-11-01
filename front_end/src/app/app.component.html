@@ -33,10 +33,9 @@
   </form>
 
   <span class="nav-item" id="notification">
-    <notify-center *ngIf="isLogin()" class="nav-link"></notify-center>
+    <notify-center *ngIf="isLogin()" class="nav-link" ></notify-center>
   </span>
   </ul>
 </nav>
-
 <notification></notification>
 <router-outlet></router-outlet>
