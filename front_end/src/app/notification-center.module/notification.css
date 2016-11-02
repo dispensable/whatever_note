@@ -5,6 +5,7 @@ div.notificationList {
   right: 25%;
   height: 1000%;
   overflow: auto;
+  font-size: small;
 }
 
 div.messages {

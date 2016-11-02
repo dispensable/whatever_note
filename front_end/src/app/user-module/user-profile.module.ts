@@ -15,6 +15,7 @@ import { UserProfileComponent } from "./user-profile.component";
 import { BaseDataService } from "../shared/base-data.service";
 
 import { profileRouting, profileRoutingProviders } from "./user-profile.routing";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   imports: [
@@ -22,6 +23,7 @@ import { profileRouting, profileRoutingProviders } from "./user-profile.routing"
     CommonModule,
     FormsModule,
     HttpModule,
+    NgbModule,
     profileRouting
   ],
   declarations: [

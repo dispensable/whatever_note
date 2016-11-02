@@ -76,4 +76,21 @@ export class Api {
   static getPersonalNotifications(userid: string) {
     return `http://localhost:4200/api/notifications/${userid}`;
   }
+
+  static getFollowlist(userid: string) {
+    return `http://localhost:4200/api/users/${userid}/follow`;
+  }
+
+  static addOrRemoveFollow(userid: string, followId: string) {
+    return `http://localhost:4200/api/users/${userid}/follow/${followId}`
+  }
+
+  static getFollowerList(userid: string) {
+    return `http://localhost:4200/api/users/${userid}/followers`;
+  }
+
+  static delFollower(userid: string, followerId: string) {
+    return `http://localhost:4200/api/users/${userid}/follower/${followerId}`;
+  }
+
 }

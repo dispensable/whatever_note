@@ -1,0 +1,29 @@
+div.content {
+  float: right;
+  width: 60%;
+  clear: right;
+  margin-right: 10%;
+  margin-top: 15px;
+}
+
+div.photo {
+  float: left;
+  margin-left: 10%;
+  margin-bottom: 10px;
+  margin-top: 15px;
+}
+
+div.follow-button {
+  float: left;
+  clear: left;
+  margin-left: 10%;
+  margin-bottom: 10px;
+}
+
+div.user-profile {
+  float: left;
+  clear: left;
+  margin-left: 10%;
+  margin-bottom: 10px;
+  width: 15%;
+}

@@ -17,6 +17,9 @@ class UserHandler(BasicHandler):
             del user['password']
             del user['notifications']
 
+            user['follow'] = user_data.check_follow(user['id'])
+            user['followers'] = user_data.check_followers(user['id'])
+
             self.write(user)
         else:
             self.set_status(404, 'User do not exists.')
@@ -49,3 +52,30 @@ class UserIdHandler(BasicHandler):
             self.write({'username': username, 'userid': userid})
         else:
             self.set_status(404, 'No such user.')
+
+
+class FollowHandler(BasicHandler):
+    def get(self, userid):
+        return user_data.check_follow(userid)
+
+    def post(self, userid, follow_id):
+        try:
+            user_data.add_follow(userid, follow_id)
+            self.set_status(201, 'follow successed!')
+        except Exception as e:
+            raise e
+
+    def delete(self, userid, follow_id):
+        try:
+            user_data.cancle_follow(userid, follow_id)
+            self.set_status(200, 'delete successed!')
+        except Exception as e:
+            raise e
+
+
+class FollowerHandler(BasicHandler):
+    def get(self, userid):
+        return user_data.check_followers(userid)
+
+    def delete(self, userid, follower_id):
+        user_data.del_followers(userid, follower_id)

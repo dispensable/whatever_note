@@ -169,5 +169,55 @@ def del_notification_by_id(userid: str, notification_id: str):
                     {'$pull': {'notifications':
                                        DBRef('notification', str2object_id(notification_id))}})
 
+
+def add_follow(userid: str, follow_id: str):
+    with OpenCollection('user') as user:
+        # 在userid下添加关注
+        user.update({'_id': str2object_id(userid)},
+                    {'$push': {'follow':
+                               DBRef('user', str2object_id(follow_id))}})
+        # 在follow_id下添加粉丝
+        user.update({'_id': str2object_id(follow_id)},
+                    {'$push': {'followers':
+                               DBRef('user', str2object_id(userid))}})
+
+
+def cancle_follow(userid: str, follow_id: str):
+    with OpenCollection('user') as user:
+        user.update({'_id': str2object_id(userid)},
+                    {'$pull': {'follow':
+                               DBRef('user', str2object_id(follow_id))}})
+
+
+def del_followers(userid: str, follower_id: str):
+    with OpenCollection('user') as user:
+        user.update({'_id': str2object_id(userid)},
+                    {'$pull': {'followers':
+                                   DBRef('user', str2object_id(follower_id))}})
+        user.update({'_id': str2object_id(follower_id)},
+                    {'$pull': {'follow':
+                                   DBRef('user', str2object_id(userid))}})
+
+
+def check_followers(userid: str) -> dict:
+    results = {}
+    with OpenCollection('user') as user:
+        followers = user.find_one({'_id': str2object_id(userid)})['followers']
+        for dbref in followers:
+            follower = OpenCollection.database.dereference(dbref)
+            results[follower['_id']._ObjectId__id.hex()] = follower['username']
+    return results
+
+
+def check_follow(userid: str) -> dict:
+    results = {}
+    with OpenCollection('user') as user:
+        followers = user.find_one({'_id': str2object_id(userid)})['follow']
+        for dbref in followers:
+            follower = OpenCollection.database.dereference(dbref)
+            results[follower['_id']._ObjectId__id.hex()] = follower['username']
+    return results
+
+
 if __name__ == "__main__":
     pass
