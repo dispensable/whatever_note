@@ -56,7 +56,7 @@ class UserIdHandler(BasicHandler):
 
 class FollowHandler(BasicHandler):
     def get(self, userid):
-        return user_data.check_follow(userid)
+        self.write(user_data.check_follow(userid))
 
     def post(self, userid, follow_id):
         try:
@@ -75,7 +75,7 @@ class FollowHandler(BasicHandler):
 
 class FollowerHandler(BasicHandler):
     def get(self, userid):
-        return user_data.check_followers(userid)
+        self.write(user_data.check_followers(userid))
 
     def delete(self, userid, follower_id):
         user_data.del_followers(userid, follower_id)

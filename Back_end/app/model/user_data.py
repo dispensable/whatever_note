@@ -187,6 +187,9 @@ def cancle_follow(userid: str, follow_id: str):
         user.update({'_id': str2object_id(userid)},
                     {'$pull': {'follow':
                                DBRef('user', str2object_id(follow_id))}})
+        user.update({'_id': str2object_id(follow_id)},
+                    {'$pull': {'followers':
+                                   DBRef('user', str2object_id(userid))}})
 
 
 def del_followers(userid: str, follower_id: str):
