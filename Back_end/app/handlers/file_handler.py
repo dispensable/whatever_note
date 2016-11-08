@@ -6,7 +6,6 @@ from model import img_handler
 
 class ImgHandler(BasicHandler):
     def post(self, *args, **kwargs):
-        print(self.request.body)
         upload_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')  # 文件的暂存路径
         file_metas = self.request.files['file']  # 提取表单中‘name’为‘file’的文件元数据
         for meta in file_metas:
@@ -26,4 +25,10 @@ class ImgHandler(BasicHandler):
 
         self.write('finished!')
 
-
+    def get(self, *args, **kwargs):
+        img_id = self.get_argument('img_id')
+        img = img_handler.get_img_by_id(img_id)
+        if img:
+            self.write(img)
+        else:
+            self.set_status(404, 'Image doesnt exisit!')

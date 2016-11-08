@@ -6,8 +6,13 @@
   </div>
 
   <div class="post-img">
-    <file-upload #fu></file-upload>
-    <button (click)="fu.upload()">Submit</button>
+    <file-upload #fu (change)="fu.fileChange(fu)"></file-upload><br>
+    <label>Header: </label>
+    <input #img_header /><br>
+    <label>comment: </label>
+    <textarea #note cols="80" rows="5" placeholder="add your note!"></textarea>
+    <hr>
+    <button (click)="fu.upload(img_header.value, note.value)">Submit</button>
   </div>
 
 </div>
