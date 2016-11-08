@@ -1,6 +1,7 @@
 from .database_connection import OpenCollection, str2object_id
-from .user_data import del_notification_by_id, get_username_by_id
+from .user_data import get_username_by_id, add_activity
 import time
+from .shared_function import get_activity_types
 
 
 def create_img(path: str, creater_id: str, note: str, post_header: str):
@@ -16,4 +17,7 @@ def create_img(path: str, creater_id: str, note: str, post_header: str):
     }
     with OpenCollection('img') as img:
         img_id = img.insert(image)
+        if img_id:
+            add_activity(creater_id, get_activity_types()['create_image'], time.time(), img_id, post_header)
         return img.find_one({'_id': img_id})
+

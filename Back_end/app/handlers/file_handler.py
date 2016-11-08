@@ -1,8 +1,10 @@
 from .base_handler import BasicHandler
 import os
 
+from model import img_handler
 
-class FileHandler(BasicHandler):
+
+class ImgHandler(BasicHandler):
     def post(self, *args, **kwargs):
         print(self.request.body)
         upload_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static')  # 文件的暂存路径
@@ -16,7 +18,11 @@ class FileHandler(BasicHandler):
                 with open(filepath, 'wb') as up:  # 有些文件需要已二进制的形式存储，实际中可以更改
                     up.write(meta['body'])
 
-        print(self.get_body_argument("post-by"))
+                creater_id = self.get_body_argument("creater_id")
+                note = self.get_body_argument("note")
+                img_header = self.get_body_argument("img_header")
+
+                img_handler.create_img(filepath, creater_id, note, img_header)
 
         self.write('finished!')
 

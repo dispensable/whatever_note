@@ -5,11 +5,12 @@ from .database_connection import OpenCollection, str2object_id
 import time
 from bson.dbref import DBRef
 from . import user_data
+from .shared_function import get_activity_types
 
 
-def create_post(post_by_id: str, post_head: str, content: str, date=time.time()):
+def create_post(post_by_id: str, post_head: str, content: str):
     with OpenCollection('post') as post_collection:
-
+        date = time.time()
         post = {'post_head': post_head,
                 'post_by': DBRef('user', str2object_id(post_by_id)),
                 'content': content,
@@ -20,6 +21,8 @@ def create_post(post_by_id: str, post_head: str, content: str, date=time.time())
         }
 
         post_id = post_collection.insert(post)
+        if post_id:
+            user_data.add_activity(post_by_id, get_activity_types()['create_post'], date, post_id, post_head)
         return post_collection.find_one({"_id": post_id})
 
 

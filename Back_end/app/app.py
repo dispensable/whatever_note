@@ -37,7 +37,7 @@ def make_app():
         (r'/api/users/([abcdef0123456789]*)/follow', user_data_handler.FollowHandler),
         (r'/api/users/([abcdef0123456789]*)/follower', user_data_handler.FollowerHandler),
         (r"/static/(.*\.jpg)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])),
-        (r'/api/img', file_handler.FileHandler)
+        (r'/api/img', file_handler.ImgHandler)
     ], login_url='http://localhost:4200/singin')
 
 

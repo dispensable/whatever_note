@@ -9,6 +9,7 @@ from bson.dbref import DBRef
 import re
 from . import notifications_data, user_data
 from handlers import websockets_handler
+from .shared_function import get_activity_types
 
 
 def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
@@ -34,6 +35,15 @@ def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: 
         comment_id = comments_collection.insert(comment)
         # 将评论添加到post下的相关引用位置
         add_comment(post_id, comment_id._ObjectId__id.hex(), post_by)
+
+        # 添加到timeline
+        try:
+            abstract = content[0: 50]
+        except IndexError:
+            abstract = content
+
+        user_data.add_activity(post_by, get_activity_types()['create_comment'],
+                               create_date, DBRef('comment', str2object_id(comment_id)), abstract)
 
         return comments_collection.find_one({'_id': comment_id})
 
@@ -61,14 +71,19 @@ def vote_comment(comment_id: str, point: int, voter_id: str):
             if point in (1, -1, 0):
                 if point == 1:
                     attitude = 'up'
+                    op_type = get_activity_types()['up']
                 elif point == -1:
                     attitude = 'down'
+                    op_type = get_activity_types()['down']
                 elif point == 0:
                     attitude = 'hold'
+                    op_type = get_activity_types()['hold']
                     point = 1
                 comments_collection.update({'_id': str2object_id(comment_id)},
                                            {"$inc": {attitude: point},
                                             "$addToSet": {"voted_ids": voter_id}})
+
+                user_data.add_activity(voter_id, op_type, time.time(), str2object_id(comment_id), op_type)
 
 
 def get_comments_by_post_id(post_id: str):

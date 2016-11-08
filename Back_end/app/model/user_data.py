@@ -229,5 +229,17 @@ def get_username_by_id(userid: str):
             return user['username']
 
 
+def add_activity(userid: str, type: str, date: float, dbref, content: str):
+    activity = {
+        'type': type,
+        'date': date,
+        'dbref': dbref,
+        'content': content
+    }
+    with OpenCollection('user') as user:
+        user.update({'_id': str2object_id(userid)},
+                    {'$push': {'timeline': activity}})
+
+
 if __name__ == "__main__":
     pass
