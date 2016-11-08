@@ -1,15 +1,13 @@
-<h2>Welcome, {{username}}</h2>
-
-<div *ngFor="let post of posts">
+<div *ngFor="let post of posts" class="timeline">
   <hr>
   <header><a routerLink="/post/{{post.post_id}}">{{post.post_head  || 'No head'}}</a></header>
-    <div [innerHTML]="content | MarkdownToHtml"></div>
+    <div [innerHTML]="post.content | slice: 0: 300 | MarkdownToHtml"></div> ...
   <p>Posted by: <a routerLink="/profile/{{ post.post_by_id }}">{{ post.post_by_name }}</a>
     Create at: {{post.create_date * 1000 | date:'medium'}}</p>
   <hr>
 </div>
 
-<div>
+<div class="pager">
   <a *ngIf="pre_page" (click)="clearOldPage(); getPage(pre_page)">Pre Page</a>
   <a *ngIf="next_page" (click)="clearOldPage(); getPage(next_page)">Next Page</a>
 </div>

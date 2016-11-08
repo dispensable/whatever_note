@@ -3,6 +3,15 @@ from handlers import *
 import tornado.ioloop
 import tornado.web
 
+import os
+
+settings = {
+    "static_path": os.path.join(os.path.dirname(__file__), "static"),
+    # "cookie_secret": "__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
+    # "login_url": "/login",
+    # "xsrf_cookies": True,
+}
+
 
 def make_app():
     return tornado.web.Application([
@@ -18,6 +27,7 @@ def make_app():
         (r'/api/users/([abcdef0123456789]*)', user_data_handler.UserHandler),
         (r'/api/userid', user_data_handler.UserIdHandler),
         (r'/api/users/([abcdef0123456789]*)/posts', user_data_handler.UserPostsHandler),
+        (r'/api/users/([abcdef0123456789]*)/postslist', user_data_handler.UserPostsListHandler),
         (r'/api/users/mentionlist', user_data_handler.MentionListHandler),
         (r'/api/websocket', websockets_handler.EchoWebSocket),
         (r'/api/notifications', notification_handler.NotifyHandler),
@@ -26,6 +36,8 @@ def make_app():
         (r'/api/users/([abcdef0123456789]*)/follower/([abcdef0123456789]*)', user_data_handler.FollowerHandler),
         (r'/api/users/([abcdef0123456789]*)/follow', user_data_handler.FollowHandler),
         (r'/api/users/([abcdef0123456789]*)/follower', user_data_handler.FollowerHandler),
+        (r"/static/(.*\.jpg)", tornado.web.StaticFileHandler, dict(path=settings['static_path'])),
+        (r'/api/img', file_handler.FileHandler)
     ], login_url='http://localhost:4200/singin')
 
 

@@ -28,6 +28,9 @@ import { JwtHelper } from 'angular2-jwt';
 // drop down menue
 import { DropdownModule } from 'ng2-dropdown';
 
+// img annotation
+import { ImgAnnotationModule } from './img.annotation.module/img.annotation.module';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -41,6 +44,7 @@ import { DropdownModule } from 'ng2-dropdown';
     PostModule,
     NgbModule.forRoot(),
     NotificationCenterModule,
+    ImgAnnotationModule,
     routing
   ],
   declarations: [

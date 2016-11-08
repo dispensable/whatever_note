@@ -1,0 +1,13 @@
+<div class="img-publish">
+  <div class="header">
+    <button routerLink="/publish/post">Post</button>
+    <button routerLink="/publish/img" routerLinkActive="active">Image</button>
+  <hr>
+  </div>
+
+  <div class="post-img">
+    <file-upload #fu></file-upload>
+    <button (click)="fu.upload()">Submit</button>
+  </div>
+
+</div>

@@ -1,10 +1,10 @@
 aside {
   float: right;
-  width: 24%;
+  width: 30%;
 }
 
 p.paragraph {
-  width:75%;
+  width:70%;
   float:left;
   padding:5px;
   font-size: small;
@@ -16,6 +16,9 @@ hr.lineOfComments {
 
 comments.comments {
   float: left;
+  width: 80%;
+  margin-left: 10%;
+  font-size: small;
 }
 
 span.highlight-for-comment {
@@ -28,5 +31,24 @@ span.dis-highlight {
 
 div.sideComment {
   font-size: small;
-  width: 85%;
+}
+
+article.article {
+  width: 80%;
+  margin-left: 10%;
+}
+
+div.article-info {
+  font-size: small;
+  margin-left: 1%;
+}
+
+header.article-head {
+  margin-left: 1%;
+}
+
+div.article-content{
+  font-size: small;
+  width: 98%;
+  margin-left: 1%;
 }

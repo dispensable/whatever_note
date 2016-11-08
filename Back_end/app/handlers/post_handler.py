@@ -7,7 +7,7 @@ from .handler_const import *
 
 class PostsHandler(BasicHandler):
     def get(self, *args, **kwargs):
-        # TODO： 重构 讲数据逻辑放到数据模型中去
+        # TODO： 重构 将数据逻辑放到数据模型中去
         page = int(self.get_argument('page'))
         max_per_page = int(self.get_argument('perpage'))
         if page >= 0 and max_per_page >= 0:

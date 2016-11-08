@@ -1,0 +1,33 @@
+<div class="post-publish">
+  <div class="header">
+    <button routerLink="/publish/post" routerLinkActive="active">Post</button>
+    <button routerLink="/publish/img">Image</button>
+  <hr>
+  </div>
+
+  <div class="publish">
+    <div>
+      <p>Title:</p>
+      <input width="80" [(ngModel)]="head" required>
+    </div>
+
+    <div>
+      <p>Content:</p>
+      <textarea rows="20" cols="80" [(ngModel)]="content" required></textarea>
+    </div>
+
+    <br>
+    <button class="btn-default" type="submit" (click)="publish()">Publish</button>
+    <button class="btn-danger" type="reset" (click)="clear(); content='';">Reset</button>
+    <hr>
+
+  </div>
+
+  <div class="preview">
+    Preview:
+    <div><b>{{head}}</b></div>
+
+    Markdown preview:
+    <div [innerHTML]="content | MarkdownToHtml"></div>
+  </div>
+</div>

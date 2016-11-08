@@ -8,7 +8,7 @@
 
 <article class="article">
   <hr>
-  <header>{{post.post_head || 'No head'}}</header>
+  <header class="article-head">{{post.post_head || 'No head'}}</header>
 
   <div class="article-info">
     Posted by: {{post.post_by_name}} at {{post.create_date * 1000 | date:'medium'}}
@@ -29,7 +29,7 @@
 
       <aside *ngIf="inlinePosition[0] === i">
         <div>
-          <textarea rows="5" cols="30" #inlineCommentBox [mention]="mentionItems" class="form-control"
+          <textarea rows="3" cols="30" #inlineCommentBox [mention]="mentionItems" class="form-control"
                     placeholder="Add sentence comments of Paragraph {{inlinePosition[0]}}, sentence {{inlinePosition[1]}}"
                     required></textarea>
           <br>

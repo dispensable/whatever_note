@@ -43,6 +43,10 @@ export class Api {
     return `http://localhost:4200/api/users/${userid}/posts`;
   }
 
+  static getUserPostsList(userid: string) {
+    return `http://localhost:4200/api/users/${userid}/postslist`;
+  }
+
   static getComment(post_id: string, comment_id: string) {
     return `http://localhost:4200/api/posts/${post_id}/comments/${comment_id}`;
   }
@@ -86,11 +90,15 @@ export class Api {
   }
 
   static getFollowerList(userid: string) {
-    return `http://localhost:4200/api/users/${userid}/followers`;
+    return `http://localhost:4200/api/users/${userid}/follower`;
   }
 
   static delFollower(userid: string, followerId: string) {
     return `http://localhost:4200/api/users/${userid}/follower/${followerId}`;
+  }
+
+  static postImg() {
+    return `http://localhost:4200/api/img`;
   }
 
 }

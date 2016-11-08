@@ -1,26 +1,4 @@
-<h1>Publish New Post</h1>
-
-<button (click)="test1()">test genText</button>
-
+<div class="header">
 <hr>
-
-<div>
-  <p>Title:</p>
-  <input width="80" [(ngModel)]="head" required>
 </div>
-
-<div>
-  <p>Content:</p>
-  <textarea rows="20" cols="80" [(ngModel)]="content" required></textarea>
-</div>
-
-<br>
-<button class="btn-default" type="submit" (click)="publish()">Publish</button>
-<button class="btn-danger" type="reset" (click)="clear(); content='';">Reset</button>
-<hr>
-Preview:
-<div><b>{{head}}</b></div>
-
-Markdown preview:
-<div [innerHTML]="content | MarkdownToHtml"></div>
-
+<router-outlet></router-outlet>

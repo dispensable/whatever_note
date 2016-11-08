@@ -4,34 +4,49 @@
 
 <div class="content">
   <ngb-tabset>
-  <ngb-tab title="my article">
+  <ngb-tab title="发布的文章">
     <template ngbTabContent>
-      <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
-      master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
-      dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum
-      iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+      <table class="table">
+        <tr>
+          <th>标题</th>
+          <th>创建日期</th>
+          <th>修改日期</th>
+          <th>评论数</th>
+        </tr>
+
+        <tr *ngFor="let post of posts">
+          <td><a routerLink="/post/{{post.post_id}}">{{post.post_head}}</a></td>
+          <td>{{post.create_date | date:'medium'}}</td>
+          <td>{{post.last_modify | date:'medium'}}</td>
+          <td>{{post.comments_count}}</td>
+        </tr>
+      </table>
     </template>
   </ngb-tab>
+
   <ngb-tab>
     <template ngbTabTitle><b>正在</b>关注</template>
-    <template ngbTabContent>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
-      <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table
-      craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
-      cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
-      yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean
-      shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero
-      sint qui sapiente accusamus tattooed echo park.</p>
-    </template>
-  </ngb-tab>
-  <ngb-tab title="关注者" [disabled]="true">
     <template ngbTabContent>
-      <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
-      master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
-      dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum
-      iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+      <div *ngFor="let user of follows">
+        <p>
+          <a routerLink="/profile/{{user.id}}">{{user.name}}</a>
+        </p>
+      </div>
     </template>
   </ngb-tab>
-  <ngb-tab title="我的评论">
+
+  <ngb-tab title="关注者">
+    <template ngbTabContent>
+      <div *ngFor="let user of fans">
+        <p>
+          <a routerLink="/profile/{{user.id}}">{{user.name}}</a>
+        </p>
+        <hr>
+      </div>
+    </template>
+  </ngb-tab>
+
+  <ngb-tab title="我的评论" [disabled]="canCheckComments">
     <template ngbTabContent>
       <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
       master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
@@ -40,7 +55,7 @@
     </template>
   </ngb-tab>
 
-  <ngb-tab title="我的通知">
+  <ngb-tab title="我的通知" [disabled]="canCheckNotification">
     <template ngbTabContent>
       <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
       master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
@@ -52,9 +67,9 @@
 </div>
 
 <div class="follow-button">
-  <button type="button" class="btn-outline-primary">关注</button>
-  <button type="button" class="btn-outline-primary">取消关注</button>
-  <button type="button" class="btn-outline-primary">编辑个人资料</button>
+  <button type="button" class="btn-outline-primary" (click)="addFollow()" *ngIf="!hasFollowed">关注</button>
+  <button type="button" class="btn-outline-primary" (click)="unfollow()" *ngIf="hasFollowed">取消关注</button>
+  <button type="button" class="btn-outline-primary" (click)="editProfile()">编辑个人资料</button>
 </div>
 
 <div class="user-profile">

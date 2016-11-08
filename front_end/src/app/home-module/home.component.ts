@@ -13,7 +13,7 @@ import { Api } from '../shared/api';
 @Component({
   selector: 'homepage',
   templateUrl: './home.component.html',
-  styleUrls: ['../shared/bootstrap.css'],
+  styleUrls: ['../shared/bootstrap.css', './home.component.css'],
 })
 export class HomeComponent implements OnInit{
   constructor(

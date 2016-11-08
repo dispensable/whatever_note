@@ -1,0 +1,10 @@
+div.timeline {
+  font-size: small;
+  width: 80%;
+  margin-left: 10%;
+}
+
+div.pager {
+  font-size: small;
+  text-align: center;
+}

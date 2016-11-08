@@ -29,10 +29,18 @@ class UserPostsHandler(BasicHandler):
     def get(self, user_id):
         posts = user_post.get_posts_by_userid(user_id)
         if posts:
-
             self.write(posts)
         else:
             self.set_status(404, 'User or post not exists.')
+
+
+class UserPostsListHandler(BasicHandler):
+    def get(self, user_id):
+        posts = user_post.get_posts_list_by_userid(user_id)
+        if posts:
+            self.write(posts)
+        else:
+            self.set_status(404, 'Not found.')
 
 
 class MentionListHandler(BasicHandler):
@@ -78,4 +86,8 @@ class FollowerHandler(BasicHandler):
         self.write(user_data.check_followers(userid))
 
     def delete(self, userid, follower_id):
-        user_data.del_followers(userid, follower_id)
+        try:
+            user_data.del_followers(userid, follower_id)
+            self.write('successed!')
+        except Exception as e:
+            raise e

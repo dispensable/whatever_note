@@ -222,5 +222,12 @@ def check_follow(userid: str) -> dict:
     return results
 
 
+def get_username_by_id(userid: str):
+    with OpenCollection('user') as user:
+        user = user.find_one({'_id': str2object_id(userid)})
+        if user:
+            return user['username']
+
+
 if __name__ == "__main__":
     pass

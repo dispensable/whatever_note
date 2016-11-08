@@ -122,9 +122,26 @@ def del_post(post_id: str):
 
 
 def get_posts_by_userid(user_id):
+    """ 全面用户posts api， 含posts的所有信息"""
     with OpenCollection('post') as post_collection:
         posts = post_collection.find({'post_by': DBRef('user', str2object_id(user_id))},
                                      {'who_comments': False, 'post_by': False})
+        results = {}
+        for index, post in enumerate(posts):
+            post['post_id'] = post['_id']._ObjectId__id.hex()
+            del post['_id']
+            post['comments_count'] = len(post['comment_ids'])
+            del post['comment_ids']
+            results[index] = post
+
+    return results
+
+
+def get_posts_list_by_userid(user_id):
+    """ 轻量用户posts api，没有posts的内容，仅提供标题等信息 """
+    with OpenCollection('post') as post_collection:
+        posts = post_collection.find({'post_by': DBRef('user', str2object_id(user_id))},
+                                     {'who_comments': False, 'post_by': False, 'content': False})
         results = {}
         for index, post in enumerate(posts):
             post['post_id'] = post['_id']._ObjectId__id.hex()

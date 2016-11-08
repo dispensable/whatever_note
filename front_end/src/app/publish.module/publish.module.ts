@@ -14,6 +14,10 @@ import { BaseDataService } from "../shared/base-data.service";
 import { publishRouting, publishRoutingProviders } from "./publish.routing";
 import { MarkdownModule } from '../shared/markdown.module/markdown.module';
 
+import { PostComponent } from './post.component/post.component';
+import { ImgComponent } from './img.component/img.component';
+import { FileUploadComponent } from './fileupload.component/fileupload.component';
+
 
 @NgModule({
   imports: [
@@ -27,6 +31,9 @@ import { MarkdownModule } from '../shared/markdown.module/markdown.module';
   ],
   declarations: [
     PublishComponent,
+    PostComponent,
+    ImgComponent,
+    FileUploadComponent
   ],
   providers: [
     publishRoutingProviders,
