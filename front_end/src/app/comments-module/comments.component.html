@@ -25,7 +25,7 @@
 
     <div *ngIf="isRplied[comment.comment_id]">
       <textarea rows="5" cols="80" placeholder="write your reply" [(ngModel)]="replyContent"></textarea>
-      <button type="button" (click)="sendComment(replyContent, -1, -1); replyContent='';">Send</button>
+      <button type="button" (click)="sendComment(replyContent, comment.p_num, comment.s_num); replyContent='';">Send</button>
     </div>
   </div>
 </footer>

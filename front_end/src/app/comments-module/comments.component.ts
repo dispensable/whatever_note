@@ -12,6 +12,7 @@ import { Api } from '../shared/api';
 import { BaseDataService } from '../shared/base-data.service';
 import { Comment } from '../shared/comment';
 import {ActivatedRoute, Params, Router} from '@angular/router';
+import {isNullOrUndefined} from "util";
 
 @Component({
   selector: 'comments',
@@ -31,6 +32,7 @@ export class CommentsComponent implements OnInit{
   replyContent: string;
   @Output() onClickId = new EventEmitter<number[]>();
   @Input() mentionList: String[];
+  @Input() commentType: string = 'post';
 
   ngOnInit() {
     this.reloadComments();
@@ -44,13 +46,14 @@ export class CommentsComponent implements OnInit{
     if (comment === '') {return;}
     this.route.params.forEach((params: Params) => {
       // 构造json
-      let post_id = params['post_id'];
+      let post_id = params['post_id'] || params['img_id'];
       let content = comment;
       let post_by = localStorage.getItem('userid');
       let p_num = paragraphNum; // if p_num < 0; 针对全文发表评论
       let s_num = sentenceNum; // if s_num < 0; 针对全文发表评论 默认评论框后两位参数-1， -1
+      let post_type = this.commentType;
       // 序列化
-      let body = JSON.stringify({content, post_by, post_id, p_num, s_num});
+      let body = JSON.stringify({content, post_by, post_id, p_num, s_num, post_type});
       // 发送评论
       this.dataService.postData(Api.getPostComments(post_id), body).subscribe(
         () => {
@@ -67,8 +70,15 @@ export class CommentsComponent implements OnInit{
   deleteComment(comment_id: string) {
     // 远程服务器删除
     this.route.params.forEach((params: Params) => {
-      let post_id = params['post_id'];
-      this.dataService.delData(Api.getComment(post_id, comment_id)).subscribe(
+      let post_id = params['post_id'] || params['img_id'];
+      if (isNullOrUndefined(params['post_id'])) {
+        var url = Api.delImgComment(post_id, comment_id);
+      }
+
+      if (isNullOrUndefined(params['img_id'])) {
+        var url = Api.getComment(post_id, comment_id);
+      }
+      this.dataService.delData(url).subscribe(
         () => {
           this.comments.splice(+this.getCommentNumById(comment_id));
           this.reloadComments();
@@ -84,7 +94,7 @@ export class CommentsComponent implements OnInit{
 
   private voteComment(comment_id: string, point: number) {
     this.route.params.forEach((params: Params) => {
-      let post_id = params['post_id'];
+      let post_id = params['post_id'] || params['img_id'];
       let body = JSON.stringify({point});
       this.dataService.putData(Api.getComment(post_id, comment_id), body).subscribe(
         () => {
@@ -124,7 +134,7 @@ export class CommentsComponent implements OnInit{
 
   reloadComments() {
     this.route.params.forEach((params: Params) => {
-      let post_id = params['post_id'];
+      let post_id = params['post_id'] || params['img_id'];
       this.dataService.getData(Api.getPostComments(post_id)).subscribe(
         comments => {
           // TODO: 添加上一页，下一页链接的评论分页功能

@@ -8,7 +8,7 @@ import { ImgAnnotationComponent }    from './img.annotation.component';
 import { AuthGuard } from '../shared/router-guards/auth-guard.service';
 
 const imgAnnotationRoutes: Routes = [
-  { path: 'add_note_to_img',  component: ImgAnnotationComponent, canActivate: [AuthGuard] },
+  { path: 'img/:img_id', component: ImgAnnotationComponent, canActivate: [AuthGuard] },
 ];
 
 export const imgAnnotationRoutingProviders: any[] = [

@@ -15,7 +15,7 @@ class CommentsHandler(BasicHandler):
     def post(self, post_id):
         comment = self.json_args
         post_comments.create_comment(comment['content'], comment['post_by'],
-                                     post_id, comment['p_num'], comment['s_num'])
+                                     post_id, comment['p_num'], comment['s_num'], post_type=comment['post_type'])
 
 
 class SingleCommentHandler(BasicHandler):
@@ -27,9 +27,9 @@ class SingleCommentHandler(BasicHandler):
         post_comments.vote_comment(comments_id, int(point['point']), self.get_current_user())
         self.set_status(200, 'successed!')
 
-    def delete(self, post_id, comments_id):
+    def delete(self, comment_type, post_id, comments_id):
         try:
-            post_comments.del_comment(post_id, comments_id)
+            post_comments.del_comment(post_id, comments_id, comment_type)
             self.set_status(204, 'DELETE successed')
         except Exception as e:
             print("Error happened when delete comment")

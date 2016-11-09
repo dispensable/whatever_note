@@ -1,33 +1,57 @@
 <div class="img-annotation">
 
   <header>
-    <h1>Photo Head</h1>
+    <h1>{{img.header}}</h1>
+    <p>Created at {{ img.create_time | date: 'medium' }} by {{ img.creater_name }} with {{ img.count_comments }} comments.</p>
+    <hr>
   </header>
 
   <div class="img-show">
     <div class="real-img">
-      <img src="http://localhost:8888/static/test.jpg" width="60%" class="img-original" id="test" (click)="addComment($event)">
+      <img src="{{'http://localhost:8888' + img.path}}" width="78%" class="img-original" id="test" (click)="addComment($event)">
       <div class="img-comments" *ngIf="showSideComment">
-        <textarea class="comments" placeholder="add comment to (x, y)" #comment></textarea>
-        <button (click)="sendComment(comment.value)">Send</button>
+        <textarea class="comments" placeholder="add comment to ({{commentX}}, {{commentY}})" #comment></textarea>
+        <br>
+        <button (click)="commentComponent.sendComment(comment.value, (commentX / imgWidth).toFixed(6),
+        (commentY / imgHeight).toFixed(6))">Send</button>
         <button (click)="cancle()">Cancle</button>
+        <hr>
       </div>
+
+      <div *ngIf="isPixelCommentsExist()" class="inline-comments">
+        <div *ngFor="let comment of comments" class="sideComment">
+          {{comment.post_by}} | {{comment.create_date * 1000 | date:'short'}} | <a href="{{getCurrentUrl() + '#' + 'comment'
+          + comment.p_num.toString() + comment.s_num.toString()}}">Reply</a>
+          <br>
+          <div [innerHtml] = "comment.content | MarkdownToHtml"></div>
+          <hr>
+        </div>
+        <textarea class="comments" placeholder="add comment to" #inlinecomment></textarea>
+        <br>
+        <button (click)="commentComponent.sendComment(inlinecomment.value, comment.p_num,
+        comment.s_num)">Send</button>
+      </div>
+
+      <div *ngIf="!isPixelCommentsExist()" class="inline-comments">
+        <p>There is no comments for this sentence, try add one!</p>
+      </div>
+
     </div>
 
-    <!--<div class="img-note">-->
-      <!--<img src="../shared/56fb736cce726的副本.jpg" (click)="showSideNote(x, y)" *ngFor="let comment of comments; let x=comment.p_num; let y=comment.s_num;"-->
-           <!--[ngStyle]="setStyles(x, y)">-->
-    <!--</div>-->
+    <div class="img-note">
+      <img src="http://localhost:8888/static/76d509fa2550b9e3cfbcf85121de4828.jpg"
+           width="1%"
+           *ngFor="let comment of commentComponent.comments"
+           (click)="showSideNote(comment, commentComponent.comments)"
+           [ngStyle]="setStyles(comment.p_num, comment.s_num)">
+    </div>
   </div>
 
   <article>
-    <p> I am the pic's note about backgroud. Such as what i want say is </p>
-
-    <p> 那是最美好的时代，那是最糟糕的时代；那是智慧的年头，那是愚昧的年头；那是信仰的时期，
-      那是怀疑的时期；那是光明的季节，那是黑暗的季节；那是希望的春天，那是失望的冬天；我们全都在直奔天堂，
-      我们全都在直奔相反的方向--简而言之，那时跟现在非常相象，某些最喧嚣的权威坚持要用形容词的最高级来形容它。
-      说它好，是最高级的；说它不好，也是最高级的。
-    </p>
+    <div [innerHtml]="img.note | MarkdownToHtml "></div>
   </article>
+  <hr>
+
+  <comments class="comments" #commentComponent (onClickId)="onClickId($event)" [mentionList]="mentionItems" [commentType]="img" ></comments>
 
 </div>

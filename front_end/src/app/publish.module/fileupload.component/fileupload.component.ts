@@ -4,13 +4,17 @@
 import { Component, ElementRef } from '@angular/core';
 import { Http, RequestOptions, Headers } from '@angular/http';
 import { Api } from '../../shared/api';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'file-upload',
   templateUrl: './fileupload.component.html',
 })
 export class FileUploadComponent {
-  constructor(private http: Http, private el: ElementRef) {}
+  constructor(private http: Http,
+              private el: ElementRef,
+              private router: Router
+  ) {}
 
   token: string = localStorage.getItem('token');
   headers = new Headers({'Access-token': this.token});
@@ -39,6 +43,9 @@ export class FileUploadComponent {
         success => {
           this.file_src = '';
           //TODO: nav to new location
+          let response = success.json();
+          console.log(response);
+          this.router.navigate(['img/'+response.img_id])
         },
         error => console.log(error)
       );

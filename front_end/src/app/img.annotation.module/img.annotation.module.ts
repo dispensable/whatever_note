@@ -10,6 +10,7 @@ import { MarkdownModule } from "../shared/markdown.module/markdown.module";
 import { ImgAnnotationComponent } from "./img.annotation.component";
 import { imgAnnotationRouting, imgAnnotationRoutingProviders} from './img.annotation.routing';
 import { BaseDataService } from '../shared/base-data.service';
+import { CommentsModule } from '../comments-module/comments.module';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { BaseDataService } from '../shared/base-data.service';
     HttpModule,
     CommonModule,
     MarkdownModule,
+    CommentsModule,
     imgAnnotationRouting
   ],
   providers: [AuthGuard, NotificationService, imgAnnotationRoutingProviders, BaseDataService],

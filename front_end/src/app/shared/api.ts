@@ -101,4 +101,12 @@ export class Api {
     return `http://localhost:4200/api/img`;
   }
 
+  static getImg(imgId: string) {
+    return `http://localhost:4200/api/img?img_id=${imgId}`;
+  }
+
+  static delImgComment(imgId: string, commentId: string) {
+    return `http://localhost:4200/api/img/${imgId}/comments/${commentId}`;
+  }
+
 }

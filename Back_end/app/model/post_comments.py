@@ -10,9 +10,10 @@ import re
 from . import notifications_data, user_data
 from handlers import websockets_handler
 from .shared_function import get_activity_types
+from .img_handler import add_comment_to_img, delete_comment_by_img_id
 
 
-def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int):
+def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: int, post_type: str = 'post'):
     create_date = time.time()
     with OpenCollection('comments') as comments_collection:
         post_by_name = user_data.get_user_by_id(post_by)['username']
@@ -33,8 +34,12 @@ def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: 
         }
 
         comment_id = comments_collection.insert(comment)
-        # 将评论添加到post下的相关引用位置
-        add_comment(post_id, comment_id._ObjectId__id.hex(), post_by)
+
+        if post_type == 'post':
+            # 将评论添加到post下的相关引用位置
+            add_comment(post_id, comment_id._ObjectId__id.hex(), post_by)
+        if post_type == 'img':
+            add_comment_to_img(post_id, post_by, comment_id._ObjectId__id.hex())
 
         # 添加到timeline
         try:
@@ -43,7 +48,7 @@ def create_comment(content: str, post_by: str, post_id: str, p_num: int, s_num: 
             abstract = content
 
         user_data.add_activity(post_by, get_activity_types()['create_comment'],
-                               create_date, DBRef('comment', str2object_id(comment_id)), abstract)
+                               create_date, DBRef('comment', comment_id), abstract)
 
         return comments_collection.find_one({'_id': comment_id})
 
@@ -53,8 +58,11 @@ def get_comment(comment_id: str):
         return comments_collection.find_one({'_id': str2object_id(comment_id)})
 
 
-def del_comment(post_id: str, comment_id: str):
-    delete_comment(post_id, comment_id)
+def del_comment(post_id: str, comment_id: str, comment_type='post'):
+    if comment_type == 'post':
+        delete_comment(post_id, comment_id)
+    if comment_type == 'img':
+        delete_comment_by_img_id(post_id, comment_id)
     with OpenCollection('comments') as comments_collection:
         return comments_collection.remove({"_id": str2object_id(comment_id)})
 

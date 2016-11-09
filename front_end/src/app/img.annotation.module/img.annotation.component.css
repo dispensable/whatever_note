@@ -1,3 +1,31 @@
 img#test2 {
   float: right;
 }
+
+div.img-comments {
+  float: right;
+  width: 20%;
+  font-size: small;
+}
+
+div.img-annotation {
+  font-size: small;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+textarea.comments {
+  width: 100%;
+  height: 90px;
+}
+
+comments.comments {
+  font-size: small;
+}
+
+div.inline-comments {
+  font-size: small;
+  float: right;
+  width: 20%;
+}
