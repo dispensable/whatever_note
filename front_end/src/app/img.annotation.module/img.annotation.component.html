@@ -8,12 +8,14 @@
 
   <div class="img-show">
     <div class="real-img">
-      <img src="{{'http://localhost:8888' + img.path}}" width="78%" class="img-original" id="test" (click)="addComment($event)">
+      <img src="{{'http://localhost:8888' + img.path}}"
+           width="78%" class="img-original" id="test"
+           (click)="addComment($event)">
       <div class="img-comments" *ngIf="showSideComment">
         <textarea class="comments" placeholder="add comment to ({{commentX}}, {{commentY}})" #comment></textarea>
         <br>
         <button (click)="commentComponent.sendComment(comment.value, (commentX / imgWidth).toFixed(6),
-        (commentY / imgHeight).toFixed(6))">Send</button>
+        (commentY / imgHeight).toFixed(6)); comment.value='';">Send</button>
         <button (click)="cancle()">Cancle</button>
         <hr>
       </div>
@@ -28,7 +30,7 @@
         </div>
         <textarea class="comments" placeholder="add comment to {{ this.sidePnum }}, {{ this.sideSnum }}" #inlinecomment></textarea>
         <br>
-        <button (click)="commentComponent.sendComment(inlinecomment.value, sidePnum, sideSnum)">Send</button>
+        <button (click)="commentComponent.sendComment(inlinecomment.value, sidePnum, sideSnum); inlinecomment.value = '';">Send</button>
       </div>
 
       <div *ngIf="!isPixelCommentsExist() && (!showSideComment)" class="inline-comments">
@@ -38,11 +40,13 @@
     </div>
 
     <div class="img-note">
-      <img src="http://localhost:8888/static/76d509fa2550b9e3cfbcf85121de4828.jpg"
+      <div *ngFor="let comment of commentComponent.selectedComments;">
+        <img src="http://localhost:8888/static/76d509fa2550b9e3cfbcf85121de4828.jpg"
            width="1%"
-           *ngFor="let comment of commentComponent.comments"
+           *ngIf="(showAllNotes) || ((sidePnum == comment[0]) && (sideSnum == comment[1]))"
            (click)="showSideNote(comment, commentComponent.comments)"
-           [ngStyle]="setStyles(comment.p_num, comment.s_num)">
+           [ngStyle]="setStyles(comment[0], comment[1])">
+        </div>
     </div>
   </div>
 

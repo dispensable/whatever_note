@@ -11,8 +11,10 @@ import { Api } from '../shared/api';
 
 import { BaseDataService } from '../shared/base-data.service';
 import { Comment } from '../shared/comment';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {isNullOrUndefined} from "util";
+import { ActivatedRoute, Params, Router} from '@angular/router';
+import { isNullOrUndefined} from "util";
+import { TextHandler } from '../shared/text.handler';
+
 
 @Component({
   selector: 'comments',
@@ -20,12 +22,15 @@ import {isNullOrUndefined} from "util";
   styleUrls: ['../shared/bootstrap.css'],
 })
 export class CommentsComponent implements OnInit{
+
   constructor(
     private dataService: BaseDataService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
   ){}
+
+  selectedComments: Comment[] = [];
   comments: Comment[] = [];
   isVotied: { [id: string]: boolean} = {};
   isRplied: { [id: string]: boolean} = {};
@@ -149,6 +154,9 @@ export class CommentsComponent implements OnInit{
             this.isRplied[comment.comment_id] = false;
             this.comments.push(comment);
           }
+
+          this.selectedComments = TextHandler.handleComments(this.comments);
+          console.log(this.comments);
         },
         error => {
           console.log(error);

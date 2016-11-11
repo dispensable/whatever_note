@@ -47,3 +47,13 @@ span.personal-message {
   color: #ff36e9;
   margin: 0.3em;
 }
+
+button.close-button {
+  float: right;
+  position: fixed;
+  right: 5px;
+  bottom: 30%;
+  margin: 1px;
+  font-size: small;
+  z-index: 4;
+}

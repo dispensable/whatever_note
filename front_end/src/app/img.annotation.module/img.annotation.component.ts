@@ -53,6 +53,7 @@ export class ImgAnnotationComponent implements OnInit{
   imgElement;
   sidePnum: number = 0;
   sideSnum: number = 0;
+  showAllNotes: boolean = false;
 
   img: Image = new Image('', '', '', '', 0, 0, '', '');
 
@@ -79,25 +80,28 @@ export class ImgAnnotationComponent implements OnInit{
     this.imgWidth = this.imgElement.clientWidth;
 
     this.hideSideComment();
+    this.showAllNotes = !this.showAllNotes;
+    this.sideSnum = -1;
   }
 
   showSideNote(thisComment: Comment, comments: Comment[]) {
     this.comments = [];
     this.showSideComment = false;
     for (let comment of comments) {
-      if (comment['p_num'] === thisComment['p_num'] && comment['s_num'] === thisComment['s_num']) {
+      if (comment['p_num'] === thisComment[0] && comment['s_num'] === thisComment[1]) {
         this.comments.push(comment);
       }
     }
     this.sidePnum = this.comments[0]['p_num'];
     this.sideSnum = this.comments[0]['s_num'];
+    this.showAllNotes = false;
   }
 
   setStyles(x: number, y: number) {
     let styles = {
       'position': 'absolute',
       'left': this.getX(x) + 'px',
-      'top': this.getY(y) + 'px'
+      'top': this.getY(y) + 'px',
     };
     return styles
   }
@@ -137,4 +141,11 @@ export class ImgAnnotationComponent implements OnInit{
     return !(this.comments.length === 0);
   }
 
+  enableAllNotes() {
+    this.showAllNotes = true;
+  }
+
+  disableAllNotes() {
+    this.showAllNotes = false;
+  }
 }

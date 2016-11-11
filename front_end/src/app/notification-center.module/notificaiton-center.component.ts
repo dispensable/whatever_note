@@ -36,6 +36,8 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
   // 聊天用户名与id映射
   idNameMap: {[id: string] : string} = {};
 
+  showClose: boolean = false;
+
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(
@@ -52,6 +54,9 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
           this.numOfNotifications += 1;
           this.notify.pushNotification(notification);
         } else {
+          if (this.messages.length > 100) {
+            this.messages.shift();
+          }
           this.messages.push(notification);
           if (this.showChatContent === false) {
             this.showChatContent = true;
@@ -186,5 +191,17 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
     } else {
       return 'send message to ' + this.idNameMap[this.canSendTo[0]]
     }
+  }
+
+  silence() {
+    this.showChatContent = false;
+  }
+
+  showCloseButton() {
+    this.showClose = true;
+  }
+
+  disableClose() {
+    this.showClose = false;
   }
 }

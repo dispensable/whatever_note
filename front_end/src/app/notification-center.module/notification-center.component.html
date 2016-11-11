@@ -13,7 +13,8 @@
 </div>
 
 <div class="chat">
-  <div #scrollMe class="messages"  *ngIf="showChatContent">
+  <button (click)="silence(); disableClose()" class="close-button" *ngIf="showClose">close</button>
+  <div #scrollMe class="messages"  *ngIf="showChatContent" (mousemove)="showCloseButton()">
     <div *ngFor="let msg of messages">
 
       <div ngbDropdown class="d-inline-block">
