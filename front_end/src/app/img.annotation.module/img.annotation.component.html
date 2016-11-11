@@ -18,22 +18,21 @@
         <hr>
       </div>
 
-      <div *ngIf="isPixelCommentsExist()" class="inline-comments">
-        <div *ngFor="let comment of comments" class="sideComment">
+      <div *ngIf="!showSideComment" class="inline-comments">
+        <div *ngFor="let comment of comments; let i = index;" class="sideComment">
           {{comment.post_by}} | {{comment.create_date * 1000 | date:'short'}} | <a href="{{getCurrentUrl() + '#' + 'comment'
           + comment.p_num.toString() + comment.s_num.toString()}}">Reply</a>
           <br>
           <div [innerHtml] = "comment.content | MarkdownToHtml"></div>
           <hr>
         </div>
-        <textarea class="comments" placeholder="add comment to" #inlinecomment></textarea>
+        <textarea class="comments" placeholder="add comment to {{ this.sidePnum }}, {{ this.sideSnum }}" #inlinecomment></textarea>
         <br>
-        <button (click)="commentComponent.sendComment(inlinecomment.value, comment.p_num,
-        comment.s_num)">Send</button>
+        <button (click)="commentComponent.sendComment(inlinecomment.value, sidePnum, sideSnum)">Send</button>
       </div>
 
-      <div *ngIf="!isPixelCommentsExist()" class="inline-comments">
-        <p>There is no comments for this sentence, try add one!</p>
+      <div *ngIf="!isPixelCommentsExist() && (!showSideComment)" class="inline-comments">
+        <p>There is no comments for this area, try add one!</p>
       </div>
 
     </div>

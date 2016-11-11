@@ -51,6 +51,8 @@ export class ImgAnnotationComponent implements OnInit{
   imgId: string;
   mentionItems: string[] = [];
   imgElement;
+  sidePnum: number = 0;
+  sideSnum: number = 0;
 
   img: Image = new Image('', '', '', '', 0, 0, '', '');
 
@@ -76,17 +78,19 @@ export class ImgAnnotationComponent implements OnInit{
     this.imgHeight = this.imgElement.clientHeight;
     this.imgWidth = this.imgElement.clientWidth;
 
-    console.log('x / width: ' + this.commentX / this.imgWidth);
-    console.log('y / height: ' + this.commentY / this.imgHeight);
+    this.hideSideComment();
   }
 
   showSideNote(thisComment: Comment, comments: Comment[]) {
     this.comments = [];
+    this.showSideComment = false;
     for (let comment of comments) {
       if (comment['p_num'] === thisComment['p_num'] && comment['s_num'] === thisComment['s_num']) {
         this.comments.push(comment);
       }
     }
+    this.sidePnum = this.comments[0]['p_num'];
+    this.sideSnum = this.comments[0]['s_num'];
   }
 
   setStyles(x: number, y: number) {
@@ -98,8 +102,8 @@ export class ImgAnnotationComponent implements OnInit{
     return styles
   }
 
-  sendComment(comment: string) {
-
+  hideSideComment() {
+    this.comments = [];
   }
 
   cancle() {
@@ -130,7 +134,7 @@ export class ImgAnnotationComponent implements OnInit{
   }
 
   isPixelCommentsExist() {
-    return !(this.comments.length === 0)
+    return !(this.comments.length === 0);
   }
 
 }
