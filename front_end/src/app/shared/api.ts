@@ -109,4 +109,7 @@ export class Api {
     return `http://localhost:4200/api/img/${imgId}/comments/${commentId}`;
   }
 
+  static getAllComments(userid: string) {
+    return `http://localhost:4200/api/users/${userid}/comments`
+  }
 }

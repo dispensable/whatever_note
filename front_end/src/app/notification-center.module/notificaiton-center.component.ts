@@ -21,7 +21,6 @@ import {isNullOrUndefined} from "util";
 export class NotificationCenterComponent implements OnInit, AfterViewChecked {
 
   notifications: Notification[] = [];
-  numOfNotifications: number = 0;
   showNotifyList: Boolean = false;
   messages: Notification[] = [];
 
@@ -51,7 +50,6 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
       notification => {
         if (notification.type <= 3) { // 3以上为即时消息
           this.notifications.push(notification);
-          this.numOfNotifications += 1;
           this.notify.pushNotification(notification);
         } else {
           if (this.messages.length > 150) { //限制缓存消息条数
@@ -80,7 +78,6 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
         notifications => {
           for (let i in notifications) {
             this.notifications.push(notifications[i.toString()]);
-            this.numOfNotifications += 1;
           }
           this.sendHandShakeMsg();
           this.scrollToBottom();

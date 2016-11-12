@@ -4,7 +4,7 @@ from model import post_comments
 from .base_handler import BasicHandler
 
 
-class CommentsHandler(BasicHandler):
+class PostCommentsHandler(BasicHandler):
     def get(self, post_id):
         comments = post_comments.get_comments_by_post_id(post_id)
         if comments:
@@ -14,7 +14,6 @@ class CommentsHandler(BasicHandler):
 
     def post(self, post_id):
         comment = self.json_args
-        print(comment)
         post_comments.create_comment(comment['content'], comment['post_by'],
                                      post_id, comment['p_num'], comment['s_num'], post_type=comment['post_type'])
 
@@ -37,3 +36,7 @@ class SingleCommentHandler(BasicHandler):
             print(e)
             self.set_status(500, 'delete comment error.')
 
+
+class CommentsHandler(BasicHandler):
+    def get(self, userid):
+        self.write(post_comments.get_comments_by_id(userid))

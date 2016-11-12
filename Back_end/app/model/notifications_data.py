@@ -55,6 +55,7 @@ def get_unread_info(userid: str):
             results = {}
             for index, notification in enumerate(all_notifications):
                 notification['id'] = notification['_id']._ObjectId__id.hex()
+                del notification['_id']
                 results[index] = notification
             return results
 

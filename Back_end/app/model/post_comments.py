@@ -157,3 +157,18 @@ def at_mention_replace(post_by: str, content: str, post_by_name: str) -> str:
 
     # 返回
     return content
+
+
+def get_comments_by_id(userid: str):
+    with OpenCollection('comments') as comments_collection:
+        all_comments = comments_collection.find({'post_by_id': userid})
+        results = {}
+        for index, comment in enumerate(all_comments):
+            del comment['post_id']
+            comment['comment_id'] = comment['_id']._ObjectId__id.hex()
+            del comment['_id']
+            comment['post_by_id'] = comment['post_by'].id._ObjectId__id.hex()
+            comment['post_by'] = OpenCollection.database.dereference(comment['post_by'])['username']  # TODO: 添加内容以构造个人资料链接
+
+            results[index] = comment
+    return results

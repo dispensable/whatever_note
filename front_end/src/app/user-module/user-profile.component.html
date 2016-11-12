@@ -46,24 +46,58 @@
     </template>
   </ngb-tab>
 
-  <ngb-tab title="我的评论" [disabled]="canCheckComments">
+  <ngb-tab title="我的评论">
     <template ngbTabContent>
-      <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
-      master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
-      dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum
-      iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+      <table class="table">
+        <tr>
+          <th>序号</th>
+          <th>创建日期</th>
+          <th>修改日期</th>
+          <th>内容</th>
+          <th>down</th>
+          <th>up</th>
+          <th>hold</th>
+          <th>操作</th>
+        </tr>
+
+        <tr *ngFor="let comment of comments; let i = index;">
+          <td>{{i}}</td>
+          <td>{{ comment.create_date | date:'medium' }}</td>
+          <td>{{ comment.last_modify | date:'medium'}}</td>
+          <td>{{ comment.content }}</td>
+          <td>{{ comment.down }}</td>
+          <td>{{ comment.up }}</td>
+          <td>{{ comment.hold }}</td>
+          <td><a (click)="delComment(comment.comment_id)" style="color: red;">删除</a></td>
+        </tr>
+      </table>
     </template>
   </ngb-tab>
 
-  <ngb-tab title="我的通知" [disabled]="canCheckNotification">
+  <ngb-tab title="我的通知">
     <template ngbTabContent>
-      <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro synth
-      master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher retro keffiyeh
-      dreamcatcher synth. Cosby sweater eu banh mi, qui irure terry richardson ex squid. Aliquip placeat salvia cillum
-      iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
+      <table class="table">
+        <tr>
+          <th>序号</th>
+          <th>创建日期</th>
+          <th>内容</th>
+          <th>已读</th>
+          <th>消息类型</th>
+          <th>操作</th>
+        </tr>
+
+        <tr *ngFor="let notification of notifications; let i = index;">
+          <td>{{i}}</td>
+          <td>{{ notification.date | date:'medium' }}</td>
+          <td>{{ notification.content }}</td>
+          <td>{{ notification.has_read }}</td>
+          <td>{{ notification.type }}</td>
+          <td><a (click)="delNotification(notification.id)" style="color: red;">删除</a></td>
+        </tr>
+      </table>
     </template>
   </ngb-tab>
-</ngb-tabset>
+</ngb-tabset>xs
 </div>
 
 <div class="follow-button">

@@ -7,6 +7,7 @@ import { Api } from '../shared/api';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Post } from "../shared/post";
 import { NotificationCenterComponent } from '../notification-center.module/notificaiton-center.component';
+import {Notification} from "../shared/notification-component/notification";
 
 class Profile {
   confirmed: boolean;
@@ -45,6 +46,8 @@ export class UserProfileComponent implements OnInit{
   hasFollowed: boolean = false;
   canCheckNotification: boolean = true;
   canCheckComments: boolean = true;
+  notifications: Notification[] = [];
+  comments: Comment[] = []
 
   ngOnInit() {
     // 从url获取用户id
@@ -103,10 +106,32 @@ export class UserProfileComponent implements OnInit{
 
       // 获取我的评论
       if (this.loginid !== this.userid) { return; }
+      else {
+        this.canCheckComments = true;
+        this.userProfile.getData(Api.getAllComments(this.loginid)).subscribe(
+          comments => {
+            for (let commentNum in comments) {
+              let comment = comments[commentNum.toString()];
+              this.comments.push(comment);
+            }
+          },
+          error => {console.log(error);}
+        );
+      }
 
       // 获取我的通知
       if (this.loginid !== this.userid) { return; }
-
+      else {
+        this.canCheckNotification = true;
+        this.userProfile.getData(Api.getNotifications(this.loginid, 0)).subscribe(
+          notifications => {
+            for (let i in notifications) {
+              this.notifications.push(notifications[i.toString()]);
+            }
+          },
+          error => console.log(error)
+        );
+      }
     });
   }
 
@@ -125,6 +150,14 @@ export class UserProfileComponent implements OnInit{
   }
 
   editProfile() {
+
+  }
+
+  delComment(comment_id: string) {
+
+  }
+
+  delNotification(notification_id: string) {
 
   }
 }
