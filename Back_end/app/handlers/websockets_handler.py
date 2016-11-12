@@ -20,7 +20,6 @@ class EchoWebSocket(websocket.WebSocketHandler):
 
     def on_message(self, message):
         message = json.loads(message)
-
         # 添加用户到连接列表
         self.auth_message(message)
 
@@ -73,8 +72,10 @@ class EchoWebSocket(websocket.WebSocketHandler):
 
         # 推送给自己， 保证发送成功
         if message['info_to']:
-            self_ws_ins = cls.users[message['info_from']]
-            self_ws_ins.write_message(message)
+            if message['type'] > 3:
+                self_ws_ins = cls.users[message['info_from']]
+                self_ws_ins.write_message(message)
+                return
 
             for reciver in message['info_to']:
                 # 保存消息id到用户notification集合

@@ -45,16 +45,22 @@ class NotifyHandler(BasicHandler):
         notification_id = self.get_argument('notification_id')
         try:
             info_data.set_notification_read(userid, notification_id)
+            self.write({'200': 'ok'})
         except Exception as e:
             self.set_status(500, '修改未读状态错误')
             raise e
 
 
 class PersonalNotifications(BasicHandler):
-    """ http get http://localhost:8888/api/notifications/<userid>"""
+    """ http get /api/users/([abcdef0123456789]*)/notifications"""
     def get(self, userid):
         notifydict = user_data.get_notifications(userid)
         if notifydict:
             self.write(notifydict)
         else:
-            self.set_status(404, 'no notifications')
+            self.write({})
+
+    def put(self, userid):
+        notification_list = self.json_args['notifications_id_list']
+        info_data.set_all_notifications_read(userid, notification_list)
+        self.write({'200': 'ok'})

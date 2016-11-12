@@ -2,7 +2,7 @@
 # -*-coding:utf-8-*-
 
 from .database_connection import OpenCollection, str2object_id
-from .user_data import del_notification_by_id
+from .user_data import del_notification_by_id, del_notifications_by_ids
 
 
 class Notification(object):
@@ -63,3 +63,10 @@ def set_notification_read(userid: str, notification_id: str):
     with OpenCollection('notification') as notification_collection:
         notification_collection.update({'_id': str2object_id(notification_id)}, {'$set': {'has_read': True}})
     del_notification_by_id(userid, notification_id)
+
+
+def set_all_notifications_read(userid: str, to_set: list):
+    with OpenCollection('notification') as notification_collection:
+        for notification_id in to_set:
+            notification_collection.update({'_id': str2object_id(notification_id)}, {'$set': {'has_read': True}})
+    del_notifications_by_ids(userid, to_set)

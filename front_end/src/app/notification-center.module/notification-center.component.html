@@ -1,15 +1,16 @@
-<div (click)="showNotifications()">Notification[{{numOfNotifications}}]</div>
+<div (click)="showNotifications()">Notification[{{notifications.length}}]</div>
 
 <div class="notificationList" *ngIf="showNotifyList">
     <ngb-accordion [closeOthers]="true" activeIds="0" *ngFor="let message of notifications; let i = index;">
     <ngb-panel id="{{i}}" title="{{message.info_from_name}}: {{message.content | slice:0:15}}...  @{{message.date | date:'short'}}">
       <template ngbPanelContent>
         {{message.content}}
+        <button (click)="markRead(message.id)" class="mark-has-read">已读</button>
       </template>
     </ngb-panel>
     </ngb-accordion>
 
-  <button (click)="sendMessage()">hello</button>
+  <button (click)="markAllRead()" *ngIf="!(notifications.length === 0)">全部已读</button>
 </div>
 
 <div class="chat">

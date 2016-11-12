@@ -170,6 +170,16 @@ def del_notification_by_id(userid: str, notification_id: str):
                                        DBRef('notification', str2object_id(notification_id))}})
 
 
+def del_notifications_by_ids(userid: str, notification_list: list):
+    to_be_del = []
+    for notification_id in notification_list:
+        to_be_del.append(DBRef('notification', str2object_id(notification_id)))
+
+    with OpenCollection('user') as user:
+        user.update({'_id': str2object_id(userid)},
+                    {'$pullAll': {'notifications': to_be_del}})
+
+
 def add_follow(userid: str, follow_id: str):
     with OpenCollection('user') as user:
         # 在userid下添加关注

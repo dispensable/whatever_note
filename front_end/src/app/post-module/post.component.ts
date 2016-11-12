@@ -68,6 +68,7 @@ export class PostComponent implements OnInit{
           let comment = comments[commentNum.toString()];
           this.comments.push(comment);
         }
+        this.getSentenceComments(this.inlinePosition[0], this.inlinePosition[1]);
       },
       error => {
         console.log(error);

@@ -156,7 +156,6 @@ export class CommentsComponent implements OnInit{
           }
 
           this.selectedComments = TextHandler.handleComments(this.comments);
-          console.log(this.comments);
         },
         error => {
           console.log(error);

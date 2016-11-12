@@ -57,3 +57,7 @@ button.close-button {
   font-size: small;
   z-index: 4;
 }
+
+button.mark-has-read {
+  float: right;
+}

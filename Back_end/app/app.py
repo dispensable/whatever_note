@@ -32,7 +32,7 @@ def make_app():
         (r'/api/users/mentionlist', user_data_handler.MentionListHandler),
         (r'/api/websocket', websockets_handler.EchoWebSocket),
         (r'/api/notifications', notification_handler.NotifyHandler),
-        (r'/api/notifications/([abcdef0123456789]*)', notification_handler.PersonalNotifications),
+        (r'/api/users/([abcdef0123456789]*)/notifications', notification_handler.PersonalNotifications),
         (r'/api/users/([abcdef0123456789]*)/follow/([abcdef0123456789]*)', user_data_handler.FollowHandler),
         (r'/api/users/([abcdef0123456789]*)/follower/([abcdef0123456789]*)', user_data_handler.FollowerHandler),
         (r'/api/users/([abcdef0123456789]*)/follow', user_data_handler.FollowHandler),

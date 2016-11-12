@@ -64,6 +64,10 @@ export class Api {
     return `http://localhost:4200/api/notifications?userid=${userid}&unread=${unread}`;
   }
 
+
+  static getPersonalNotifications(userid: string) {
+    return `http://localhost:4200/api/users/${userid}/notifications`;
+  }
   // post json['notification']
   static postNotification() {
     return `http://localhost:4200/api/notifications`;
@@ -75,10 +79,6 @@ export class Api {
 
   static websocketAddr() {
     return `ws://localhost:8888/api/websocket`;
-  }
-
-  static getPersonalNotifications(userid: string) {
-    return `http://localhost:4200/api/notifications/${userid}`;
   }
 
   static getFollowlist(userid: string) {

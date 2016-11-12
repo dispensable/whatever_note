@@ -49,12 +49,12 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
   ){
     this.ncService.notification.subscribe(
       notification => {
-        if (notification.type <= 3) {
+        if (notification.type <= 3) { // 3以上为即时消息
           this.notifications.push(notification);
           this.numOfNotifications += 1;
           this.notify.pushNotification(notification);
         } else {
-          if (this.messages.length > 100) {
+          if (this.messages.length > 150) { //限制缓存消息条数
             this.messages.shift();
           }
           this.messages.push(notification);
@@ -203,5 +203,40 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
 
   disableClose() {
     this.showClose = false;
+  }
+
+  markAllRead() {
+
+    if (this.notifications.length === 0) { return; }
+
+    let notifications_id_list: string[] = [];
+
+    for (let notification of this.notifications) {
+      notifications_id_list.push(notification['id']);
+    }
+
+    this.baseData.putData(Api.getPersonalNotifications(localStorage.getItem('userid')),
+      JSON.stringify({'notifications_id_list': notifications_id_list})).subscribe(
+        success => {
+          console.log(success);
+          this.notifications = [];
+        },
+        error => console.log(error)
+    );
+  }
+
+  markRead(notificationId: string) {
+    this.baseData.putData(Api.setNotificationRead(localStorage.getItem('userid'), notificationId), '').subscribe(
+      success => {
+        for (let index in this.notifications) {
+          console.log(index);
+          if (this.notifications[index]['id'] === notificationId) {
+            this.notifications.splice(index);
+            break;
+          }
+        }
+      },
+      error => console.log(error)
+    );
   }
 }

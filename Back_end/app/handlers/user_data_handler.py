@@ -16,6 +16,7 @@ class UserHandler(BasicHandler):
             del user['_id']
             del user['password']
             del user['notifications']
+            del user['timeline']
 
             user['follow'] = user_data.check_follow(user['id'])
             user['followers'] = user_data.check_followers(user['id'])

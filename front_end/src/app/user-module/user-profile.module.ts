@@ -33,7 +33,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     profileRoutingProviders,
     NotificationService,
     AuthGuard,
-    BaseDataService],
+    BaseDataService,
+  ],
 })
 
 export class UserProfileModule { }

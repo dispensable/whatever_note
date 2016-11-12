@@ -14,6 +14,7 @@ class CommentsHandler(BasicHandler):
 
     def post(self, post_id):
         comment = self.json_args
+        print(comment)
         post_comments.create_comment(comment['content'], comment['post_by'],
                                      post_id, comment['p_num'], comment['s_num'], post_type=comment['post_type'])
 
