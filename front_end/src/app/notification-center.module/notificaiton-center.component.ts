@@ -228,7 +228,7 @@ export class NotificationCenterComponent implements OnInit, AfterViewChecked {
         for (let index in this.notifications) {
           console.log(index);
           if (this.notifications[index]['id'] === notificationId) {
-            this.notifications.splice(index);
+            this.notifications.splice(+index);
             break;
           }
         }

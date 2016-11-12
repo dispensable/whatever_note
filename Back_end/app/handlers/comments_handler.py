@@ -40,3 +40,14 @@ class SingleCommentHandler(BasicHandler):
 class CommentsHandler(BasicHandler):
     def get(self, userid):
         self.write(post_comments.get_comments_by_id(userid))
+
+    def delete(self, userid):
+        if self.get_current_user()['userid'] != userid:
+            self.set_status(403, 'Unauth!')
+        else:
+            comment_id = self.get_argument('comment_id')
+            post_id = self.get_argument('post_id')
+            post_type = self.get_argument('post_type')
+
+            post_comments.del_comment(post_id, comment_id, post_type)
+            self.write({200: 'ok'})

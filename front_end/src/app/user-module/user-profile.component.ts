@@ -153,7 +153,7 @@ export class UserProfileComponent implements OnInit{
 
   }
 
-  delComment(comment_id: string) {
+  delComment(userid: string, comment_id: string, post_id: string, comment_type: string) {
 
   }
 

@@ -112,4 +112,8 @@ export class Api {
   static getAllComments(userid: string) {
     return `http://localhost:4200/api/users/${userid}/comments`
   }
+
+  static deleteComment(userid: string, post_id: string, comment_id: string, comment_type: string) {
+    return `http://localhost:4200/api/users/${userid}/comments?post_id=${post_id}&comment_id=${comment_id}&comment_type=${comment_type}`
+  }
 }
