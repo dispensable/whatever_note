@@ -50,6 +50,19 @@ class NotifyHandler(BasicHandler):
             self.set_status(500, '修改未读状态错误')
             raise e
 
+    def delete(self):
+        """
+        http delete localhost:8888/api/notifications?userid=xxxx&notification_id=xxxx
+        :return:
+        """
+        userid = self.get_argument('userid')
+        notification_id = self.get_argument('notification_id')
+        try:
+            info_data.del_notification(userid, notification_id)
+            self.write({'200': 'ok'})
+        except Exception as e:
+            raise e
+
 
 class PersonalNotifications(BasicHandler):
     """ http get /api/users/([abcdef0123456789]*)/notifications"""

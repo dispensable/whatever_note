@@ -64,11 +64,11 @@
           <td>{{i}}</td>
           <td>{{ comment.create_date | date:'medium' }}</td>
           <td>{{ comment.last_modify | date:'medium'}}</td>
-          <td>{{ comment.content }}</td>
+          <td><a routerLink="{{getCommentLink(comment)}}">{{ comment.content }}</a></td>
           <td>{{ comment.down }}</td>
           <td>{{ comment.up }}</td>
           <td>{{ comment.hold }}</td>
-          <td><a (click)="delComment(comment.comment_id)" style="color: red;">删除</a></td>
+          <td><a (click)="delComment(comment.comment_id, comment.post_id, comment.type || 'post')" style="color: red;">删除</a></td>
         </tr>
       </table>
     </template>
@@ -89,7 +89,7 @@
         <tr *ngFor="let notification of notifications; let i = index;">
           <td>{{i}}</td>
           <td>{{ notification.date | date:'medium' }}</td>
-          <td>{{ notification.content }}</td>
+          <td><a [innerHtml]="notification.content"></a></td>
           <td>{{ notification.has_read }}</td>
           <td>{{ notification.type }}</td>
           <td><a (click)="delNotification(notification.id)" style="color: red;">删除</a></td>

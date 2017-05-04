@@ -71,3 +71,11 @@ def set_all_notifications_read(userid: str, to_set: list):
         for notification_id in to_set:
             notification_collection.update({'_id': str2object_id(notification_id)}, {'$set': {'has_read': True}})
     del_notifications_by_ids(userid, to_set)
+
+
+def del_notification(userid: str, notification_id: str):
+    with OpenCollection('notification') as notification_collection:
+        has_read = notification_collection.find_one({'_id': str2object_id(notification_id)})['has_read']
+        notification_collection.remove({'_id': str2object_id(notification_id)})
+    if not has_read:
+        del_notification_by_id(userid, notification_id)

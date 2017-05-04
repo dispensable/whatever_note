@@ -164,7 +164,7 @@ def get_comments_by_id(userid: str):
         all_comments = comments_collection.find({'post_by_id': userid})
         results = {}
         for index, comment in enumerate(all_comments):
-            del comment['post_id']  # TODO: 添加postid实现个人页面的集中删除
+            comment['post_id'] = comment['post_id'].id._ObjectId__id.hex()
             comment['comment_id'] = comment['_id']._ObjectId__id.hex()
             del comment['_id']
             comment['post_by_id'] = comment['post_by'].id._ObjectId__id.hex()

@@ -153,11 +153,44 @@ export class UserProfileComponent implements OnInit{
 
   }
 
-  delComment(userid: string, comment_id: string, post_id: string, comment_type: string) {
-
+  delComment(comment_id: string, post_id: string, comment_type: string) {
+    this.userProfile.delData(Api.deleteComment(localStorage.getItem('userid'), post_id, comment_id, comment_type)).subscribe(
+      success => {
+        console.log('success!');
+        for (let commentNum in this.comments) {
+          if (this.comments[commentNum]['comment_id'] === comment_id) {
+            this.comments.splice(+commentNum, 1);
+            break;
+          }
+        }
+      },
+      error => console.log(error)
+    );
   }
 
   delNotification(notification_id: string) {
+    this.userProfile.delData(Api.setNotificationRead(localStorage.getItem('userid'), notification_id)).subscribe(
+      success => {
+        console.log('del notification successed!');
+        for (let notifyNum in this.notifications) {
+          if (this.notifications[notifyNum]['id'] === notification_id) {
+            console.log(notifyNum);
+            this.notifications.splice(+notifyNum, 1);
+            break;
+          }
+        }
+      },
+        error => console.log(error)
+    );
+  }
 
+  getCommentLink(comment: Comment) {
+    if (comment['type'] === 'post') {
+      return `/post/${comment['post_id']}`;
+    } else if (comment['type'] === 'img') {
+      return `/img/${comment['post_id']}`;
+    } else {
+      return `/post/${comment['post_id']}`;
+    }
   }
 }
