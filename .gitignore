@@ -3,7 +3,7 @@
 *.egg
 *.egg-info
 /venv
-.idea
+/.idea
 .DS_Store
 Back_end/.DS_Store
 Back_end/__pycache__/
